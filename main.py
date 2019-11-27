@@ -33,12 +33,12 @@ class App(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
 		#setup app windows and theme
-		
+
 		self.dark_theme()
 
 		self.load_data()
 		self.open_login_window()
-		
+
 
 	def load_data(self):
 		self.class_list = ['Choose your class','M1/1','M2/1','M3/1']
@@ -51,7 +51,7 @@ class App(QtWidgets.QWidget):
 		self.answer = 0
 		self.question_number = 1
 		self.admin = False
-		
+
 	def dark_theme(self):
 		app.setStyle("Fusion")
 
@@ -85,13 +85,20 @@ class App(QtWidgets.QWidget):
 		wn.move(x, y)
 
 	def read_csv(self, clas):
+		'''[summary] -- [Function to get student details information from a .CSV file]
+
+		[description] -- [Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.]
+
+		Arguments:
+			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
+		'''
 		self.student_names.clear()
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
 
 		with change_dir('resources'):
 			with open('Student_Details_CSV_M' + str(clas) + '-1.csv','r') as csv_file:
-				csv_reader = csv.DictReader(csv_file)			
+				csv_reader = csv.DictReader(csv_file)
 
 				for line in csv_reader:
 					self.student_names.append(line['Name'])
@@ -118,16 +125,15 @@ class App(QtWidgets.QWidget):
 		#limit the number of items in the student name combo box
 		self.login_gui.StudentNameCmb.setStyleSheet("QComboBox { combobox-popup: 0; }")
 		self.login_gui.StudentNameCmb.setMaxVisibleItems(10)
-		#start with the class combobox 
+		#start with the class combobox
 		self.login_gui.ClassCmb.setFocus()
 
 		self.examLogin.show()
 
 	def login_okaybutton_clicked(self):
 		try:
-			#open main window and pass vairables		
+			#open main window and pass vairables
 			self.password_input = self.login_gui.InputPassword.text()
-			
 			if self.password_input == self.student_passwords[self.student_number]:
 				self.examLogin.close()
 				self.open_exam_window()
@@ -149,7 +155,7 @@ class App(QtWidgets.QWidget):
 	def class_name_changed(self, cls):
 		self.class_name = self.login_gui.ClassCmb.itemText(cls)
 		self.year_chosen = cls
-		
+
 		if cls > 0:
 			self.read_csv(cls)
 			self.class_name = self.class_list[cls]
@@ -164,7 +170,7 @@ class App(QtWidgets.QWidget):
 
 	def student_name_change(self, st):
 		#links student cmb box with the photo display
-		self.student_number = st		
+		self.student_number = st
 
 		with change_dir('img'):
 			if st > 0:
@@ -180,7 +186,7 @@ class App(QtWidgets.QWidget):
 				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('blank_girl.png')))
 				self.login_gui.StudentNumber.setText('')
 				self.login_gui.StudentNickname.setText('')
-	
+
 	def login_cancelbutton_clicked(self):
 		#exit the app
 		app.exit()
@@ -189,7 +195,7 @@ class App(QtWidgets.QWidget):
 		#Initialise exam window
 		self.examWindow = QtWidgets.QMainWindow()
 		self.exam_gui = Ui_ExamQuestions()
-		
+
 		#Connect button methods from Exam main window code
 		self.examWindow.logout_button_clicked = self.logout_button_clicked
 		self.examWindow.exam_refresh_button_clicked = self.exam_refresh_button_clicked
@@ -277,7 +283,7 @@ class App(QtWidgets.QWidget):
 			self.exam_gui.FalsecheckBox.setChecked(True)
 
 			self.populate_boxes(self.question_number)
-		
+
 	def back_button_clicked(self):
 		self.question_number -= 1
 		if self.question_number <= 0:
@@ -295,14 +301,13 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.AnswerTextB.setText(self.exam_AnswerB[quest])
 		self.exam_gui.AnswerTextC.setText(self.exam_AnswerC[quest])
 		self.exam_gui.AnswerTextD.setText(self.exam_AnswerD[quest])
-        
+
 	def check_answer(self, btn):
 		self.answer = self.exam_gui.AnswerButtonGroup.checkedId()
 		if self.answer == self.convert(self.exam_Rightanswer[self.question_number]):
 			self.score += 1
 
 
-		
 	def convert(self, val):
 		return self.string_convert[val]
 
