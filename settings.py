@@ -26,6 +26,20 @@ def change_dir(destination): #change directory function
 	finally:
 		os.chdir(cwd)
 
+'''
+t1 - datetime.time(hours = 1, minute= 1) #set a time to calc
+print(time.asctime()) print current time
+
+def countdown():
+    timer_time = 20
+    now = int(time.time())
+    end_time = now + timer_time
+    while time.time() <= end_time:
+        left_time = end_time - int(time.time())
+        #left_time = end_time - time.time()
+        print(left_time)
+        #print(time.strftime("%M %S",left_time))
+'''
 
 #SPRITESHEET = "Exam_App_image_sheet.png"
 
