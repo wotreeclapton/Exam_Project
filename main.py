@@ -14,6 +14,7 @@ __version__ = '1.0'
 import os
 import sys
 import csv
+import datetime
 
 from Student_Login_Gui import Ui_ExamLogin
 from Exam_main_window import Ui_ExamQuestions
@@ -196,6 +197,8 @@ class App(QtWidgets.QWidget):
 		self.examWindow = QtWidgets.QMainWindow()
 		self.exam_gui = Ui_ExamQuestions()
 
+		self.start_time = datetime.datetime.today()
+
 		#Connect button methods from Exam main window code
 		self.examWindow.logout_button_clicked = self.logout_button_clicked
 		self.examWindow.exam_refresh_button_clicked = self.exam_refresh_button_clicked
@@ -219,6 +222,7 @@ class App(QtWidgets.QWidget):
 		self.read_exam_questions_csv()
 
 		#set the text etc
+		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])

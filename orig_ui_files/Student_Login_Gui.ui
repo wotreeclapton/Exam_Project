@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ExamLogin</class>
+ <widget class="QMainWindow" name="ExamLogin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>588</width>
+    <height>270</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>588</width>
+    <height>270</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>588</width>
+    <height>270</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Exam Login</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</iconset>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="ClassLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>300</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>30</pointsize>
+      <weight>75</weight>
+      <italic>true</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Class</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="StudentNameCmb">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>391</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Click arrow to choose your name!</string>
+    </property>
+    <property name="statusTip">
+     <string>Choose a name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="EnterNameLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>114</y>
+      <width>211</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choose your name from the list below</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="InputPassword">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>221</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Password goes here!</string>
+    </property>
+    <property name="statusTip">
+     <string>Input your password</string>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Password</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="InputPaswordLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>172</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Password</string>
+    </property>
+   </widget>
+   <widget class="QDialogButtonBox" name="buttonBox">
+    <property name="geometry">
+     <rect>
+      <x>418</x>
+      <y>216</y>
+      <width>156</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string/>
+    </property>
+    <property name="statusTip">
+     <string/>
+    </property>
+    <property name="standardButtons">
+     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Logolabel">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>20</y>
+      <width>75</width>
+      <height>97</height>
+     </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <property name="toolTipDuration">
+     <number>-5</number>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../06Icons_and_Logos/School logo75x97_grad.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="PasswordShowButton">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>201</y>
+      <width>20</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../06Icons_and_Logos/Password_Icon_20x20.png</normaloff>../06Icons_and_Logos/Password_Icon_20x20.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>18</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+    <property name="autoRepeat">
+     <bool>true</bool>
+    </property>
+    <property name="autoRepeatDelay">
+     <number>200</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="StudentPhoto">
+    <property name="geometry">
+     <rect>
+      <x>414</x>
+      <y>10</y>
+      <width>160</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Panel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>img/blank_girl.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="ClassCmb">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>151</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Choose your class!</string>
+    </property>
+    <property name="statusTip">
+     <string>Choose your class first</string>
+    </property>
+    <property name="currentText">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="StudentNumberLabel">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>170</y>
+      <width>50</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Number:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="StudentNicknameLabel">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>200</y>
+      <width>50</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="text">
+     <string>Nickname:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="StudentNumber">
+    <property name="geometry">
+     <rect>
+      <x>308</x>
+      <y>170</y>
+      <width>94</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="StudentNickname">
+    <property name="geometry">
+     <rect>
+      <x>308</x>
+      <y>200</y>
+      <width>94</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>588</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>588</width>
+     <height>20</height>
+    </size>
+   </property>
+   <property name="sizeGripEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>ClassCmb</tabstop>
+  <tabstop>StudentNameCmb</tabstop>
+  <tabstop>InputPassword</tabstop>
+  <tabstop>PasswordShowButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>login_okaybutton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>451</x>
+     <y>242</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>login_cancelbutton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>489</x>
+     <y>243</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>376</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>PasswordShowButton</sender>
+   <signal>clicked()</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>password_show_button_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>216</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>186</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InputPassword</sender>
+   <signal>returnPressed()</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>login_okaybutton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>118</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ClassCmb</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>class_name_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>109</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>StudentNameCmb</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>ExamLogin</receiver>
+   <slot>student_name_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>177</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>106</x>
+     <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>login_okaybutton_clicked()</slot>
+  <slot>login_cancelbutton_clicked()</slot>
+  <slot>password_show_button_clicked()</slot>
+  <slot>class_name_changed()</slot>
+  <slot>student_name_change()</slot>
+ </slots>
+</ui>
