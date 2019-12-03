@@ -156,7 +156,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../06Icons_and_Logos/School logo75x97_grad.png</pixmap>
+     <pixmap>img/School logo75x97_grad.png</pixmap>
     </property>
    </widget>
    <widget class="QPushButton" name="PasswordShowButton">

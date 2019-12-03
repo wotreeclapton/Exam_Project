@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../img/ep_program_logo_user_acc_zrP_icon.ico</normaloff>../img/ep_program_logo_user_acc_zrP_icon.ico</iconset>
+    <normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="RefreshButton">
@@ -182,7 +182,7 @@ Midterm Exam </string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</normaloff>img/ep_program_logo_user_acc_zrP_icon.ico</iconset>
+       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
      </property>
      <property name="shortcut">
       <string>Right, Return</string>
@@ -295,7 +295,7 @@ Midterm Exam </string>
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../img/blank_girl.png</pixmap>
+      <pixmap>img/blank_girl.png</pixmap>
      </property>
      <property name="scaledContents">
       <bool>true</bool>
@@ -862,7 +862,7 @@ Midterm Exam </string>
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../img/School logo75x97_grad.png</pixmap>
+     <pixmap>img/School logo75x97_grad.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="TimeLeft">
