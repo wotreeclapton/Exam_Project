@@ -219,9 +219,9 @@ Midterm Exam </string>
     <widget class="QLabel" name="QuestionNumber">
      <property name="geometry">
       <rect>
-       <x>980</x>
+       <x>970</x>
        <y>10</y>
-       <width>70</width>
+       <width>30</width>
        <height>30</height>
       </rect>
      </property>
@@ -234,7 +234,7 @@ Midterm Exam </string>
       </font>
      </property>
      <property name="text">
-      <string>QNum</string>
+      <string>60</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -322,6 +322,30 @@ Midterm Exam </string>
       <string>Question Number:</string>
      </property>
     </widget>
+    <widget class="QLabel" name="OutOfQuestionLabel">
+     <property name="geometry">
+      <rect>
+       <x>1000</x>
+       <y>10</y>
+       <width>42</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>/60</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </widget>
    <widget class="QLabel" name="Questions">
     <property name="geometry">
@@ -356,23 +380,39 @@ Midterm Exam </string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QProgressBar" name="CompletedProgressBar">
+   <widget class="QProgressBar" name="TimeLeftProgressBar">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>860</y>
-      <width>371</width>
+      <x>430</x>
+      <y>864</y>
+      <width>501</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="statusTip">
-     <string>Amount you have completed.</string>
+     <string>Your time left</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="maximum">
+     <number>50</number>
     </property>
     <property name="value">
-     <number>24</number>
+     <number>46</number>
+    </property>
+    <property name="invertedAppearance">
+     <bool>true</bool>
     </property>
     <property name="format">
-     <string>%p%</string>
+     <string>%v mins</string>
     </property>
    </widget>
    <widget class="QLabel" name="StartTime">
@@ -380,7 +420,7 @@ Midterm Exam </string>
      <rect>
       <x>110</x>
       <y>860</y>
-      <width>111</width>
+      <width>90</width>
       <height>30</height>
      </rect>
     </property>
@@ -846,7 +886,7 @@ Midterm Exam </string>
      </font>
     </property>
     <property name="text">
-     <string>Start Time</string>
+     <string>Start Time:</string>
     </property>
    </widget>
    <widget class="QLabel" name="SchoolLabel">
@@ -865,23 +905,30 @@ Midterm Exam </string>
      <pixmap>img/School logo75x97_grad.png</pixmap>
     </property>
    </widget>
-   <widget class="QLabel" name="TimeLeft">
+   <widget class="QLabel" name="EndTime">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>310</x>
       <y>860</y>
-      <width>111</width>
+      <width>90</width>
       <height>30</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
     </property>
     <property name="text">
      <string>Time</string>
     </property>
    </widget>
-   <widget class="QLabel" name="TimeLeftlabel">
+   <widget class="QLabel" name="EndTimelabel">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>210</x>
       <y>860</y>
       <width>93</width>
       <height>30</height>
@@ -896,7 +943,7 @@ Midterm Exam </string>
      </font>
     </property>
     <property name="text">
-     <string>Time Left:</string>
+     <string>End Time:</string>
     </property>
    </widget>
   </widget>

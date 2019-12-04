@@ -197,7 +197,10 @@ class App(QtWidgets.QWidget):
 		self.examWindow = QtWidgets.QMainWindow()
 		self.exam_gui = Ui_ExamQuestions()
 
+		#Set the times for the exam
+		self.allowed_time = 50
 		self.start_time = datetime.datetime.today()
+		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=self.allowed_time)
 
 		#Connect button methods from Exam main window code
 		self.examWindow.logout_button_clicked = self.logout_button_clicked
@@ -223,6 +226,7 @@ class App(QtWidgets.QWidget):
 
 		#set the text etc
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
+		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
@@ -234,6 +238,7 @@ class App(QtWidgets.QWidget):
 		#Show window
 		self.populate_boxes(self.question_number)
 		self.screen_location(self.examWindow)
+		self.setup_progress_bar()
 		self.examWindow.show()
 		self.examLogin.hide()
 
@@ -256,6 +261,17 @@ class App(QtWidgets.QWidget):
 					self.exam_AnswerC.append(line['AnswerC'])
 					self.exam_AnswerD.append(line['AnswerD'])
 					self.exam_Rightanswer.append(line['Rightanswer'])
+
+	def setup_progress_bar(self):
+		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
+		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
+		self.time_left = self.allowed_time
+
+		while self.time_left > 0:
+			#self.exam_gui.TimeLeftProgressBar.setValue(self.time_left)
+			self.time_left = int((self.end_time - datetime.datetime.today()).total_seconds() / 60) + 1
+			print(self.time_left)
+			QtWidgets.QApplication.processEvents()
 
 	def logout_button_clicked(self):
 		self.msgbox = QMessageBox()
