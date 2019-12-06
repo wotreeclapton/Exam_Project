@@ -1,14 +1,19 @@
 '''
- App developed by Mr Steven J walden
+EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
+    Nov. 2019
+    SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
+[See license at end of file]
+
 '''
 
 import os
+import datetime, time
+
 from os import path
 from contextlib import contextmanager
+from PyQt5 import QtCore
 
 APPNAME = 'Exam App V1.0'
-
-
 
 
 #set up app folders
@@ -26,20 +31,66 @@ def change_dir(destination): #change directory function
 	finally:
 		os.chdir(cwd)
 
-'''
-t1 - datetime.time(hours = 1, minute= 1) #set a time to calc
-print(time.asctime()) print current time
+class ScrollThread(QtCore.QThread):
+	time_value = QtCore.pyqtSignal(int)
+	"""docstring for ScrollThread"""
+	def __init__(self, parent, alloted_time):
+		super(ScrollThread, self).__init__(parent)
+		self.allowed_time = alloted_time
+		self.is_running = True
 
-def countdown():
-    timer_time = 20
-    now = int(time.time())
-    end_time = now + timer_time
-    while time.time() <= end_time:
-        left_time = end_time - int(time.time())
-        #left_time = end_time - time.time()
-        print(left_time)
-        #print(time.strftime("%M %S",left_time))
-'''
+	def run(self):
+		while self.allowed_time >= 0 and self.is_running == True:
+			self.allowed_time -= 1
+			time.sleep(0.1)
+			self.time_value.emit(self.allowed_time)
+
+			if self.allowed_time < 0:
+				self.is_running = False
+
+
+class TimeThread(QtCore.QThread):
+	time_value = QtCore.pyqtSignal(int)
+	"""docstring for TimeThread"""
+	def __init__(self, parent, alloted_time):
+		super(TimeThread, self).__init__(parent)
+		self.allowed_time = int(alloted_time / 600)
+		self.is_running = True
+
+	def run(self):
+		while self.allowed_time >= 0 and self.is_running == True:
+			self.allowed_time -= 1
+			time.sleep(60.0)
+			self.time_value.emit(self.allowed_time)
+
+			if self.allowed_time < 0:
+				self.is_running = False
+
+
+
+# Copyright (c) 2019 Steven Walden
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
+
 
 #SPRITESHEET = "Exam_App_image_sheet.png"
 

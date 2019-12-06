@@ -14,7 +14,7 @@ __version__ = '1.0'
 import os
 import sys
 import csv
-import datetime
+import datetime, time
 
 from Student_Login_Gui import Ui_ExamLogin
 from Exam_main_window import Ui_ExamQuestions
@@ -45,7 +45,7 @@ class App(QtWidgets.QWidget):
 		self.class_list = ['Choose your class','M1/1','M2/1','M3/1']
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
-		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer = [],[],[],[],[],[]
+		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
 		self.question_list1 = {1:['In Python what is a list?', 'A block of code.', 'A variable.', 'A list of strings or variables.', 'A shopping list.', 'C'],2:['What does turtle.speed(10) do?','Closes the turtle.','Opens the turtle.','Sets the turtle speed.','Changes the turtle colour.','C'],3:['Python is what type of programming language?','SQL.','Visual Basic.','Script.','Machine.','C']}
 
 		self.score = 0
@@ -198,10 +198,10 @@ class App(QtWidgets.QWidget):
 		self.exam_gui = Ui_ExamQuestions()
 
 		#Set the times for the exam
-		self.allowed_time = 50
+		self.allowed_time = 20 * 600
 		self.start_time = datetime.datetime.today()
-		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=self.allowed_time)
-
+		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
+		
 		#Connect button methods from Exam main window code
 		self.examWindow.logout_button_clicked = self.logout_button_clicked
 		self.examWindow.exam_refresh_button_clicked = self.exam_refresh_button_clicked
@@ -235,12 +235,18 @@ class App(QtWidgets.QWidget):
 			self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(self.student_number) + '.png')))
 		self.exam_gui.tabWidget.setCurrentIndex(0)
 
+		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
+		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
+		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
+		self.exam_gui.MInLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
+
 		#Show window
 		self.populate_boxes(self.question_number)
 		self.screen_location(self.examWindow)
-		self.setup_progress_bar()
+		
 		self.examWindow.show()
 		self.examLogin.hide()
+		self.counters()
 
 	def read_exam_questions_csv(self):
 		self.exam_questions.clear()
@@ -249,6 +255,7 @@ class App(QtWidgets.QWidget):
 		self.exam_AnswerC.clear()
 		self.exam_AnswerD.clear()
 		self.exam_Rightanswer.clear()
+		self.exam_photoquestion.clear()
 
 		with change_dir('resources'):
 			with open('Exam_Questions.csv','r') as csv_file:
@@ -261,17 +268,24 @@ class App(QtWidgets.QWidget):
 					self.exam_AnswerC.append(line['AnswerC'])
 					self.exam_AnswerD.append(line['AnswerD'])
 					self.exam_Rightanswer.append(line['Rightanswer'])
+					self.exam_photoquestion.append(line['Photoquestion'])
 
-	def setup_progress_bar(self):
-		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
-		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
-		self.time_left = self.allowed_time
+	def counters(self):
+		self.scroll_thread = ScrollThread(parent=None, alloted_time=self.allowed_time)
+		self.scroll_thread.start()
+		self.scroll_thread.time_value.connect(self.set_progress_bar)
 
-		while self.time_left > 0:
-			#self.exam_gui.TimeLeftProgressBar.setValue(self.time_left)
-			self.time_left = int((self.end_time - datetime.datetime.today()).total_seconds() / 60) + 1
-			print(self.time_left)
-			QtWidgets.QApplication.processEvents()
+		self.time_thread = TimeThread(parent=None, alloted_time=self.allowed_time)
+		self.time_thread.start()
+		self.time_thread.time_value.connect(self.set_time_label)
+
+	def set_progress_bar(self, left_time):
+		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
+		if left_time <= 0:
+			print("Your time has finished!")
+
+	def set_time_label(self, left_time):
+		self.exam_gui.MInLeftLabel.setText(str(left_time) + " Min Left")
 
 	def logout_button_clicked(self):
 		self.msgbox = QMessageBox()
@@ -321,6 +335,10 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.AnswerTextB.setText(self.exam_AnswerB[quest])
 		self.exam_gui.AnswerTextC.setText(self.exam_AnswerC[quest])
 		self.exam_gui.AnswerTextD.setText(self.exam_AnswerD[quest])
+		with change_dir('resources'):
+			self.exam_gui.VideoLabel.setPixmap(QtGui.QPixmap(self.exam_photoquestion[quest] + ".jpg"))
+
+
 
 	def check_answer(self, btn):
 		self.answer = self.exam_gui.AnswerButtonGroup.checkedId()
