@@ -210,7 +210,7 @@ Midterm Exam </string>
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../06Icons_and_Logos/ep_program_logo_user_acc_zrP_icon.ico</normaloff>../06Icons_and_Logos/ep_program_logo_user_acc_zrP_icon.ico</iconset>
+       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
      </property>
      <property name="shortcut">
       <string>Left</string>
@@ -845,7 +845,7 @@ Midterm Exam </string>
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap>../06Icons_and_Logos/Left_Arrow.png</pixmap>
+      <pixmap>img/Left_Arrow.png</pixmap>
      </property>
     </widget>
    </widget>
@@ -947,24 +947,16 @@ Midterm Exam </string>
      <string>MIn Left</string>
     </property>
    </widget>
-   <widget class="QLabel" name="VideoLabel">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>630</x>
-      <y>116</y>
-      <width>560</width>
-      <height>314</height>
+      <y>120</y>
+      <width>551</width>
+      <height>311</height>
      </rect>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

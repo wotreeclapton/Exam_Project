@@ -21,9 +21,11 @@ from Exam_main_window import Ui_ExamQuestions
 from settings import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDesktopWidget, QMessageBox #, QApplication, QMainWindow
+from PyQt5.QtWidgets import QDesktopWidget, QMessageBox, QWidget #, QApplication, QMainWindow
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
+from PyQt5.QtMultimediaWidgets import QVideoWidget
 
 
 # QT_VER = Qt.__binding__
@@ -201,7 +203,7 @@ class App(QtWidgets.QWidget):
 		self.allowed_time = 20 * 600
 		self.start_time = datetime.datetime.today()
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
-		
+
 		#Connect button methods from Exam main window code
 		self.examWindow.logout_button_clicked = self.logout_button_clicked
 		self.examWindow.exam_refresh_button_clicked = self.exam_refresh_button_clicked
@@ -209,6 +211,14 @@ class App(QtWidgets.QWidget):
 		self.examWindow.back_button_clicked = self.back_button_clicked
 
 		self.exam_gui.setupUi(self.examWindow)
+
+		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+		self.videoWidget = QVideoWidget()
+
+		self.exam_gui.verticalLayout.addWidget(self.videoWidget)
+		# self.examWindow.setLayout(self.exam_gui.verticalLayout)
+
+		self.mediaPlayer.setVideoOutput(self.videoWidget)
 
 		#hide back button in student mode
 		if not self.admin:
@@ -243,7 +253,7 @@ class App(QtWidgets.QWidget):
 		#Show window
 		self.populate_boxes(self.question_number)
 		self.screen_location(self.examWindow)
-		
+
 		self.examWindow.show()
 		self.examLogin.hide()
 		self.counters()
@@ -335,10 +345,14 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.AnswerTextB.setText(self.exam_AnswerB[quest])
 		self.exam_gui.AnswerTextC.setText(self.exam_AnswerC[quest])
 		self.exam_gui.AnswerTextD.setText(self.exam_AnswerD[quest])
-		with change_dir('resources'):
-			self.exam_gui.VideoLabel.setPixmap(QtGui.QPixmap(self.exam_photoquestion[quest] + ".jpg"))
-
-
+		#Set video media
+		fileName = "img/" + self.exam_photoquestion[quest]
+		try:
+			if self.exam_photoquestion[quest] != 'None':
+				self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
+				self.mediaPlayer.play()
+		except Exception:
+			pass
 
 	def check_answer(self, btn):
 		self.answer = self.exam_gui.AnswerButtonGroup.checkedId()
