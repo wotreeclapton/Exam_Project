@@ -18,7 +18,7 @@ import datetime, time
 
 from Student_Login_Gui import Ui_ExamLogin
 from Exam_main_window import Ui_ExamQuestions
-from settings import *
+from metho import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget, QMessageBox, QWidget #, QApplication, QMainWindow
@@ -48,7 +48,7 @@ class App(QtWidgets.QWidget):
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
 		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
-		self.question_list1 = {1:['In Python what is a list?', 'A block of code.', 'A variable.', 'A list of strings or variables.', 'A shopping list.', 'C'],2:['What does turtle.speed(10) do?','Closes the turtle.','Opens the turtle.','Sets the turtle speed.','Changes the turtle colour.','C'],3:['Python is what type of programming language?','SQL.','Visual Basic.','Script.','Machine.','C']}
+		# self.question_list1 = {1:['In Python what is a list?', 'A block of code.', 'A variable.', 'A list of strings or variables.', 'A shopping list.', 'C'],2:['What does turtle.speed(10) do?','Closes the turtle.','Opens the turtle.','Sets the turtle speed.','Changes the turtle colour.','C'],3:['Python is what type of programming language?','SQL.','Visual Basic.','Script.','Machine.','C']}
 
 		self.score = 0
 		self.answer = 0
@@ -212,13 +212,13 @@ class App(QtWidgets.QWidget):
 
 		self.exam_gui.setupUi(self.examWindow)
 
+		#Create and add the video widget
 		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 		self.videoWidget = QVideoWidget()
-
 		self.exam_gui.verticalLayout.addWidget(self.videoWidget)
-		# self.examWindow.setLayout(self.exam_gui.verticalLayout)
-
 		self.mediaPlayer.setVideoOutput(self.videoWidget)
+
+		self.mediaPlayer.stateChanged.connect(self.repeat_video)
 
 		#hide back button in student mode
 		if not self.admin:
@@ -249,6 +249,10 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
 		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
 		self.exam_gui.MInLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
+
+		#Create list of answerlabels and answer texts
+		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
+		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Show window
 		self.populate_boxes(self.question_number)
@@ -335,24 +339,35 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.tabWidget.setCurrentIndex(0)
 		self.populate_boxes(self.question_number)
 
-	def populate_boxes(self,quest):
+	def populate_boxes(self,quest):	
 		#Set text on exam questions and answers from list/csv
 		self.answer = 0
-
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
 		self.exam_gui.Questions.setText(self.exam_questions[quest])
-		self.exam_gui.AnswerTextA.setText(self.exam_AnswerA[quest])
-		self.exam_gui.AnswerTextB.setText(self.exam_AnswerB[quest])
-		self.exam_gui.AnswerTextC.setText(self.exam_AnswerC[quest])
-		self.exam_gui.AnswerTextD.setText(self.exam_AnswerD[quest])
+		#Loop through label & answer lists and populate the labels with the answers
+		num = 0
+		for answer_label in self.answer_label_list:
+			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
+				with change_dir('img'):
+					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
+					answer_label.setScaledContents(True)
+			else:
+				answer_label.setText(self.exam_answers_list[num][quest])
+			num+=1
+
 		#Set video media
 		fileName = "img/" + self.exam_photoquestion[quest]
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
 				self.mediaPlayer.play()
+
 		except Exception:
 			pass
+
+	def repeat_video(self, video_state):
+		if video_state == 0:
+			self.mediaPlayer.play()
 
 	def check_answer(self, btn):
 		self.answer = self.exam_gui.AnswerButtonGroup.checkedId()

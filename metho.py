@@ -67,7 +67,6 @@ class TimeThread(QtCore.QThread):
 				self.is_running = False
 
 
-
 # Copyright (c) 2019 Steven Walden
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
