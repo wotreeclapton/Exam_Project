@@ -45,7 +45,7 @@ class ScrollThread(QtCore.QThread):
 			time.sleep(0.1)
 			self.time_value.emit(self.allowed_time)
 
-			if self.allowed_time < 0:
+			if self.allowed_time <= 0:
 				self.is_running = False
 
 

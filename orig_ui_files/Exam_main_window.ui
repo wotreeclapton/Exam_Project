@@ -154,68 +154,6 @@ Midterm Exam </string>
       <string>Nickname</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="ForwardButton">
-     <property name="geometry">
-      <rect>
-       <x>920</x>
-       <y>50</y>
-       <width>130</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <italic>true</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="statusTip">
-      <string>Click to go to the next question.</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>Next</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
-     </property>
-     <property name="shortcut">
-      <string>Right, Return</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="BackButton">
-     <property name="geometry">
-      <rect>
-       <x>780</x>
-       <y>50</y>
-       <width>130</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-       <weight>75</weight>
-       <italic>true</italic>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Back     </string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
-     </property>
-     <property name="shortcut">
-      <string>Left</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="QuestionNumber">
      <property name="geometry">
       <rect>
@@ -846,6 +784,68 @@ Midterm Exam </string>
      </property>
      <property name="pixmap">
       <pixmap>img/Left_Arrow.png</pixmap>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="BackButton">
+     <property name="geometry">
+      <rect>
+       <x>903</x>
+       <y>7</y>
+       <width>130</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Back     </string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
+     </property>
+     <property name="shortcut">
+      <string>Left</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="ForwardButton">
+     <property name="geometry">
+      <rect>
+       <x>1041</x>
+       <y>7</y>
+       <width>130</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <italic>true</italic>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="statusTip">
+      <string>Click to go to the next question.</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>img/Ep logo60x60.png</normaloff>img/Ep logo60x60.png</iconset>
+     </property>
+     <property name="shortcut">
+      <string>Right, Return</string>
      </property>
     </widget>
    </widget>

@@ -315,20 +315,13 @@ class App(QtWidgets.QWidget):
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		else:
-			self.msgbox.setText('Caution!\n You will loose your score.')
+			self.msgbox.setText('Caution! \n You will loose your score.')
 			self.msgbox.setIcon(QMessageBox.Warning)
 			self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
 
-		choice = self.msgbox.exec_()
-
-		if choice == QMessageBox.Ok:
+		if self.msgbox.exec() == QMessageBox.Ok:
 			self.examWindow.close()
 			self.open_login_window()
-
-		if choice == QMessageBox.Cancel:
-			pass
-			# self.msgbox.close()
-
 
 	def exam_refresh_button_clicked(self):
 		pass
