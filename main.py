@@ -50,7 +50,7 @@ class App(QtWidgets.QWidget):
 		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
 		# self.question_list1 = {1:['In Python what is a list?', 'A block of code.', 'A variable.', 'A list of strings or variables.', 'A shopping list.', 'C'],2:['What does turtle.speed(10) do?','Closes the turtle.','Opens the turtle.','Sets the turtle speed.','Changes the turtle colour.','C'],3:['Python is what type of programming language?','SQL.','Visual Basic.','Script.','Machine.','C']}
 
-		self.score = 0
+		self.correct_answers = 0
 		self.answer = 0
 		self.question_number = 1
 		self.admin = False
@@ -200,7 +200,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui = Ui_ExamQuestions()
 
 		#Set the times for the exam
-		self.allowed_time = 20 * 600
+		self.allowed_time = 1 * 600
 		self.start_time = datetime.datetime.today()
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
@@ -296,34 +296,45 @@ class App(QtWidgets.QWidget):
 	def set_progress_bar(self, left_time):
 		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
 		if left_time <= 0:
-			print("Your time has finished!")
+			self.message_boxes(msg='Your time has finished!', msg_type=1)
 
 	def set_time_label(self, left_time):
 		self.exam_gui.MInLeftLabel.setText(str(left_time) + " Min Left")
 
 	def logout_button_clicked(self):
+		self.message_boxes(msg='Logout?', msg_type=0)
+
+	def message_boxes(self, msg, msg_type):
 		self.msgbox = QMessageBox()
 		self.msgbox.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
-		self.msgbox.setWindowTitle('Save your work')
-		self.msgbox.setText('Do you want to save your progress?')
-		self.msgbox.setIcon(QMessageBox.Question)
-		self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.No)
+		self.msgbox.setWindowTitle(msg)
+		self.msgbox.setDefaultButton(QMessageBox.Ok)
+
+		if msg_type == 1:
+			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)))
+			self.msgbox.setIcon(QMessageBox.Information)
+			self.msgbox.setStandardButtons(QMessageBox.Ok)
+		else:
+			self.msgbox.setText('Caution!\n You will loose your score.')
+			self.msgbox.setIcon(QMessageBox.Warning)
+			self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
 
 		choice = self.msgbox.exec_()
 
 		if choice == QMessageBox.Ok:
-			pass
-		if choice == QMessageBox.No:
-			pass
+			self.examWindow.close()
+			self.open_login_window()
 
-		self.examWindow.close()
-		self.open_login_window()
+		if choice == QMessageBox.Cancel:
+			pass
+			# self.msgbox.close()
+
 
 	def exam_refresh_button_clicked(self):
 		pass
 
 	def forward_button_clicked(self):
-		if self.answer > 0:
+		if self.answered > 0:
 			self.question_number += 1
 			if self.question_number >= (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
@@ -339,9 +350,9 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.tabWidget.setCurrentIndex(0)
 		self.populate_boxes(self.question_number)
 
-	def populate_boxes(self,quest):	
+	def populate_boxes(self,quest):
 		#Set text on exam questions and answers from list/csv
-		self.answer = 0
+		self.answered = 0
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
 		self.exam_gui.Questions.setText(self.exam_questions[quest])
 		#Loop through label & answer lists and populate the labels with the answers
@@ -370,9 +381,9 @@ class App(QtWidgets.QWidget):
 			self.mediaPlayer.play()
 
 	def check_answer(self, btn):
-		self.answer = self.exam_gui.AnswerButtonGroup.checkedId()
-		if self.answer == self.convert(self.exam_Rightanswer[self.question_number]):
-			self.score += 1
+		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
+		if self.answered == self.convert(self.exam_Rightanswer[self.question_number]):
+			self.correct_answers += 1
 
 
 	def convert(self, val):
