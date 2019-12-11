@@ -18,7 +18,7 @@ import datetime, time
 
 from Student_Login_Gui import Ui_ExamLogin
 from Exam_main_window import Ui_ExamQuestions
-from metho import *
+from methods import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget, QMessageBox, QWidget #, QApplication, QMainWindow
@@ -41,7 +41,6 @@ class App(QtWidgets.QWidget):
 
 		self.load_data()
 		self.open_login_window()
-
 
 	def load_data(self):
 		self.class_list = ['Choose your class','M1/1','M2/1','M3/1']
@@ -296,7 +295,7 @@ class App(QtWidgets.QWidget):
 	def set_progress_bar(self, left_time):
 		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
 		if left_time <= 0:
-			self.message_boxes(msg='Your time has finished!', msg_type=1)
+			self.message_boxes(msg='Time finished!', msg_type=1)
 
 	def set_time_label(self, left_time):
 		self.exam_gui.MInLeftLabel.setText(str(left_time) + " Min Left")

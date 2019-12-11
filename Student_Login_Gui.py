@@ -31,25 +31,31 @@ class Ui_ExamLogin(object):
         font.setWeight(75)
         self.ClassLabel.setFont(font)
         self.ClassLabel.setObjectName("ClassLabel")
+
         self.StudentNameCmb = QtWidgets.QComboBox(self.centralwidget)
         self.StudentNameCmb.setGeometry(QtCore.QRect(10, 140, 391, 22))
         self.StudentNameCmb.setObjectName("StudentNameCmb")
+
         self.EnterNameLabel = QtWidgets.QLabel(self.centralwidget)
         self.EnterNameLabel.setGeometry(QtCore.QRect(10, 114, 211, 16))
         self.EnterNameLabel.setObjectName("EnterNameLabel")
+
         self.InputPassword = QtWidgets.QLineEdit(self.centralwidget)
         self.InputPassword.setGeometry(QtCore.QRect(10, 200, 221, 20))
         self.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
         self.InputPassword.setObjectName("InputPassword")
+
         self.InputPaswordLabel = QtWidgets.QLabel(self.centralwidget)
         self.InputPaswordLabel.setGeometry(QtCore.QRect(10, 172, 131, 16))
         self.InputPaswordLabel.setObjectName("InputPaswordLabel")
+
         self.buttonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
         self.buttonBox.setGeometry(QtCore.QRect(418, 216, 156, 23))
         self.buttonBox.setToolTip("")
         self.buttonBox.setStatusTip("")
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
+
         self.Logolabel = QtWidgets.QLabel(self.centralwidget)
         self.Logolabel.setEnabled(True)
         self.Logolabel.setGeometry(QtCore.QRect(320, 20, 75, 97))
@@ -58,6 +64,7 @@ class Ui_ExamLogin(object):
         self.Logolabel.setText("")
         self.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
         self.Logolabel.setObjectName("Logolabel")
+
         self.PasswordShowButton = QtWidgets.QPushButton(self.centralwidget)
         self.PasswordShowButton.setGeometry(QtCore.QRect(210, 201, 20, 18))
         self.PasswordShowButton.setFocusPolicy(QtCore.Qt.NoFocus)
@@ -81,18 +88,21 @@ class Ui_ExamLogin(object):
         self.ClassCmb.setGeometry(QtCore.QRect(10, 80, 151, 22))
         self.ClassCmb.setCurrentText("")
         self.ClassCmb.setObjectName("ClassCmb")
+
         self.StudentNumberLabel = QtWidgets.QLabel(self.centralwidget)
         self.StudentNumberLabel.setGeometry(QtCore.QRect(250, 170, 50, 18))
         font = QtGui.QFont()
         font.setItalic(True)
         self.StudentNumberLabel.setFont(font)
         self.StudentNumberLabel.setObjectName("StudentNumberLabel")
+
         self.StudentNicknameLabel = QtWidgets.QLabel(self.centralwidget)
         self.StudentNicknameLabel.setGeometry(QtCore.QRect(250, 200, 50, 18))
         font = QtGui.QFont()
         font.setItalic(True)
         self.StudentNicknameLabel.setFont(font)
         self.StudentNicknameLabel.setObjectName("StudentNicknameLabel")
+        
         self.StudentNumber = QtWidgets.QLabel(self.centralwidget)
         self.StudentNumber.setGeometry(QtCore.QRect(308, 170, 94, 18))
         font = QtGui.QFont()
