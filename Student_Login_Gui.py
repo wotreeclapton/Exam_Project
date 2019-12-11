@@ -77,6 +77,7 @@ class Ui_ExamLogin(object):
         self.PasswordShowButton.setAutoRepeat(True)
         self.PasswordShowButton.setAutoRepeatDelay(200)
         self.PasswordShowButton.setObjectName("PasswordShowButton")
+
         self.StudentPhoto = QtWidgets.QLabel(self.centralwidget)
         self.StudentPhoto.setGeometry(QtCore.QRect(414, 10, 160, 192))
         self.StudentPhoto.setFrameShape(QtWidgets.QFrame.Panel)
@@ -84,6 +85,7 @@ class Ui_ExamLogin(object):
         self.StudentPhoto.setText("")
         self.StudentPhoto.setPixmap(QtGui.QPixmap("img/blank_girl.png"))
         self.StudentPhoto.setObjectName("StudentPhoto")
+
         self.ClassCmb = QtWidgets.QComboBox(self.centralwidget)
         self.ClassCmb.setGeometry(QtCore.QRect(10, 80, 151, 22))
         self.ClassCmb.setCurrentText("")
@@ -111,6 +113,7 @@ class Ui_ExamLogin(object):
         self.StudentNumber.setFont(font)
         self.StudentNumber.setText("")
         self.StudentNumber.setObjectName("StudentNumber")
+
         self.StudentNickname = QtWidgets.QLabel(self.centralwidget)
         self.StudentNickname.setGeometry(QtCore.QRect(308, 200, 94, 18))
         font = QtGui.QFont()
@@ -118,6 +121,7 @@ class Ui_ExamLogin(object):
         font.setWeight(75)
         self.StudentNickname.setFont(font)
         self.StudentNickname.setObjectName("StudentNickname")
+        
         ExamLogin.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(ExamLogin)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 588, 21))

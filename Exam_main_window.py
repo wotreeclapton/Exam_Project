@@ -21,6 +21,7 @@ class Ui_ExamQuestions(object):
         ExamQuestions.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(ExamQuestions)
         self.centralwidget.setObjectName("centralwidget")
+        
         self.RefreshButton = QtWidgets.QPushButton(self.centralwidget)
         self.RefreshButton.setGeometry(QtCore.QRect(1080, 860, 110, 30))
         font = QtGui.QFont()
@@ -30,6 +31,7 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.RefreshButton.setFont(font)
         self.RefreshButton.setObjectName("RefreshButton")
+
         self.LogoutButton = QtWidgets.QPushButton(self.centralwidget)
         self.LogoutButton.setGeometry(QtCore.QRect(960, 860, 110, 30))
         font = QtGui.QFont()
