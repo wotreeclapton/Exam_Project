@@ -12,6 +12,8 @@ import datetime, time
 from os import path
 from contextlib import contextmanager
 from PyQt5 import QtCore
+from PyQt5.QtGui import QPalette, QColor
+#from PyQt5.QtCore import Qt
 
 APPNAME = 'Exam App V1.0'
 
@@ -30,6 +32,30 @@ def change_dir(destination): #change directory function
 		yield
 	finally:
 		os.chdir(cwd)
+
+def dark_theme(app):
+	#app = app1
+	app.setStyle("Fusion")
+
+	dark_palette = QPalette()
+
+	dark_palette.setColor(QPalette.Window,QColor(53,53,53))
+	dark_palette.setColor(QPalette.WindowText, QtCore.Qt.white)
+	dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
+	dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+	dark_palette.setColor(QPalette.ToolTipBase, QtCore.Qt.white)
+	dark_palette.setColor(QPalette.ToolTipText, QtCore.Qt.white)
+	dark_palette.setColor(QPalette.Text, QtCore.Qt.white)
+	dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+	dark_palette.setColor(QPalette.ButtonText, QtCore.Qt.white)
+	dark_palette.setColor(QPalette.BrightText, QtCore.Qt.red)
+	dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+	dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+	dark_palette.setColor(QPalette.HighlightedText, QtCore.Qt.black)
+
+	app.setPalette(dark_palette)
+
+	app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
 
 class ScrollThread(QtCore.QThread):
 	time_value = QtCore.pyqtSignal(int)

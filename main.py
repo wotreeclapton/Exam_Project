@@ -22,7 +22,7 @@ from methods import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget, QMessageBox, QWidget #, QApplication, QMainWindow
-from PyQt5.QtGui import QPalette, QColor
+#from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
@@ -36,7 +36,8 @@ class App(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
 		#setup app windows and theme
-		self.dark_theme()
+		dark_theme(app)
+		#self.dark_theme()
 		self.load_data()
 		self.open_login_window()
 
@@ -51,29 +52,6 @@ class App(QtWidgets.QWidget):
 		self.answer = 0
 		self.question_number = 1
 		self.admin = False
-
-	def dark_theme(self):
-		app.setStyle("Fusion")
-
-		self.dark_palette = QPalette()
-
-		self.dark_palette.setColor(QPalette.Window,QColor(53,53,53))
-		self.dark_palette.setColor(QPalette.WindowText, Qt.white)
-		self.dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-		self.dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-		self.dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-		self.dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-		self.dark_palette.setColor(QPalette.Text, Qt.white)
-		self.dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-		self.dark_palette.setColor(QPalette.ButtonText, Qt.white)
-		self.dark_palette.setColor(QPalette.BrightText, Qt.red)
-		self.dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-		self.dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-		self.dark_palette.setColor(QPalette.HighlightedText, Qt.black)
-
-		app.setPalette(self.dark_palette)
-
-		app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
 
 	def screen_location(self, wn):
 		ag = QDesktopWidget().availableGeometry()
@@ -107,6 +85,7 @@ class App(QtWidgets.QWidget):
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
+		self.screen_location(self.login_gui)
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -115,8 +94,6 @@ class App(QtWidgets.QWidget):
 		self.login_gui.InputPassword.returnPressed.connect(self.login_okaybutton_clicked)
 		self.login_gui.ClassCmb.currentIndexChanged['int'].connect(self.class_name_changed)
 		self.login_gui.StudentNameCmb.currentIndexChanged['int'].connect(self.student_name_change)
-
-		self.screen_location(self.login_gui)
 
 		#populate the combo boxes
 		self.login_gui.ClassCmb.addItems(self.class_list)
