@@ -36,9 +36,7 @@ class App(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
 		#setup app windows and theme
-
 		self.dark_theme()
-
 		self.load_data()
 		self.open_login_window()
 
@@ -108,19 +106,17 @@ class App(QtWidgets.QWidget):
 					self.student_passwords.append(line['Passwords'])
 
 	def open_login_window(self):
-		self.examLogin = QtWidgets.QMainWindow()
 		self.login_gui = Ui_ExamLogin()
 
-		#Connect button methods from student login gui code
-		self.examLogin.login_okaybutton_clicked = self.login_okaybutton_clicked
-		self.examLogin.login_cancelbutton_clicked = self.login_cancelbutton_clicked
-		self.examLogin.password_show_button_clicked = self.password_show_button_clicked
-		self.examLogin.class_name_changed = self.class_name_changed
-		self.examLogin.student_name_change = self.student_name_change
+		#Connect the methods
+		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
+		self.login_gui.buttonBox.rejected.connect(self.login_cancelbutton_clicked)
+		self.login_gui.PasswordShowButton.clicked.connect(self.password_show_button_clicked)
+		self.login_gui.InputPassword.returnPressed.connect(self.login_okaybutton_clicked)
+		self.login_gui.ClassCmb.currentIndexChanged['int'].connect(self.class_name_changed)
+		self.login_gui.StudentNameCmb.currentIndexChanged['int'].connect(self.student_name_change)
 
-		self.login_gui.setupUi(self.examLogin)
-
-		self.screen_location(self.examLogin)
+		self.screen_location(self.login_gui)
 
 		#populate the combo boxes
 		self.login_gui.ClassCmb.addItems(self.class_list)
@@ -130,14 +126,14 @@ class App(QtWidgets.QWidget):
 		#start with the class combobox
 		self.login_gui.ClassCmb.setFocus()
 
-		self.examLogin.show()
+		self.login_gui.show()
 
 	def login_okaybutton_clicked(self):
 		try:
 			#open main window and pass vairables
 			self.password_input = self.login_gui.InputPassword.text()
 			if self.password_input == self.student_passwords[self.student_number]:
-				self.examLogin.close()
+				self.login_gui.close()
 				self.open_exam_window()
 			elif self.student_number == 0:
 				pass
@@ -258,7 +254,7 @@ class App(QtWidgets.QWidget):
 		self.screen_location(self.examWindow)
 
 		self.examWindow.show()
-		self.examLogin.hide()
+		#self.examLogin.hide()
 		self.counters()
 
 	def read_exam_questions_csv(self):
