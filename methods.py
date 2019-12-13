@@ -1,10 +1,14 @@
 '''
+Contains Methods classes for the Exam Application.
+
 EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
     Nov. 2019
     SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
 [See license at end of file]
 
 '''
+__author__ = 'Mr Steven J Walden'
+__version__ = '1.0'
 
 import os
 import datetime, time
@@ -13,16 +17,14 @@ from os import path
 from contextlib import contextmanager
 from PyQt5 import QtCore
 from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtWidgets import QDesktopWidget
 #from PyQt5.QtCore import Qt
 
-APPNAME = 'Exam App V1.0'
-
-
-#set up app folders
-APP_FOLDER = path.dirname(__file__)
-IMG_FOLDER = path.join(APP_FOLDER, 'img')
-SOUND_FOLDER = path.join(APP_FOLDER, 'snd')
-RESOURCES_FOLDER = path.join(APP_FOLDER, 'resources')
+# #set up app folders
+# APP_FOLDER = path.dirname(__file__)
+# IMG_FOLDER = path.join(APP_FOLDER, 'img')
+# SOUND_FOLDER = path.join(APP_FOLDER, 'snd')
+# RESOURCES_FOLDER = path.join(APP_FOLDER, 'resources')
 
 @contextmanager
 def change_dir(destination): #change directory function
@@ -34,7 +36,7 @@ def change_dir(destination): #change directory function
 		os.chdir(cwd)
 
 def dark_theme(app):
-	#app = app1
+	#Darl theme option for QMainwindow	
 	app.setStyle("Fusion")
 
 	dark_palette = QPalette()
@@ -57,9 +59,19 @@ def dark_theme(app):
 
 	app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
 
+def screen_location(wn):
+	#Ste screen location of a gui [wn = passed gui object]
+	ag = QDesktopWidget().availableGeometry()
+	sg = QDesktopWidget().screenGeometry()
+
+	widget = wn.geometry()
+	x = ag.width() / 2 - widget.width() / 2
+	y = ag.height() / 2 - widget.height() / 2
+	wn.move(x, y)
+
 class ScrollThread(QtCore.QThread):
 	time_value = QtCore.pyqtSignal(int)
-	"""docstring for ScrollThread"""
+	"""Seperate thread used to a countdown implemented in the main GUI"""
 	def __init__(self, parent, alloted_time):
 		super(ScrollThread, self).__init__(parent)
 		self.allowed_time = alloted_time
@@ -77,7 +89,7 @@ class ScrollThread(QtCore.QThread):
 
 class TimeThread(QtCore.QThread):
 	time_value = QtCore.pyqtSignal(int)
-	"""docstring for TimeThread"""
+	"""Seperate thread used to a countdown implemented in the main GUI"""
 	def __init__(self, parent, alloted_time):
 		super(TimeThread, self).__init__(parent)
 		self.allowed_time = int(alloted_time / 600)
@@ -93,7 +105,7 @@ class TimeThread(QtCore.QThread):
 				self.is_running = False
 
 
-# Copyright (c) 2019 Steven Walden
+# Copyright (c) 2019 Steven J Walden
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

@@ -8,8 +8,9 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 
 #!/usr/bin/env python
 
-__author__ = 'Steven Walden'
+__author__ = 'Mr Steven J Walden'
 __version__ = '1.0'
+
 
 import os
 import sys
@@ -21,15 +22,13 @@ from Exam_main_window import Ui_ExamQuestions
 from methods import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDesktopWidget, QMessageBox, QWidget #, QApplication, QMainWindow
+from PyQt5.QtWidgets import QMessageBox, QWidget #, QApplication, QMainWindow, QDesktopWidget
 #from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 
-
-# QT_VER = Qt.__binding__
-# PY_VER = sys.version[:3]
+PY_VER = sys.version[:3]
 
 class App(QtWidgets.QWidget):
 	"""docstring for App"""
@@ -53,20 +52,10 @@ class App(QtWidgets.QWidget):
 		self.question_number = 1
 		self.admin = False
 
-	def screen_location(self, wn):
-		ag = QDesktopWidget().availableGeometry()
-		sg = QDesktopWidget().screenGeometry()
-
-		self.widget = wn.geometry()
-		x = ag.width() / 2 - self.widget.width() / 2
-		y = ag.height() / 2 - self.widget.height() / 2
-		wn.move(x, y)
-
 	def read_csv(self, clas):
-		'''[summary] -- [Function to get student details information from a .CSV file]
-
-		[description] -- [Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.]
-
+		'''
+		Function to get student details information from a .CSV file
+		Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.
 		Arguments:
 			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
 		'''
@@ -85,7 +74,7 @@ class App(QtWidgets.QWidget):
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
-		self.screen_location(self.login_gui)
+		screen_location(self.login_gui)
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -163,7 +152,6 @@ class App(QtWidgets.QWidget):
 				self.login_gui.StudentNickname.setText('')
 
 	def login_cancelbutton_clicked(self):
-		#exit the app
 		app.exit()
 
 	def open_exam_window(self):
@@ -228,7 +216,7 @@ class App(QtWidgets.QWidget):
 
 		#Show window
 		self.populate_boxes(self.question_number)
-		self.screen_location(self.examWindow)
+		screen_location(self.examWindow)
 
 		self.examWindow.show()
 		#self.examLogin.hide()
@@ -362,8 +350,10 @@ class App(QtWidgets.QWidget):
 print(sys.executable)
 
 if __name__ == '__main__':
-    # print (PY_VER)
-    # print (QT_VER)
+    print("Qt version:", QT_VERSION_STR)
+    print("Author:", __author__)
+    print("App version:",__version__)
+
     app = QtWidgets.QApplication(sys.argv)
     main_app = App()
 
