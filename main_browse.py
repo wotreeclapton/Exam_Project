@@ -28,7 +28,7 @@ class App(QtWidgets.QWidget):
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
 		#setup app windows and theme
-		
+
 		self.dark_theme()
 		self.load_data()
 
