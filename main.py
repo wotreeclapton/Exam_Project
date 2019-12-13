@@ -9,7 +9,7 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 #!/usr/bin/env python
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.0'
+__version__ = '1.0 Beta'
 
 
 import os

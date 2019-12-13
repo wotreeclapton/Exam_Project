@@ -41,6 +41,7 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.LogoutButton.setFont(font)
         self.LogoutButton.setObjectName("LogoutButton")
+
         self.TopWidget = QtWidgets.QWidget(self.centralwidget)
         self.TopWidget.setGeometry(QtCore.QRect(100, 8, 1090, 103))
         self.TopWidget.setObjectName("TopWidget")
@@ -138,6 +139,7 @@ class Ui_ExamQuestions(object):
         self.Questions.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.Questions.setWordWrap(True)
         self.Questions.setObjectName("Questions")
+
         self.TimeLeftProgressBar = QtWidgets.QProgressBar(self.centralwidget)
         self.TimeLeftProgressBar.setGeometry(QtCore.QRect(390, 864, 451, 23))
         font = QtGui.QFont()
@@ -149,6 +151,7 @@ class Ui_ExamQuestions(object):
         self.TimeLeftProgressBar.setProperty("value", 46)
         self.TimeLeftProgressBar.setTextVisible(False)
         self.TimeLeftProgressBar.setObjectName("TimeLeftProgressBar")
+
         self.StartTime = QtWidgets.QLabel(self.centralwidget)
         self.StartTime.setGeometry(QtCore.QRect(110, 860, 90, 30))
         font = QtGui.QFont()
@@ -157,6 +160,7 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.StartTime.setFont(font)
         self.StartTime.setObjectName("StartTime")
+
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(10, 440, 1177, 351))
         self.tabWidget.setMaximumSize(QtCore.QSize(1177, 351))
@@ -224,18 +228,22 @@ class Ui_ExamQuestions(object):
         self.AnswerTextD.setWordWrap(True)
         self.AnswerTextD.setObjectName("AnswerTextD")
         self.tabWidget.addTab(self.AnswerDTab, "")
+
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(10, 800, 1180, 40))
         self.frame.setFrameShape(QtWidgets.QFrame.Panel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
+
         self.AnswerACheckBox = QtWidgets.QCheckBox(self.frame)
         self.AnswerACheckBox.setGeometry(QtCore.QRect(30, 10, 20, 17))
         self.AnswerACheckBox.setText("")
         self.AnswerACheckBox.setObjectName("AnswerACheckBox")
+
         self.AnswerButtonGroup = QtWidgets.QButtonGroup(ExamQuestions)
         self.AnswerButtonGroup.setObjectName("AnswerButtonGroup")
         self.AnswerButtonGroup.addButton(self.AnswerACheckBox)
+
         self.Alabel = QtWidgets.QLabel(self.frame)
         self.Alabel.setGeometry(QtCore.QRect(4, 4, 26, 26))
         font = QtGui.QFont()
@@ -246,6 +254,7 @@ class Ui_ExamQuestions(object):
         self.Alabel.setFont(font)
         self.Alabel.setAlignment(QtCore.Qt.AlignCenter)
         self.Alabel.setObjectName("Alabel")
+
         self.AnswerBCheckBox = QtWidgets.QCheckBox(self.frame)
         self.AnswerBCheckBox.setGeometry(QtCore.QRect(80, 10, 20, 17))
         self.AnswerBCheckBox.setText("")
@@ -297,6 +306,7 @@ class Ui_ExamQuestions(object):
         self.FalsecheckBox.setText("")
         self.FalsecheckBox.setObjectName("FalsecheckBox")
         self.AnswerButtonGroup.addButton(self.FalsecheckBox)
+
         self.MsgLabel = QtWidgets.QLabel(self.frame)
         self.MsgLabel.setGeometry(QtCore.QRect(340, 4, 1000, 32))
         font = QtGui.QFont()
@@ -306,11 +316,13 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.MsgLabel.setFont(font)
         self.MsgLabel.setObjectName("MsgLabel")
+
         self.ArrowLabel = QtWidgets.QLabel(self.frame)
         self.ArrowLabel.setGeometry(QtCore.QRect(256, 5, 60, 30))
         self.ArrowLabel.setText("")
         self.ArrowLabel.setPixmap(QtGui.QPixmap("img/Left_Arrow.png"))
         self.ArrowLabel.setObjectName("ArrowLabel")
+
         self.BackButton = QtWidgets.QPushButton(self.frame)
         self.BackButton.setGeometry(QtCore.QRect(903, 7, 130, 26))
         font = QtGui.QFont()
@@ -323,6 +335,7 @@ class Ui_ExamQuestions(object):
         icon1.addPixmap(QtGui.QPixmap("img/Ep logo60x60.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.BackButton.setIcon(icon1)
         self.BackButton.setObjectName("BackButton")
+
         self.ForwardButton = QtWidgets.QPushButton(self.frame)
         self.ForwardButton.setGeometry(QtCore.QRect(1041, 7, 130, 26))
         font = QtGui.QFont()
@@ -334,6 +347,7 @@ class Ui_ExamQuestions(object):
         self.ForwardButton.setLayoutDirection(QtCore.Qt.RightToLeft)
         self.ForwardButton.setIcon(icon1)
         self.ForwardButton.setObjectName("ForwardButton")
+
         self.StartTimelabel = QtWidgets.QLabel(self.centralwidget)
         self.StartTimelabel.setGeometry(QtCore.QRect(10, 860, 93, 30))
         font = QtGui.QFont()
@@ -343,11 +357,13 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.StartTimelabel.setFont(font)
         self.StartTimelabel.setObjectName("StartTimelabel")
+
         self.SchoolLabel = QtWidgets.QLabel(self.centralwidget)
         self.SchoolLabel.setGeometry(QtCore.QRect(10, 10, 75, 97))
         self.SchoolLabel.setText("")
         self.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
         self.SchoolLabel.setObjectName("SchoolLabel")
+
         self.EndTime = QtWidgets.QLabel(self.centralwidget)
         self.EndTime.setGeometry(QtCore.QRect(310, 860, 71, 30))
         font = QtGui.QFont()
@@ -356,6 +372,7 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.EndTime.setFont(font)
         self.EndTime.setObjectName("EndTime")
+
         self.EndTimelabel = QtWidgets.QLabel(self.centralwidget)
         self.EndTimelabel.setGeometry(QtCore.QRect(210, 860, 93, 30))
         font = QtGui.QFont()
@@ -365,6 +382,7 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.EndTimelabel.setFont(font)
         self.EndTimelabel.setObjectName("EndTimelabel")
+
         self.MInLeftLabel = QtWidgets.QLabel(self.centralwidget)
         self.MInLeftLabel.setGeometry(QtCore.QRect(850, 860, 101, 30))
         font = QtGui.QFont()
@@ -373,17 +391,20 @@ class Ui_ExamQuestions(object):
         font.setWeight(75)
         self.MInLeftLabel.setFont(font)
         self.MInLeftLabel.setObjectName("MInLeftLabel")
+
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(630, 120, 551, 311))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
+
         ExamQuestions.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(ExamQuestions)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1200, 21))
         self.menubar.setObjectName("menubar")
         ExamQuestions.setMenuBar(self.menubar)
+        
         self.statusbar = QtWidgets.QStatusBar(ExamQuestions)
         self.statusbar.setObjectName("statusbar")
         ExamQuestions.setStatusBar(self.statusbar)
