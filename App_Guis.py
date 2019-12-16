@@ -1,14 +1,132 @@
 '''
-Exam main window Gui developed by Mr Steven J Walden
+Exam app Guis developed by Mr Steven J Walden
     Dec. 2019
     SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
 [See license at end of file]
 '''
 
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimediaWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore, QtMultimediaWidgets
 from PyQt5.QtMultimedia import QMediaPlayer
-#from PyQt5.QtWidgets import QWidget
+
+class Ui_ExamLogin(QtWidgets.QMainWindow):
+	"""docstrbing for MyApp"""
+	def __init__(self, parent=None):
+		super(Ui_ExamLogin, self).__init__(parent)
+		self.initUI()
+
+	def initUI(self):
+		#Set up GUI
+		self.resize(588, 270)
+		self.setMinimumSize(588, 270)
+		self.setMaximumSize(588, 270)
+		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
+		self.setWindowTitle("Login")
+
+		self.statusbar = QtWidgets.QStatusBar(self)
+		self.statusbar.setSizeGripEnabled(False)
+		self.setStatusBar(self.statusbar)
+
+		self.add_labels()
+		self.add_textboxes()
+		self.add_buttons()
+		self.add_comboboxes()
+		self.tool_status_tips()
+		self.tab_order()
+
+	def add_labels(self):
+		#Add Label for displaying the class name
+		self.ClassLabel = QtWidgets.QLabel("Class", self)
+		self.ClassLabel.setGeometry(10, 10, 300, 60)
+		font = QtGui.QFont()
+		font.setPointSize(30)
+		font.setBold(True)
+		font.setItalic(True)
+		#font.setWeight(75)
+		self.ClassLabel.setFont(font)
+		self.ClassLabel.setText("Class")
+		#Add label for student name combobox
+		self.EnterNameLabel = QtWidgets.QLabel("Choose your name from the list below", self)
+		self.EnterNameLabel.setGeometry(10, 114, 211, 16)
+		#Label for password box
+		self.InputPaswordLabel = QtWidgets.QLabel("Password", self)
+		self.InputPaswordLabel.setGeometry(10, 172, 131, 16)
+		#Display school logo
+		self.Logolabel = QtWidgets.QLabel(self)
+		self.Logolabel.setGeometry(320, 20, 75, 97)
+		self.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+		#Label for student number box
+		font = QtGui.QFont()
+		font.setItalic(True)
+		self.StudentNumberLabel = QtWidgets.QLabel("Number:",self)
+		self.StudentNumberLabel.setGeometry(250, 170, 50, 18)
+		self.StudentNumberLabel.setFont(font)
+		#Label for student nickname box
+		self.StudentNicknameLabel = QtWidgets.QLabel("Nickname:", self)
+		self.StudentNicknameLabel.setGeometry(250, 200, 50, 18)
+		self.StudentNicknameLabel.setFont(font)
+		#Student number display box
+		font = QtGui.QFont()
+		font.setBold(True)
+		#font.setWeight(75)
+		self.StudentNumber = QtWidgets.QLabel(self)
+		self.StudentNumber.setGeometry(308, 170, 94, 18)
+		self.StudentNumber.setFont(font)
+		#Student nickname display box
+		self.StudentNickname = QtWidgets.QLabel(self)
+		self.StudentNickname.setGeometry(308, 200, 94, 18)
+		self.StudentNickname.setFont(font)
+		#Student photo image display
+		self.StudentPhoto = QtWidgets.QLabel(self)
+		self.StudentPhoto.setGeometry(414, 10, 160, 192)
+		self.StudentPhoto.setFrameShape(QtWidgets.QFrame.Panel)
+		self.StudentPhoto.setFrameShadow(QtWidgets.QFrame.Sunken)
+		self.StudentPhoto.setPixmap(QtGui.QPixmap("img/blank_girl.png"))
+
+	def add_textboxes(self):
+		#Textbox input for password
+		self.InputPassword = QtWidgets.QLineEdit(self)
+		self.InputPassword.setGeometry(10, 200, 221, 20)
+		self.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
+
+	def add_buttons(self):
+		#Button box setup for OKay and cancel buttons
+		self.buttonBox = QtWidgets.QDialogButtonBox(self)
+		self.buttonBox.setGeometry(418, 216, 156, 23)
+		self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+		#Button for showing the password temporarily
+		self.PasswordShowButton = QtWidgets.QPushButton(self)
+		self.PasswordShowButton.setGeometry(210, 201, 20, 18)
+		self.PasswordShowButton.setFocusPolicy(QtCore.Qt.NoFocus)
+		self.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20.png"))
+		self.PasswordShowButton.setIconSize(QtCore.QSize(20, 18))
+		self.PasswordShowButton.setCheckable(False)
+		self.PasswordShowButton.setAutoRepeat(True)
+		self.PasswordShowButton.setAutoRepeatDelay(200)
+
+	def add_comboboxes(self):
+		#Combobox setup to choose the class
+		self.ClassCmb = QtWidgets.QComboBox(self)
+		self.ClassCmb.setGeometry(10, 80, 151, 22)
+		#Combox set to choose the student
+		self.StudentNameCmb = QtWidgets.QComboBox(self)
+		self.StudentNameCmb.setGeometry(10, 140, 391, 22)
+
+	def tool_status_tips(self):
+		#Setup any tool and status bar tips
+		self.StudentNameCmb.setToolTip("Click arrow to choose your name!")
+		self.ClassCmb.setToolTip("Choose your class!")
+		self.InputPassword.setToolTip("Password goes here!")
+
+		self.StudentNameCmb.setStatusTip("Choose a name")
+		self.InputPassword.setStatusTip("Input your password")
+		self.ClassCmb.setStatusTip("Choose your class first")
+
+	def tab_order(self):
+		self.setTabOrder(self.ClassCmb, self.StudentNameCmb)
+		self.setTabOrder(self.StudentNameCmb, self.InputPassword)
+		self.setTabOrder(self.InputPassword, self.PasswordShowButton)
+
 
 class Ui_ExamQuestions(QtWidgets.QMainWindow):
 	"""docstrbing for MyApp"""
@@ -67,12 +185,12 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
 		self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
-		self.verticalLayout.addWidget(self.videoWidget)
 		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 		self.mediaPlayer.setVideoOutput(self.videoWidget)
+		self.verticalLayout.addWidget(self.videoWidget)
 
 		self.frame = QtWidgets.QFrame(self)
-		self.frame.setGeometry(10, 800, 1180, 40)
+		self.frame.setGeometry(10, 800, 1174, 46)
 		self.frame.setFrameShape(QtWidgets.QFrame.Panel)
 		self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
 
@@ -89,7 +207,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.StudentPhotoLabel.setScaledContents(True)
 
 		self.ArrowLabel = QtWidgets.QLabel(self.frame)
-		self.ArrowLabel.setGeometry(256, 5, 60, 30)
+		self.ArrowLabel.setGeometry(256, 8, 60, 30)
 		self.ArrowLabel.setPixmap(QtGui.QPixmap("img/Left_Arrow.png"))
 
 		font = QtGui.QFont()
@@ -99,29 +217,28 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.ExamTitle.setGeometry(10, 10, 201, 71)
 		self.ExamTitle.setFont(font)
 		self.ExamTitle.setAlignment(QtCore.Qt.AlignTop)
-		self.ExamTitle.setText("C21202\n""Midterm Exam ")
-
+		
 		font.setPointSize(15)
 		self.Alabel = QtWidgets.QLabel(self.frame)
-		self.Alabel.setGeometry(4, 4, 26, 26)
+		self.Alabel.setGeometry(4, 9, 26, 26)
 		self.Alabel.setFont(font)
 		self.Alabel.setAlignment(QtCore.Qt.AlignCenter)
 		self.Alabel.setText("A")
 
 		self.Blabel = QtWidgets.QLabel(self.frame)
-		self.Blabel.setGeometry(54, 4, 26, 26)
+		self.Blabel.setGeometry(54, 9, 26, 26)
 		self.Blabel.setFont(font)
 		self.Blabel.setAlignment(QtCore.Qt.AlignCenter)
 		self.Blabel.setText("B")
 
 		self.Clabel = QtWidgets.QLabel(self.frame)
-		self.Clabel.setGeometry(104, 4, 26, 26)
+		self.Clabel.setGeometry(104, 9, 26, 26)
 		self.Clabel.setFont(font)
 		self.Clabel.setAlignment(QtCore.Qt.AlignCenter)
 		self.Clabel.setText("C")
 
 		self.Dlabel = QtWidgets.QLabel(self.frame)
-		self.Dlabel.setGeometry(154, 4, 26, 26)
+		self.Dlabel.setGeometry(154, 9, 26, 26)
 		self.Dlabel.setFont(font)
 		self.Dlabel.setAlignment(QtCore.Qt.AlignCenter)
 		self.Dlabel.setText("D")
@@ -138,14 +255,14 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.EndTime.setText("Time")
 
 		self.MinLeftLabel = QtWidgets.QLabel(self)
-		self.MinLeftLabel.setGeometry(850, 860, 101, 30)
+		self.MinLeftLabel.setGeometry(980, 860, 101, 30)
 		self.MinLeftLabel.setFont(font)
 		self.MinLeftLabel.setText("Mins Left")
 
 		font.setPointSize(16)
 		font.setItalic(True)
 		self.MsgLabel = QtWidgets.QLabel(self.frame)
-		self.MsgLabel.setGeometry(340, 4, 1000, 32)
+		self.MsgLabel.setGeometry(340, 7, 1000, 32)
 		self.MsgLabel.setFont(font)
 		self.MsgLabel.setText("Please choose an answer")
 
@@ -240,20 +357,25 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 
 	def add_checkboxes(self):
  		self.AnswerACheckBox = QtWidgets.QCheckBox(self.frame)
- 		self.AnswerACheckBox.setGeometry(30, 10, 20, 17)
+ 		self.AnswerACheckBox.setGeometry(30, 14, 20, 20)
  		self.AnswerButtonGroup.addButton(self.AnswerACheckBox)
 
  		self.AnswerBCheckBox = QtWidgets.QCheckBox(self.frame)
- 		self.AnswerBCheckBox.setGeometry(80, 10, 20, 17)
+ 		self.AnswerBCheckBox.setGeometry(80, 14, 20, 20)
  		self.AnswerButtonGroup.addButton(self.AnswerBCheckBox)
 
  		self.AnswerCCheckBox = QtWidgets.QCheckBox(self.frame)
- 		self.AnswerCCheckBox.setGeometry(130, 10, 20, 17)
+ 		self.AnswerCCheckBox.setGeometry(130, 14, 20, 20)
  		self.AnswerButtonGroup.addButton(self.AnswerCCheckBox)
 
  		self.AnswerDCheckBox = QtWidgets.QCheckBox(self.frame)
- 		self.AnswerDCheckBox.setGeometry(180, 10, 20, 17)
+ 		self.AnswerDCheckBox.setGeometry(180, 14, 20, 20)
  		self.AnswerButtonGroup.addButton(self.AnswerDCheckBox)
+
+ 		self.FalsecheckBox = QtWidgets.QCheckBox(self.frame)
+ 		self.FalsecheckBox.setGeometry(210, 10, 70, 17)
+ 		self.FalsecheckBox.setFocusPolicy(QtCore.Qt.NoFocus)
+ 		self.AnswerButtonGroup.addButton(self.FalsecheckBox)
 
 	def add_buttons(self):
 		bfont = QtGui.QFont()
@@ -261,32 +383,40 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		bfont.setBold(True)
 		bfont.setItalic(True)
 		self.BackButton = QtWidgets.QPushButton(self.frame)
-		self.BackButton.setGeometry(903, 6, 130, 26)
+		self.BackButton.setGeometry(898, 6, 130, 32)
 		self.BackButton.setFont(bfont)
-		self.BackButton.setText("         Back")
-		self.BackButton.setIcon(QtGui.QIcon("img/Ep logo60x60.png"))
+		self.BackButton.setText("       Back")
+		self.BackButton.setIcon(QtGui.QIcon("img/back_button.png"))
+		self.BackButton.setIconSize(QtCore.QSize(32,32))
 
 		self.ForwardButton = QtWidgets.QPushButton(self.frame)
-		self.ForwardButton.setGeometry(1041, 6, 130, 26)
+		self.ForwardButton.setGeometry(1036, 6, 130, 32)
 		self.ForwardButton.setFont(bfont)
 		self.ForwardButton.setLayoutDirection(QtCore.Qt.RightToLeft)
-		self.ForwardButton.setText(" Next         ")
-		self.ForwardButton.setIcon(QtGui.QIcon("img/Ep logo60x60.png"))
+		self.ForwardButton.setText("         Next")
+		self.ForwardButton.setIcon(QtGui.QIcon("img/forward_button.png"))
+		self.ForwardButton.setIconSize(QtCore.QSize(32,32))
 
 		self.LogoutButton = QtWidgets.QPushButton(self)
-		self.LogoutButton.setGeometry(960, 860, 110, 30)
+		self.LogoutButton.setGeometry(1074, 860, 110, 30)
 		self.LogoutButton.setFont(bfont)
 		self.LogoutButton.setText("Log Out")
 
 	def add_scrollbars(self):
 		self.TimeLeftProgressBar = QtWidgets.QProgressBar(self)
-		self.TimeLeftProgressBar.setGeometry(390, 864, 451, 23)
+		self.TimeLeftProgressBar.setGeometry(390, 864, 580, 23)
+		self.TimeLeftProgressBar.setTextVisible(False)
 		#self.TimeLeftProgressBar.setMaximum(50)
 		#self.TimeLeftProgressBar.setProperty("value", 46)
 
 	def tool_status_tips(self):
 		self.LogoutButton.setStatusTip("Click to Log out user.")
 		self.TimeLeftProgressBar.setStatusTip("Your time left")
+		self.StartTime.setStatusTip("Time exam started")
+		self.StartTimelabel.setStatusTip("Time exam started")
+		self.MinLeftLabel.setStatusTip("How many minuets you have left")
+		self.EndTime.setStatusTip("Exam finish time")
+		self.EndTimelabel.setStatusTip("Exam finish time")
 		self.tabWidget.setStatusTip("Click to view possible answers.")
 		self.AnswerACheckBox.setStatusTip("Click to choose Answer A.")
 		self.AnswerBCheckBox.setStatusTip("Click to choose Answer B.")
@@ -311,16 +441,15 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.AnswerCCheckBox.setShortcut("C")
 		self.AnswerDCheckBox.setShortcut("D")
 		self.BackButton.setShortcut("Left")
-		self.ForwardButton.setShortcut("Right, Return")
+		self.ForwardButton.setShortcut("Return")
 
+# if __name__ == '__main__':
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	main_app = Ui_ExamLogin()
+# 	main_app.show()
 
-if __name__ == '__main__':
-	app = QtWidgets.QApplication(sys.argv)
-	main_app = Ui_ExamQuestions()
-	main_app.show()
+# sys.exit(app.exec_())
 
-
-sys.exit(app.exec_())
 
 # Copyright (c) 2019 Steven Walden
 #

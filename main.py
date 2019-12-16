@@ -9,7 +9,7 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 #!/usr/bin/env python
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.0 Beta'
+__version__ = '1.0.0'
 
 
 import os
@@ -17,8 +17,7 @@ import sys
 import csv
 import datetime, time
 
-from Student_Login_Gui import Ui_ExamLogin
-from Exam_main_window import Ui_ExamQuestions
+from App_Guis import Ui_ExamLogin, Ui_ExamQuestions
 from methods import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -45,11 +44,10 @@ class App(QtWidgets.QWidget):
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
 		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
-		# self.question_list1 = {1:['In Python what is a list?', 'A block of code.', 'A variable.', 'A list of strings or variables.', 'A shopping list.', 'C'],2:['What does turtle.speed(10) do?','Closes the turtle.','Opens the turtle.','Sets the turtle speed.','Changes the turtle colour.','C'],3:['Python is what type of programming language?','SQL.','Visual Basic.','Script.','Machine.','C']}
 
 		self.correct_answers = 0
 		self.answer = 0
-		self.question_number = 1
+		
 		self.admin = False
 
 	def read_csv(self, clas):
@@ -156,45 +154,36 @@ class App(QtWidgets.QWidget):
 
 	def open_exam_window(self):
 		#Initialise exam window
-		self.examWindow = QtWidgets.QMainWindow()
 		self.exam_gui = Ui_ExamQuestions()
+		screen_location(self.exam_gui)
+		self.question_number = 1
 
 		#Set the times for the exam
-		self.allowed_time = 1 * 600
+		self.allowed_time = 20 * 600
 		self.start_time = datetime.datetime.today()
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
-
-		#Connect button methods from Exam main window code
-		self.examWindow.logout_button_clicked = self.logout_button_clicked
-		self.examWindow.exam_refresh_button_clicked = self.exam_refresh_button_clicked
-		self.examWindow.forward_button_clicked = self.forward_button_clicked
-		self.examWindow.back_button_clicked = self.back_button_clicked
-
-		self.exam_gui.setupUi(self.examWindow)
-
-		#Create and add the video widget
-		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-		self.videoWidget = QVideoWidget()
-		self.exam_gui.verticalLayout.addWidget(self.videoWidget)
-		self.mediaPlayer.setVideoOutput(self.videoWidget)
-
-		self.mediaPlayer.stateChanged.connect(self.repeat_video)
 
 		#hide back button in student mode
 		if not self.admin:
 			self.exam_gui.BackButton.hide()
 
-		#connect any button group
+		#connect butoons to methods
+		self.exam_gui.LogoutButton.clicked.connect(self.logout_button_clicked)
+		self.exam_gui.BackButton.clicked.connect(self.back_button_clicked)
+		self.exam_gui.ForwardButton.clicked.connect(self.forward_button_clicked)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerACheckBox,1)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerBCheckBox,2)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerCCheckBox,3)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerDCheckBox,4)
 		self.exam_gui.FalsecheckBox.hide()
 		self.exam_gui.AnswerButtonGroup.buttonClicked[QtWidgets.QAbstractButton].connect(self.check_answer)
+		self.exam_gui.mediaPlayer.stateChanged.connect(self.repeat_video)
 
 		self.read_exam_questions_csv()
 
 		#set the text etc
+		self.exam_gui.setWindowTitle(self.exam_questions[0] + " " + self.exam_AnswerA[0] + " Questions")
+		self.exam_gui.ExamTitle.setText(self.exam_questions[0]+ "\n" + self.exam_AnswerA[0])
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
@@ -203,23 +192,22 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
 		with change_dir('img'):
 			self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(self.student_number) + '.png')))
-		self.exam_gui.tabWidget.setCurrentIndex(0)
+		#self.exam_gui.tabWidget.setCurrentIndex(0)
 
 		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
 		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
 		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
-		self.exam_gui.MInLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
-
+		self.exam_gui.MinLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
+		
 		#Create list of answerlabels and answer texts
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Show window
 		self.populate_boxes(self.question_number)
-		screen_location(self.examWindow)
-
-		self.examWindow.show()
-		#self.examLogin.hide()
+		
+		self.exam_gui.show()
+		self.login_gui.hide()
 		self.counters()
 
 	def read_exam_questions_csv(self):
@@ -259,7 +247,7 @@ class App(QtWidgets.QWidget):
 			self.message_boxes(msg='Time finished!', msg_type=1)
 
 	def set_time_label(self, left_time):
-		self.exam_gui.MInLeftLabel.setText(str(left_time) + " Min Left")
+		self.exam_gui.MinLeftLabel.setText(str(left_time) + " Min Left")
 
 	def logout_button_clicked(self):
 		self.message_boxes(msg='Logout?', msg_type=0)
@@ -274,23 +262,29 @@ class App(QtWidgets.QWidget):
 			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)))
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
+			self.save_results()
 		else:
 			self.msgbox.setText('Caution! \n You will loose your score.')
 			self.msgbox.setIcon(QMessageBox.Warning)
 			self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
 
 		if self.msgbox.exec() == QMessageBox.Ok:
-			self.examWindow.close()
+			self.allowed_time = 20 * 600
+			self.question_number = 1
+			self.scroll_thread.is_running = False
+			self.time_thread.is_running = False
+			self.exam_gui.close()
 			self.open_login_window()
 
-	def exam_refresh_button_clicked(self):
+	def save_results(self):
 		pass
 
 	def forward_button_clicked(self):
 		if self.answered > 0:
 			self.question_number += 1
-			if self.question_number >= (len(self.exam_questions) -1):
+			if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
+				self.message_boxes(msg='Exam finished!', msg_type=1)
 			self.exam_gui.tabWidget.setCurrentIndex(0)
 			self.exam_gui.FalsecheckBox.setChecked(True)
 
@@ -323,21 +317,20 @@ class App(QtWidgets.QWidget):
 		fileName = "img/" + self.exam_photoquestion[quest]
 		try:
 			if self.exam_photoquestion[quest] != 'None':
-				self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
-				self.mediaPlayer.play()
-
-		except Exception:
+				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
+				self.exam_gui.mediaPlayer.play()
+				
+		except Exception as e:
 			pass
 
 	def repeat_video(self, video_state):
 		if video_state == 0:
-			self.mediaPlayer.play()
+			self.exam_gui.mediaPlayer.play()
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
 		if self.answered == self.convert(self.exam_Rightanswer[self.question_number]):
 			self.correct_answers += 1
-
 
 	def convert(self, val):
 		return self.string_convert[val]
