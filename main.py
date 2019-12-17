@@ -8,7 +8,7 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 
 import os
