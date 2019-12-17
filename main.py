@@ -1,3 +1,4 @@
+#! python 3
 '''
 EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
     Nov. 2019
@@ -5,8 +6,6 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 [See license at end of file]
 
 '''
-
-#!/usr/bin/env python
 
 __author__ = 'Mr Steven J Walden'
 __version__ = '1.0.0'
@@ -26,6 +25,8 @@ from PyQt5.QtWidgets import QMessageBox, QWidget #, QApplication, QMainWindow, Q
 from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+from openpyxl import load_workbook, Workbook
+from openpyxl.styles import Font
 
 PY_VER = sys.version[:3]
 
@@ -277,7 +278,35 @@ class App(QtWidgets.QWidget):
 			self.open_login_window()
 
 	def save_results(self):
-		pass
+		self.time_finished = datetime.datetime.today()
+		#Store score in a list
+		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
+		#Check for exsisting excel file
+		self.results_filename = self.exam_questions[0] + " " + self.exam_AnswerA[0] + ' results.xlsx'
+		with change_dir('resources'):
+			try:
+				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
+				self.write_to_result_wb()
+			except FileNotFoundError:
+				self.results_wb = Workbook() #create the workbook then write to workbook method and save
+				self.write_to_result_wb()
+
+	def write_to_result_wb(self):
+		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
+		#Write list contents to file
+		self.work_sheet = self.results_wb.active
+		self.work_sheet.title = self.exam_questions[0]
+		#self.work_sheet.column_dimensions['B'].width = 30 #Check width from length of string
+		#writes the header and the results to the worksheet
+		for col in range(len(self.result_list)): 
+			self.header_cell = self.work_sheet.cell(row=1, column=col+1, value=self.header_list[col])
+			self.header_cell.font = Font(size=12, bold=True, italic=True)
+
+			self.work_sheet.cell(row=self.student_number+1, column=col+1, value=self.result_list[col])
+			
+		self.results_wb.save(filename = self.results_filename)
+		#clear list
+		self.result_list.clear()
 
 	def forward_button_clicked(self):
 		if self.answered > 0:
@@ -298,6 +327,7 @@ class App(QtWidgets.QWidget):
 		self.populate_boxes(self.question_number)
 
 	def populate_boxes(self,quest):
+		self.exam_gui.mediaPlayer.stop()
 		#Set text on exam questions and answers from list/csv
 		self.answered = 0
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
@@ -314,7 +344,7 @@ class App(QtWidgets.QWidget):
 			num+=1
 
 		#Set video media
-		fileName = "img/" + self.exam_photoquestion[quest]
+		fileName = "img/" + str(self.exam_photoquestion[quest])
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
@@ -324,7 +354,8 @@ class App(QtWidgets.QWidget):
 			pass
 
 	def repeat_video(self, video_state):
-		if video_state == 0:
+
+		if video_state == 0 and self.exam_photoquestion[self.question_number] != 'None':
 			self.exam_gui.mediaPlayer.play()
 
 	def check_answer(self, btn):
@@ -334,10 +365,6 @@ class App(QtWidgets.QWidget):
 
 	def convert(self, val):
 		return self.string_convert[val]
-
-	def write_score(self):
-		pass
-
 
 
 print(sys.executable)

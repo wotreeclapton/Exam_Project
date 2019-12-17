@@ -1,3 +1,4 @@
+#! python3
 '''
 EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
     Nov. 2019
@@ -6,10 +7,8 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 temp change
 '''
 
-#!/usr/bin/env python
-
-__author__ = 'Steven Walden'
-__version__ = '1.0'
+__author__ = 'Mr Steven J Walden'
+__version__ = '1.0.0'
 
 import sys
 import csv
@@ -21,7 +20,9 @@ from Create_CSV import Ui_CreateCSVWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QT_VERSION_STR
+
+PY_VER = sys.version[:3]
 
 class App(QtWidgets.QWidget):
 	"""docstring for App"""
@@ -160,8 +161,9 @@ class App(QtWidgets.QWidget):
 print(sys.executable)
 
 if __name__ == '__main__':
-    # print (PY_VER)
-    # print (QT_VER)
+    print("Qt version:", QT_VERSION_STR)
+    print("Author:", __author__)
+    print("App version:",__version__)
     app = QtWidgets.QApplication(sys.argv)
     main_app = App()
 
