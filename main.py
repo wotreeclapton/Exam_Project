@@ -6,6 +6,10 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 [See license at end of file]
 
 '''
+'''
+Raise error report on file not saving to the netwok location
+smallest screen is 1280x1024
+'''
 
 __author__ = 'Mr Steven J Walden'
 __version__ = '1.0.1'
@@ -20,7 +24,7 @@ from App_Guis import Ui_ExamLogin, Ui_ExamQuestions
 from methods import *
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget #, QApplication, QMainWindow, QDesktopWidget
+from PyQt5.QtWidgets import QMessageBox, QWidget,QDesktopWidget #, QApplication, QMainWindow, 
 #from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
@@ -34,9 +38,9 @@ class App(QtWidgets.QWidget):
 	"""docstring for App"""
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
+		self.screen_size = QDesktopWidget().availableGeometry()
 		#setup app windows and theme
 		dark_theme(app)
-		#self.dark_theme()
 		self.load_data()
 		self.open_login_window()
 
@@ -73,7 +77,7 @@ class App(QtWidgets.QWidget):
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
-		screen_location(self.login_gui)
+		screen_location(self.login_gui, False, self.screen_size)
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -155,8 +159,8 @@ class App(QtWidgets.QWidget):
 
 	def open_exam_window(self):
 		#Initialise exam window
-		self.exam_gui = Ui_ExamQuestions()
-		screen_location(self.exam_gui)
+		self.exam_gui = Ui_ExamQuestions(self.screen_size)
+		screen_location(self.exam_gui, True, self.screen_size)
 		self.question_number = 1
 
 		#Set the times for the exam
@@ -283,7 +287,7 @@ class App(QtWidgets.QWidget):
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
 		self.results_filename = self.exam_questions[0] + " " + self.exam_AnswerA[0] + ' results.xlsx'
-		with change_dir('resources'):
+		with change_dir('resources'): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()

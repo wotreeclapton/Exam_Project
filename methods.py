@@ -17,7 +17,6 @@ from os import path
 from contextlib import contextmanager
 from PyQt5 import QtCore
 from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtWidgets import QDesktopWidget
 #from PyQt5.QtCore import Qt
 
 # #set up app folders
@@ -29,9 +28,14 @@ from PyQt5.QtWidgets import QDesktopWidget
 @contextmanager
 def change_dir(destination): #change directory function
 	try:
-		cwd = os.getcwd()
-		os.chdir(destination)
-		yield
+		try:
+			cwd = os.getcwd()
+			os.chdir(destination)
+			yield
+		except FileNotFoundError: #On location not exsisting save to App folder resources
+			cwd = os.getcwd()
+			os.chdir('resources')
+			yield		
 	finally:
 		os.chdir(cwd)
 
@@ -59,15 +63,18 @@ def dark_theme(app):
 
 	app.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }")
 
-def screen_location(wn):
-	#Ste screen location of a gui [wn = passed gui object]
-	ag = QDesktopWidget().availableGeometry()
-	sg = QDesktopWidget().screenGeometry()
+def screen_location(wn, win_type, avail_geom):
+	#Set the screen location of a gui [wn = passed gui object, avail_geom = available screen size]
+	#ag = QDesktopWidget().availableGeometry()
+	#sg = QDesktopWidget().screenGeometry()
 
 	widget = wn.geometry()
-	x = ag.width() / 2 - widget.width() / 2
-	y = ag.height() / 2 - widget.height() / 2
-	wn.move(x, y)
+	x = avail_geom.width() / 2 - widget.width() / 2
+	y = avail_geom.height() / 2 - widget.height() / 2
+	if win_type: #Check if the gui in the main one
+		wn.move(x,0)
+	else:
+		wn.move(x, y)
 
 class ScrollThread(QtCore.QThread):
 	time_value = QtCore.pyqtSignal(int)
