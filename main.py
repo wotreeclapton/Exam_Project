@@ -8,11 +8,12 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 '''
 '''
 Raise error report on file not saving to the netwok location
+Save results to diffent class tabs
 smallest screen is 1280x1024
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.0.1'
+__version__ = '1.1.1'
 
 
 import os
@@ -264,7 +265,7 @@ class App(QtWidgets.QWidget):
 		self.msgbox.setDefaultButton(QMessageBox.Ok)
 
 		if msg_type == 1:
-			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)))
+			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)-1))
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 			self.save_results()
