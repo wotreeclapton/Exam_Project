@@ -35,12 +35,12 @@ def change_dir(destination): #change directory function
 		except FileNotFoundError: #On location not exsisting save to App folder resources
 			cwd = os.getcwd()
 			os.chdir('resources')
-			yield		
+			yield
 	finally:
 		os.chdir(cwd)
 
 def dark_theme(app):
-	#Darl theme option for QMainwindow	
+	#Darl theme option for QMainwindow
 	app.setStyle("Fusion")
 
 	dark_palette = QPalette()

@@ -10,6 +10,8 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 Raise error report on file not saving to the netwok location
 Save results to diffent class tabs
 smallest screen is 1280x1024
+for logging use  exc_info=1 in error string to print exception info
+or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
@@ -18,6 +20,7 @@ __version__ = '1.1.1'
 
 import os
 import sys
+import logging
 import csv
 import datetime, time
 
@@ -39,6 +42,15 @@ class App(QtWidgets.QWidget):
 	"""docstring for App"""
 	def __init__(self, parent=None):
 		super(App, self).__init__(parent)
+		#setup logger
+		self.logger = logging.getLogger(__name__)
+		self.logger.setLevel(logging.DEBUG)
+		self.formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+		self.file_handler = logging.FileHandler('Error_Log')
+		#self.file_handler.setLevel(logging.ERROR)
+		self.file_handler.setFormatter(self.formatter)
+		self.logger.addHandler(self.file_handler)
+
 		self.screen_size = QDesktopWidget().availableGeometry()
 		#setup app windows and theme
 		dark_theme(app)
@@ -53,7 +65,7 @@ class App(QtWidgets.QWidget):
 
 		self.correct_answers = 0
 		self.answer = 0
-		
+
 		self.admin = False
 
 	def read_csv(self, clas):
@@ -68,7 +80,8 @@ class App(QtWidgets.QWidget):
 		self.student_passwords.clear()
 
 		with change_dir('resources'):
-			with open('Student_Details_CSV_M' + str(clas) + '-1.csv','r') as csv_file:
+			#with open('Student_Details_CSV_M' + str(clas) + '-1.csv','r') as csv_file:
+			with open('Student_Details_CSV_M{}-1.csv'.format(str(clas)),'r') as csv_file:
 				csv_reader = csv.DictReader(csv_file)
 
 				for line in csv_reader:
@@ -144,7 +157,8 @@ class App(QtWidgets.QWidget):
 			if st > 0:
 				self.path_test = path.join('M' + str(self.year_chosen) + '-1', str(st) + '.png')
 				if path.exists(self.path_test):
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(st) + '.png')))
+					#self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(st) + '.png')))
+					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('M{}-1{}.png'.format(str(self.year_chosen), str(st)))))
 				else:
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('blank_girl.png')))
 
@@ -188,7 +202,8 @@ class App(QtWidgets.QWidget):
 		self.read_exam_questions_csv()
 
 		#set the text etc
-		self.exam_gui.setWindowTitle(self.exam_questions[0] + " " + self.exam_AnswerA[0] + " Questions")
+		#self.exam_gui.setWindowTitle(self.exam_questions[0] + " " + self.exam_AnswerA[0] + " Questions")
+		self.exam_gui.setWindowTitle("{} {} Questions".format(self.exam_questions[0], self.exam_AnswerA[0]))
 		self.exam_gui.ExamTitle.setText(self.exam_questions[0]+ "\n" + self.exam_AnswerA[0])
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
@@ -197,21 +212,22 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
 		with change_dir('img'):
-			self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(self.student_number) + '.png')))
+			#self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(self.student_number) + '.png')))
+			self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M{}-1'.format(str(self.year_chosen)), str(self.student_number) + '.png')))
 		#self.exam_gui.tabWidget.setCurrentIndex(0)
 
 		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
 		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
 		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
 		self.exam_gui.MinLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
-		
+
 		#Create list of answerlabels and answer texts
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Show window
 		self.populate_boxes(self.question_number)
-		
+
 		self.exam_gui.show()
 		self.login_gui.hide()
 		self.counters()
@@ -226,7 +242,9 @@ class App(QtWidgets.QWidget):
 		self.exam_photoquestion.clear()
 
 		with change_dir('resources'):
-			with open('Exam_Questions.csv','r') as csv_file:
+			#open the correct csv file for each exam self/class name
+			#with open(self.class_name[:2] + '_Exam_Questions.csv','r') as csv_file:
+			with open('{}_Exam_Questions.csv'.format(self.class_name[:2]),'r') as csv_file:
 				csv_reader = csv.DictReader(csv_file)
 
 				for line in csv_reader:
@@ -266,6 +284,7 @@ class App(QtWidgets.QWidget):
 
 		if msg_type == 1:
 			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)-1))
+			self.msgbox.setText('Your score is {}/{}'.format(str(self.correct_answers), str(len(self.exam_questions)-1)))
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 			self.save_results()
@@ -287,7 +306,7 @@ class App(QtWidgets.QWidget):
 		#Store score in a list
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
-		self.results_filename = self.exam_questions[0] + " " + self.exam_AnswerA[0] + ' results.xlsx'
+		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
 		with change_dir('resources'): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
@@ -295,6 +314,7 @@ class App(QtWidgets.QWidget):
 			except FileNotFoundError:
 				self.results_wb = Workbook() #create the workbook then write to workbook method and save
 				self.write_to_result_wb()
+				self.logger.error(" Created: {}".format(self.results_filename))
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
@@ -303,12 +323,12 @@ class App(QtWidgets.QWidget):
 		self.work_sheet.title = self.exam_questions[0]
 		#self.work_sheet.column_dimensions['B'].width = 30 #Check width from length of string
 		#writes the header and the results to the worksheet
-		for col in range(len(self.result_list)): 
+		for col in range(len(self.result_list)):
 			self.header_cell = self.work_sheet.cell(row=1, column=col+1, value=self.header_list[col])
 			self.header_cell.font = Font(size=12, bold=True, italic=True)
 
 			self.work_sheet.cell(row=self.student_number+1, column=col+1, value=self.result_list[col])
-			
+
 		self.results_wb.save(filename = self.results_filename)
 		#clear list
 		self.result_list.clear()
@@ -354,7 +374,7 @@ class App(QtWidgets.QWidget):
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
 				self.exam_gui.mediaPlayer.play()
-				
+
 		except Exception as e:
 			pass
 
