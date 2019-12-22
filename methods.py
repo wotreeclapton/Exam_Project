@@ -26,13 +26,14 @@ from PyQt5.QtGui import QPalette, QColor
 # RESOURCES_FOLDER = path.join(APP_FOLDER, 'resources')
 
 @contextmanager
-def change_dir(destination): #change directory function
+def change_dir(destination, logger): #change directory function
 	try:
 		try:
 			cwd = os.getcwd()
 			os.chdir(destination)
 			yield
 		except FileNotFoundError: #On location not exsisting save to App folder resources
+			logger.error(" Unable to connect to network location: {}".format(destination))
 			cwd = os.getcwd()
 			os.chdir('resources')
 			yield

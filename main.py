@@ -17,24 +17,24 @@ or use exception
 __author__ = 'Mr Steven J Walden'
 __version__ = '1.1.1'
 
-
 import os
 import sys
+import time
 import logging
+import datetime
+
 import csv
-import datetime, time
-
-from App_Guis import Ui_ExamLogin, Ui_ExamQuestions
-from methods import *
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget,QDesktopWidget #, QApplication, QMainWindow, 
+from PyQt5.QtWidgets import QMessageBox, QWidget,QDesktopWidget #, QApplication, QMainWindow,
 #from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font
+
+from app_guis import Ui_ExamLogin, Ui_ExamQuestions
+from methods import *
 
 PY_VER = sys.version[:3]
 
@@ -79,7 +79,7 @@ class App(QtWidgets.QWidget):
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
 
-		with change_dir('resources'):
+		with change_dir('resources', self.logger):
 			#with open('Student_Details_CSV_M' + str(clas) + '-1.csv','r') as csv_file:
 			with open('Student_Details_CSV_M{}-1.csv'.format(str(clas)),'r') as csv_file:
 				csv_reader = csv.DictReader(csv_file)
@@ -153,19 +153,18 @@ class App(QtWidgets.QWidget):
 		#links student cmb box with the photo display
 		self.student_number = st
 
-		with change_dir('img'):
+		with change_dir('img', self.logger):
 			if st > 0:
 				self.path_test = path.join('M' + str(self.year_chosen) + '-1', str(st) + '.png')
 				if path.exists(self.path_test):
-					#self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(st) + '.png')))
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('M{}-1{}.png'.format(str(self.year_chosen), str(st)))))
+					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join(self.path_test)))
 				else:
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('blank_girl.png')))
+					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
 				self.login_gui.StudentNickname.setText(self.student_nicknames[st])
 			else:
-				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(path.join('blank_girl.png')))
+				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('blank_girl.png'))
 				self.login_gui.StudentNumber.setText('')
 				self.login_gui.StudentNickname.setText('')
 
@@ -211,7 +210,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
-		with change_dir('img'):
+		with change_dir('img', self.logger):
 			#self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M' + str(self.year_chosen) + '-1', str(self.student_number) + '.png')))
 			self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(path.join('M{}-1'.format(str(self.year_chosen)), str(self.student_number) + '.png')))
 		#self.exam_gui.tabWidget.setCurrentIndex(0)
@@ -241,20 +240,30 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		with change_dir('resources'):
+		with change_dir('resources', self.logger):
 			#open the correct csv file for each exam self/class name
-			#with open(self.class_name[:2] + '_Exam_Questions.csv','r') as csv_file:
-			with open('{}_Exam_Questions.csv'.format(self.class_name[:2]),'r') as csv_file:
-				csv_reader = csv.DictReader(csv_file)
+			#Test to see if the file exsists if not raise error and close program
+			self.path_test = ('{}_Exam_Questions.csv'.format(self.class_name[:2]))
+			if path.exists(self.path_test):
+				with open('{}_Exam_Questions.csv'.format(self.class_name[:2]),'r') as csv_file:
+					csv_reader = csv.DictReader(csv_file)
 
-				for line in csv_reader:
-					self.exam_questions.append(line['Questions'])
-					self.exam_AnswerA.append(line['AnswerA'])
-					self.exam_AnswerB.append(line['AnswerB'])
-					self.exam_AnswerC.append(line['AnswerC'])
-					self.exam_AnswerD.append(line['AnswerD'])
-					self.exam_Rightanswer.append(line['Rightanswer'])
-					self.exam_photoquestion.append(line['Photoquestion'])
+					for line in csv_reader:
+						self.exam_questions.append(line['Questions'])
+						self.exam_AnswerA.append(line['AnswerA'])
+						self.exam_AnswerB.append(line['AnswerB'])
+						self.exam_AnswerC.append(line['AnswerC'])
+						self.exam_AnswerD.append(line['AnswerD'])
+						self.exam_Rightanswer.append(line['Rightanswer'])
+						self.exam_photoquestion.append(line['Photoquestion'])
+			else:
+				try:
+					raise Exception('File not found!')
+				except:
+					self.logger.error(" Can not find the file {}".format(self.path_test))
+					os.chdir('..')
+					self.message_boxes(msg='FlleNotFoundError', msg_type=2)
+					sys.exit(app.exec_())
 
 	def counters(self):
 		self.scroll_thread = ScrollThread(parent=None, alloted_time=self.allowed_time)
@@ -282,13 +291,17 @@ class App(QtWidgets.QWidget):
 		self.msgbox.setWindowTitle(msg)
 		self.msgbox.setDefaultButton(QMessageBox.Ok)
 
+		if msg_type == 2:
+			self.msgbox.setText("Please contact your teacher or system admin!")
+			self.msgbox.setIcon(QMessageBox.Critical)
+			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 1:
-			self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)-1))
+			#self.msgbox.setText('Your score is ' + str(self.correct_answers) + '/' + str(len(self.exam_questions)-1))
 			self.msgbox.setText('Your score is {}/{}'.format(str(self.correct_answers), str(len(self.exam_questions)-1)))
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 			self.save_results()
-		else:
+		if msg_type == 0:
 			self.msgbox.setText('Caution! \n You will loose your score.')
 			self.msgbox.setIcon(QMessageBox.Warning)
 			self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
@@ -307,7 +320,7 @@ class App(QtWidgets.QWidget):
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with change_dir('resources'): #r'\\ep02\Public\Steve' use format for network location
+		with change_dir('resources', self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
@@ -361,7 +374,8 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with change_dir('img'):
+				with change_dir('img', self.logger
+					):
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
 					answer_label.setScaledContents(True)
 			else:
