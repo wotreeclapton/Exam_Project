@@ -16,6 +16,7 @@ Raise error reports
 	video error
 Save results to diffent class tabs
 smallest screen is 1280x1024
+msgbox close by exit problem
 for logging use  exc_info=1 in error string to print exception info
 or use exception
 '''
@@ -40,7 +41,8 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font
 
 from app_guis import Ui_ExamLogin, Ui_ExamQuestions
-from methods import *
+import methods
+from methods import change_dir as cdir
 
 PY_VER = sys.version[:3]
 
@@ -59,27 +61,27 @@ class App(QtWidgets.QWidget):
 
 		self.screen_size = QDesktopWidget().availableGeometry()
 		#setup app windows and theme
-		dark_theme(app)
+		methods.dark_theme(app)
 		self.load_data()
 		self.open_login_window()
 
 	def load_data(self):
+		cwd = os.getcwd()
 		#Load network location for classes, exam files and results
 		with open('resources/load_location.txt') as file_setup:
 			self.network_location = file_setup.read()
-			print(str(self.network_location))
 		#load classes
 		self.class_list = []
-		with change_dir(r'//ep02/Public/Steve', self.logger):####error
+		with cdir(self.network_location, self.logger):####error r'//ep02/Public/Steve'
 			try:
-				with open('Settings.csv','r') as csv_file:
+				with open('class_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
 
 					for line in csv_reader:
 						self.class_list.append(line['classes'])
 			except FileNotFoundError:
-				self.logger.error(" Cannot load the settings file!")
-				os.chdir('..')
+				self.logger.error(" Cannot load the class list file!")
+				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
@@ -102,7 +104,7 @@ class App(QtWidgets.QWidget):
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
 
-		with change_dir('resources', self.logger):
+		with cdir('resources', self.logger):
 			self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
 			try:
 				with open(self.path,'r') as csv_file:
@@ -119,7 +121,7 @@ class App(QtWidgets.QWidget):
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
-		screen_location(self.login_gui, False, self.screen_size)
+		methods.screen_location(self.login_gui, False, self.screen_size)
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -181,15 +183,15 @@ class App(QtWidgets.QWidget):
 		#links student cmb box with the photo display
 		self.student_number = st
 
-		with change_dir('img', self.logger):
+		with cdir('img', self.logger):
 			if st > 0:
 				self.photo_path = 'M{}-1/{}.png'.format(str(self.year_chosen), str(st))
-				if path.exists(self.photo_path):	
+				if os.path.exists(self.photo_path):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					self.logger.error(" {}'s photo {}.png is missing in M{}-1 folder".format(self.student_nicknames[st], str(st), str(st)))
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('blank_girl.png'))
-					
+
 				self.login_gui.StudentNumber.setText(str(st))
 				self.login_gui.StudentNickname.setText(self.student_nicknames[st])
 			else:
@@ -203,7 +205,7 @@ class App(QtWidgets.QWidget):
 	def open_exam_window(self):
 		#Initialise exam window
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
-		screen_location(self.exam_gui, True, self.screen_size)
+		methods.screen_location(self.exam_gui, True, self.screen_size)
 		self.question_number = 1
 
 		#Set the times for the exam
@@ -238,8 +240,8 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
-		with change_dir('img', self.logger):
-			if path.exists(self.photo_path):	
+		with cdir('img', self.logger):
+			if os.path.exists(self.photo_path):
 				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
 			else:
 				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('blank_girl.png'))
@@ -271,7 +273,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		with change_dir('resources', self.logger):
+		with cdir('resources', self.logger):
 			#open the correct csv file for each exam self/class name
 			#Test to see if the file exsists if not raise error and close program
 			self.path = '{}_Exam_Questions.csv'.format(self.class_name[:2])
@@ -293,11 +295,11 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2)
 
 	def counters(self):
-		self.scroll_thread = ScrollThread(parent=None, alloted_time=self.allowed_time)
+		self.scroll_thread = methods.ScrollThread(parent=None, alloted_time=self.allowed_time)
 		self.scroll_thread.start()
 		self.scroll_thread.time_value.connect(self.set_progress_bar)
 
-		self.time_thread = TimeThread(parent=None, alloted_time=self.allowed_time)
+		self.time_thread = methods.TimeThread(parent=None, alloted_time=self.allowed_time)
 		self.time_thread.start()
 		self.time_thread.time_value.connect(self.set_time_label)
 
@@ -341,7 +343,7 @@ class App(QtWidgets.QWidget):
 				self.exam_gui.close()
 				self.open_login_window()
 			else:
-				sys.exit(app.exec_())			
+				sys.exit(app.exec_())
 
 	def save_results(self):
 		self.time_finished = datetime.datetime.today()
@@ -349,7 +351,7 @@ class App(QtWidgets.QWidget):
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with change_dir(r'//ep02/Public/Steve', self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir(r'//ep02/Public/Steve', self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
@@ -403,7 +405,7 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with change_dir('img', self.logger
+				with cdir('img', self.logger
 					):
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
 					answer_label.setScaledContents(True)
