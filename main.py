@@ -7,16 +7,8 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 '''
 '''
 Raise error reports
-	setttings.csv not found
-	student details file not found -done
-	student photo not found - done
-	exam question csv not found -done
-	network location not found - done
-	results xlsx written to - done
 	video error
-Save results to diffent class tabs
 smallest screen is 1280x1024
-msgbox close by exit problem
 for logging use  exc_info=1 in error string to print exception info
 or use exception
 '''
@@ -72,7 +64,7 @@ class App(QtWidgets.QWidget):
 			self.network_location = file_setup.read()
 		#load classes
 		self.class_list = []
-		with cdir(self.network_location, self.logger):####error r'//ep02/Public/Steve'
+		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
 			try:
 				with open('class_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
@@ -100,24 +92,27 @@ class App(QtWidgets.QWidget):
 		Arguments:
 			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
 		'''
+		#cwd = os.getcwd()
 		self.student_names.clear()
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
 
-		with cdir('resources', self.logger):
-			self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
-			try:
-				with open(self.path,'r') as csv_file:
-					csv_reader = csv.DictReader(csv_file)
+		# with cdir(self.network_location, self.logger):
+		self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
+			# try:
+			# 	with open(self.path,'r') as csv_file:
+			# 		csv_reader = csv.DictReader(csv_file)
 
-					for line in csv_reader:
-						self.student_names.append(line['Name'])
-						self.student_nicknames.append(line['Nicknames'])
-						self.student_passwords.append(line['Passwords'])
-			except FileNotFoundError:
-				self.logger.error(" Can not find the file {}".format(self.path))
-				os.chdir('..')
-				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+			# 		for line in csv_reader:
+			# 			self.student_names.append(line['Name'])
+			# 			self.student_nicknames.append(line['Nicknames'])
+			# 			self.student_passwords.append(line['Passwords'])
+			# except FileNotFoundError:
+			# 	self.logger.error(" Can not find the file {}".format(self.path))
+			# 	os.chdir(cwd)
+			# 	self.message_boxes(msg='FileNotFoundError', msg_type=2)
+
+		self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
@@ -180,22 +175,24 @@ class App(QtWidgets.QWidget):
 			self.login_gui.StudentNickname.setText('')
 
 	def student_name_change(self, st):
+		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-
-		with cdir('img', self.logger):
+		self.photo_location = (self.network_location + '/M{}-1'.format(str(self.year_chosen)))
+		with cdir(self.photo_location, self.logger):
 			if st > 0:
-				self.photo_path = 'M{}-1/{}.png'.format(str(self.year_chosen), str(st))
+				self.photo_path = str(st) + '.png'
 				if os.path.exists(self.photo_path):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					self.logger.error(" {}'s photo {}.png is missing in M{}-1 folder".format(self.student_nicknames[st], str(st), str(st)))
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('blank_girl.png'))
+					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
 				self.login_gui.StudentNickname.setText(self.student_nicknames[st])
 			else:
-				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('blank_girl.png'))
+				os.chdir(cwd)
+				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 				self.login_gui.StudentNumber.setText('')
 				self.login_gui.StudentNickname.setText('')
 
@@ -207,11 +204,6 @@ class App(QtWidgets.QWidget):
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
 		self.question_number = 1
-
-		#Set the times for the exam
-		self.allowed_time = 20 * 600
-		self.start_time = datetime.datetime.today()
-		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
 		#hide back button in student mode
 		if not self.admin:
@@ -230,6 +222,11 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.mediaPlayer.stateChanged.connect(self.repeat_video)
 
 		self.read_exam_questions_csv()
+		#set allowed time from exam questions CSV
+		self.allowed_time = (int(self.exam_AnswerB[0]) * 600)
+		#Set the times for the exam
+		self.start_time = datetime.datetime.today()
+		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
 		#set the text etc
 		self.exam_gui.setWindowTitle("{} {} Questions".format(self.exam_questions[0], self.exam_AnswerA[0]))
@@ -240,11 +237,12 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
-		with cdir('img', self.logger):
+
+		with cdir(self.photo_location, self.logger):
 			if os.path.exists(self.photo_path):
 				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
 			else:
-				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('blank_girl.png'))
+				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 		#self.exam_gui.tabWidget.setCurrentIndex(0)
 
@@ -264,7 +262,33 @@ class App(QtWidgets.QWidget):
 		self.login_gui.hide()
 		self.counters()
 
+	def csv_reader_func(self, path, csv_type):
+		cwd = os.getcwd()
+		with cdir(self.network_location, self.logger):
+			try:
+				with open(path,'r') as csv_file:
+					csv_reader = csv.DictReader(csv_file)
+
+					for line in csv_reader:
+						if csv_type == 0:
+							self.student_names.append(line['Name'])
+							self.student_nicknames.append(line['Nicknames'])
+							self.student_passwords.append(line['Passwords'])
+						else:
+							self.exam_questions.append(line['Questions'])
+							self.exam_AnswerA.append(line['AnswerA'])
+							self.exam_AnswerB.append(line['AnswerB'])
+							self.exam_AnswerC.append(line['AnswerC'])
+							self.exam_AnswerD.append(line['AnswerD'])
+							self.exam_Rightanswer.append(line['Rightanswer'])
+							self.exam_photoquestion.append(line['Photoquestion'])
+			except FileNotFoundError:
+				self.logger.error(" Can not find the file {}".format(path))
+				os.chdir(cwd)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+
 	def read_exam_questions_csv(self):
+		#cwd = os.getcwd()
 		self.exam_questions.clear()
 		self.exam_AnswerA.clear()
 		self.exam_AnswerB.clear()
@@ -273,26 +297,27 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		with cdir('resources', self.logger):
+		# with cdir(self.network_location, self.logger):
 			#open the correct csv file for each exam self/class name
 			#Test to see if the file exsists if not raise error and close program
-			self.path = '{}_Exam_Questions.csv'.format(self.class_name[:2])
-			try:
-				with open(self.path,'r') as csv_file:
-					csv_reader = csv.DictReader(csv_file)
+		self.path = '{}_Exam_Questions.csv'.format(self.class_name[:2])
+			# try:
+			# 	with open(self.path,'r') as csv_file:
+			# 		csv_reader = csv.DictReader(csv_file)
 
-					for line in csv_reader:
-						self.exam_questions.append(line['Questions'])
-						self.exam_AnswerA.append(line['AnswerA'])
-						self.exam_AnswerB.append(line['AnswerB'])
-						self.exam_AnswerC.append(line['AnswerC'])
-						self.exam_AnswerD.append(line['AnswerD'])
-						self.exam_Rightanswer.append(line['Rightanswer'])
-						self.exam_photoquestion.append(line['Photoquestion'])
-			except FileNotFoundError:
-				self.logger.error(" Can not find the file {}".format(self.path))
-				os.chdir('..')
-				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+			# 		for line in csv_reader:
+			# 			self.exam_questions.append(line['Questions'])
+			# 			self.exam_AnswerA.append(line['AnswerA'])
+			# 			self.exam_AnswerB.append(line['AnswerB'])
+			# 			self.exam_AnswerC.append(line['AnswerC'])
+			# 			self.exam_AnswerD.append(line['AnswerD'])
+			# 			self.exam_Rightanswer.append(line['Rightanswer'])
+			# 			self.exam_photoquestion.append(line['Photoquestion'])
+			# except FileNotFoundError:
+			# 	self.logger.error(" Can not find the file {}".format(self.path))
+			# 	os.chdir(cwd)
+			# 	self.message_boxes(msg='FileNotFoundError', msg_type=2)
+		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
 		self.scroll_thread = methods.ScrollThread(parent=None, alloted_time=self.allowed_time)
@@ -342,8 +367,6 @@ class App(QtWidgets.QWidget):
 				self.time_thread.is_running = False
 				self.exam_gui.close()
 				self.open_login_window()
-			else:
-				sys.exit(app.exec_())
 
 	def save_results(self):
 		self.time_finished = datetime.datetime.today()
@@ -351,7 +374,7 @@ class App(QtWidgets.QWidget):
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir(r'//ep02/Public/Steve', self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir(self.network_location, self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
@@ -405,7 +428,7 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with cdir('img', self.logger
+				with cdir(self.network_location, self.logger
 					):
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
 					answer_label.setScaledContents(True)
@@ -414,7 +437,7 @@ class App(QtWidgets.QWidget):
 			num+=1
 
 		#Set video media
-		fileName = "img/" + str(self.exam_photoquestion[quest])
+		fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))

@@ -4,5 +4,6 @@ resources/
 old/
 snd/
 venv/
+Network_files/
 
 *.docx
