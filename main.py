@@ -8,6 +8,9 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 '''
 Raise error reports
 	video error
+list all student answers in excel sheet
+video/pic expand on question label
+redesign tabs to 4 labels and have expand button on each
 smallest screen is 1280x1024
 for logging use  exc_info=1 in error string to print exception info
 or use exception
@@ -85,33 +88,11 @@ class App(QtWidgets.QWidget):
 
 		self.admin = False
 
-	def read_csv(self, clas):
-		'''
-		Function to get student details information from a .CSV file
-		Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.
-		Arguments:
-			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
-		'''
-		#cwd = os.getcwd()
+	def read_login_csv(self, clas):
 		self.student_names.clear()
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
-
-		# with cdir(self.network_location, self.logger):
 		self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
-			# try:
-			# 	with open(self.path,'r') as csv_file:
-			# 		csv_reader = csv.DictReader(csv_file)
-
-			# 		for line in csv_reader:
-			# 			self.student_names.append(line['Name'])
-			# 			self.student_nicknames.append(line['Nicknames'])
-			# 			self.student_passwords.append(line['Passwords'])
-			# except FileNotFoundError:
-			# 	self.logger.error(" Can not find the file {}".format(self.path))
-			# 	os.chdir(cwd)
-			# 	self.message_boxes(msg='FileNotFoundError', msg_type=2)
-
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_login_window(self):
@@ -163,7 +144,7 @@ class App(QtWidgets.QWidget):
 		self.year_chosen = cls
 
 		if cls > 0:
-			self.read_csv(cls)
+			self.read_login_csv(cls)
 			self.class_name = self.class_list[cls]
 			self.login_gui.ClassLabel.setText(self.class_list[cls])
 			self.login_gui.StudentNameCmb.clear()
@@ -237,6 +218,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
+		self.exam_gui.OutOfQuestionLabel.setText("/" + (str(len(self.exam_questions) -1)))
 
 		with cdir(self.photo_location, self.logger):
 			if os.path.exists(self.photo_path):
@@ -263,8 +245,16 @@ class App(QtWidgets.QWidget):
 		self.counters()
 
 	def csv_reader_func(self, path, csv_type):
+		'''
+		Function to get student details information from a .CSV file
+		Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.
+		Arguments:
+			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
+		'''
 		cwd = os.getcwd()
 		with cdir(self.network_location, self.logger):
+			#open the correct csv file for each login/class name
+			#Test to see if the file exsists if not raise error and close program
 			try:
 				with open(path,'r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
@@ -288,7 +278,6 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2)
 
 	def read_exam_questions_csv(self):
-		#cwd = os.getcwd()
 		self.exam_questions.clear()
 		self.exam_AnswerA.clear()
 		self.exam_AnswerB.clear()
@@ -297,26 +286,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		# with cdir(self.network_location, self.logger):
-			#open the correct csv file for each exam self/class name
-			#Test to see if the file exsists if not raise error and close program
 		self.path = '{}_Exam_Questions.csv'.format(self.class_name[:2])
-			# try:
-			# 	with open(self.path,'r') as csv_file:
-			# 		csv_reader = csv.DictReader(csv_file)
-
-			# 		for line in csv_reader:
-			# 			self.exam_questions.append(line['Questions'])
-			# 			self.exam_AnswerA.append(line['AnswerA'])
-			# 			self.exam_AnswerB.append(line['AnswerB'])
-			# 			self.exam_AnswerC.append(line['AnswerC'])
-			# 			self.exam_AnswerD.append(line['AnswerD'])
-			# 			self.exam_Rightanswer.append(line['Rightanswer'])
-			# 			self.exam_photoquestion.append(line['Photoquestion'])
-			# except FileNotFoundError:
-			# 	self.logger.error(" Can not find the file {}".format(self.path))
-			# 	os.chdir(cwd)
-			# 	self.message_boxes(msg='FileNotFoundError', msg_type=2)
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
