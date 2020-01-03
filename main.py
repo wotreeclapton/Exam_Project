@@ -185,6 +185,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
 		self.question_number = 1
+		self.answer_state = False
 
 		#hide back button in student mode
 		if not self.admin:
@@ -328,6 +329,7 @@ class App(QtWidgets.QWidget):
 			self.msgbox.setText('Caution! \n You will loose your score.')
 			self.msgbox.setIcon(QMessageBox.Warning)
 			self.msgbox.setStandardButtons(QMessageBox.Ok|QMessageBox.Cancel)
+			self.correct_answers = 0
 
 		if self.msgbox.exec() == QMessageBox.Ok:
 			self.allowed_time = 20 * 600
@@ -369,9 +371,12 @@ class App(QtWidgets.QWidget):
 		self.results_wb.save(filename = self.results_filename)
 		#clear list
 		self.result_list.clear()
+		self.correct_answers = 0
 
 	def forward_button_clicked(self):
 		if self.answered > 0:
+			if self.answer_state:
+				self.correct_answers += 1
 			self.question_number += 1
 			if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
@@ -424,7 +429,10 @@ class App(QtWidgets.QWidget):
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
 		if self.answered == self.convert(self.exam_Rightanswer[self.question_number]):
-			self.correct_answers += 1
+			self.answer_state = True
+		else:
+			self.answer_state = False
+			#self.correct_answers += 1
 
 	def convert(self, val):
 		return self.string_convert[val]
