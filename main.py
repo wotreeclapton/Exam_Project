@@ -17,7 +17,7 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 import os
 import sys
@@ -344,7 +344,7 @@ class App(QtWidgets.QWidget):
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir(self.network_location, self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir('//COMPUTER-TEACHE/Users/Public/exam_res', self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
