@@ -138,7 +138,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 	def initUI(self):
 		#self.screen_width = round(self.screen_height * 1.3)
 		self.resize(1200, self.screen_height - 32)
-		self.setMinimumSize(1200, 600) # orig size was 1200x924
+		self.setMinimumSize(800, 600) # orig size was 1200x924
 		self.setMaximumSize(1200, self.screen_height - 32)
 		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
 		self.setWindowTitle("Exam Questions")

@@ -17,7 +17,7 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.1.3'
+__version__ = '1.2.0'
 
 import os
 import sys

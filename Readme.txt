@@ -1,6 +1,6 @@
-Samroiyod Exam Application Version 1.0
+Samroiyod Exam Application Version 1.2.0
 
-Copyright (C) 2019 Steven Walden.
+Copyright (C) 2020 Steven J Walden.
 All rights reserved.
 See license at end of file
 
@@ -45,7 +45,7 @@ Installation:
 1.4 License information
 ----------------------
 
-Copyright (c) 2019 Steven Walden
+Copyright (c) 2020 Steven Walden
 
 -THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
