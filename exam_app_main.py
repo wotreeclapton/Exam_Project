@@ -17,13 +17,14 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.2.0'
+__version__ = '1.2.1'
 
 import os
 import sys
 import time
 import logging
 import datetime
+from win32com.shell import shell, shellcon
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -355,6 +356,16 @@ class App(QtWidgets.QWidget):
 				self.write_to_result_wb()
 				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
 
+		#Save a copy of the result to the documents folder
+		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
+		self.results_filename = "{} {} Student {} results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
+		with cdir(doc_folder, self.logger):
+			with open(self.results_filename, 'w') as results_file:
+				results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+		#clear list
+		self.result_list.clear()
+		self.correct_answers = 0
+
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
 		#Write list contents to file
@@ -369,9 +380,6 @@ class App(QtWidgets.QWidget):
 			self.work_sheet.cell(row=self.student_number+1, column=col+1, value=self.result_list[col])
 
 		self.results_wb.save(filename = self.results_filename)
-		#clear list
-		self.result_list.clear()
-		self.correct_answers = 0
 
 	def forward_button_clicked(self):
 		if self.answered > 0:
