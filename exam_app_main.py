@@ -262,11 +262,11 @@ class App(QtWidgets.QWidget):
 					csv_reader = csv.DictReader(csv_file)
 
 					for line in csv_reader:
-						if csv_type == 0:
+						if csv_type == 0: #reads student details csv
 							self.student_names.append(line['Name'])
 							self.student_nicknames.append(line['Nicknames'])
 							self.student_passwords.append(line['Passwords'])
-						else:
+						else: #reads exam questions csv 
 							self.exam_questions.append(line['Questions'])
 							self.exam_AnswerA.append(line['AnswerA'])
 							self.exam_AnswerB.append(line['AnswerB'])
@@ -288,7 +288,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		self.path = '{}_Exam_Questions.csv'.format(self.class_name[:2])
+		self.path = '{}_exam_data/{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
@@ -302,6 +302,7 @@ class App(QtWidgets.QWidget):
 
 	def set_progress_bar(self, left_time):
 		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
+		#exits app and saves current score
 		if left_time <= 0:
 			self.message_boxes(msg='Time finished!', msg_type=1)
 
@@ -401,7 +402,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.tabWidget.setCurrentIndex(0)
 		self.populate_boxes(self.question_number)
 
-	def populate_boxes(self,quest):
+	def populate_boxes(self, quest):
 		self.exam_gui.mediaPlayer.stop()
 		#Set text on exam questions and answers from list/csv
 		self.answered = 0
@@ -411,7 +412,7 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with cdir(self.network_location, self.logger
+				with cdir("{}/{}_exam_data".format(self.network_location, self.class_name[:2]), self.logger
 					):
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
 					answer_label.setScaledContents(True)
@@ -420,7 +421,8 @@ class App(QtWidgets.QWidget):
 			num+=1
 
 		#Set video media
-		fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
+		#fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
+		fileName = "{}/{}_exam_data/{}".format(str(self.network_location), self.class_name[:2], str(self.exam_photoquestion[quest]))
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
