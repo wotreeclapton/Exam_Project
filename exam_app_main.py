@@ -288,7 +288,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		self.path = '{}_exam_data/{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
+		self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
