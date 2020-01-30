@@ -17,7 +17,7 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.2.1'
+__version__ = '1.3.2'
 
 import os
 import sys
@@ -64,10 +64,10 @@ class App(QtWidgets.QWidget):
 	def load_data(self):
 		cwd = os.getcwd()
 		#Load network location for classes, exam files and results
-		with open('resources/load_location.txt') as file_setup:
+		with open('resources/load_location.bat') as file_setup:
 			self.network_location = file_setup.read()
 		#load classes
-		self.class_list = []
+		self.class_list, self.exam_list = [], []
 		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
 			try:
 				with open('class_list.csv','r') as csv_file:
@@ -75,8 +75,22 @@ class App(QtWidgets.QWidget):
 
 					for line in csv_reader:
 						self.class_list.append(line['classes'])
+
 			except FileNotFoundError:
 				self.logger.error(" Cannot load the class list file!")
+				os.chdir(cwd)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+
+		#load exams
+			try:
+				with open('exam_list.csv','r') as csv_file:
+					csv_reader = csv.DictReader(csv_file)
+
+					for line in csv_reader:
+						self.exam_list.append(line['exams'])
+
+			except FileNotFoundError:
+				self.logger.error(" Cannot load the exam list file!")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2)
 
@@ -99,6 +113,7 @@ class App(QtWidgets.QWidget):
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
 		methods.screen_location(self.login_gui, False, self.screen_size)
+		self.login_gui.setWindowTitle("V {} App login".format(__version__))
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -106,6 +121,7 @@ class App(QtWidgets.QWidget):
 		self.login_gui.PasswordShowButton.clicked.connect(self.password_show_button_clicked)
 		self.login_gui.InputPassword.returnPressed.connect(self.login_okaybutton_clicked)
 		self.login_gui.ClassCmb.currentIndexChanged['int'].connect(self.class_name_changed)
+		self.login_gui.ExamChoiceCmb.currentIndexChanged['int'].connect(self.exam_choice_changed)
 		self.login_gui.StudentNameCmb.currentIndexChanged['int'].connect(self.student_name_change)
 
 		#populate the combo boxes
@@ -122,12 +138,14 @@ class App(QtWidgets.QWidget):
 		try:
 			#open main window and pass vairables
 			self.password_input = self.login_gui.InputPassword.text()
-			if self.password_input == self.student_passwords[self.student_number]:
-				self.login_gui.close()
-				self.open_exam_window()
-			elif self.student_number == 0:
-				pass
-				#print('Please choose a student name')
+			
+			if self.password_input == self.student_passwords[self.student_number] and self.student_number !=0 and self.exam_number !=0:
+				#check the right exam is chosen
+				if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number:
+					self.login_gui.close()
+					self.open_exam_window()
+				else:
+					self.login_gui.ExamChoiceCmb.clear()
 			else:
 				self.login_gui.InputPassword.clear()
 		except (AttributeError, KeyError):
@@ -140,6 +158,10 @@ class App(QtWidgets.QWidget):
 		else:
 			self.login_gui.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
+	def exam_choice_changed(self, exa):
+		self.exam_number = exa
+		self.exam_name = self.login_gui.ExamChoiceCmb.itemText(exa)
+
 	def class_name_changed(self, cls):
 		self.class_name = self.login_gui.ClassCmb.itemText(cls)
 		self.year_chosen = cls
@@ -148,10 +170,13 @@ class App(QtWidgets.QWidget):
 			self.read_login_csv(cls)
 			self.class_name = self.class_list[cls]
 			self.login_gui.ClassLabel.setText(self.class_list[cls])
+			self.login_gui.ExamChoiceCmb.clear()
+			self.login_gui.ExamChoiceCmb.addItems(self.exam_list)
 			self.login_gui.StudentNameCmb.clear()
 			self.login_gui.StudentNameCmb.addItems(self.student_names)
 		else:
 			self.login_gui.ClassLabel.setText('Class')
+			self.login_gui.ExamChoiceCmb.clear()
 			self.login_gui.StudentNameCmb.clear()
 			self.login_gui.StudentNumber.setText('')
 			self.login_gui.StudentNickname.setText('')
@@ -288,7 +313,8 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
+		self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.exam_name, self.exam_name)
+		# self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):

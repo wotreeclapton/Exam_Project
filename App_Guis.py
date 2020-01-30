@@ -1,5 +1,4 @@
-'''
-Exam app Guis developed by Mr Steven J Walden
+'''Exam app Guis developed by Mr Steven J Walden
     Dec. 2019
     SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
 [See license at end of file]
@@ -37,7 +36,7 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 	def add_labels(self):
 		#Add Label for displaying the class name
 		self.ClassLabel = QtWidgets.QLabel("Class", self)
-		self.ClassLabel.setGeometry(10, 10, 300, 60)
+		self.ClassLabel.setGeometry(180, 5, 300, 60)#10, 10, 300, 60
 		font = QtGui.QFont()
 		font.setPointSize(30)
 		font.setBold(True)
@@ -45,12 +44,15 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		#font.setWeight(75)
 		self.ClassLabel.setFont(font)
 		self.ClassLabel.setText("Class")
+		#Add label for exam choice combobox
+		self.ExamChoiceLabel = QtWidgets.QLabel("Choose your exam", self)
+		self.ExamChoiceLabel.setGeometry(15, 54, 180, 16)
 		#Add label for student name combobox
 		self.EnterNameLabel = QtWidgets.QLabel("Choose your name from the list below", self)
-		self.EnterNameLabel.setGeometry(10, 114, 211, 16)
+		self.EnterNameLabel.setGeometry(15, 114, 211, 16)
 		#Label for password box
 		self.InputPaswordLabel = QtWidgets.QLabel("Password", self)
-		self.InputPaswordLabel.setGeometry(10, 172, 131, 16)
+		self.InputPaswordLabel.setGeometry(15, 172, 131, 16)
 		#Display school logo
 		self.Logolabel = QtWidgets.QLabel(self)
 		self.Logolabel.setGeometry(320, 20, 75, 97)
@@ -107,10 +109,13 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 	def add_comboboxes(self):
 		#Combobox setup to choose the class
 		self.ClassCmb = QtWidgets.QComboBox(self)
-		self.ClassCmb.setGeometry(10, 80, 151, 22)
+		self.ClassCmb.setGeometry(10, 20, 140, 22)#10, 80, 151, 22
 		#Combox set to choose the student
 		self.StudentNameCmb = QtWidgets.QComboBox(self)
 		self.StudentNameCmb.setGeometry(10, 140, 391, 22)
+		#Combox setup to choose the exam
+		self.ExamChoiceCmb = QtWidgets.QComboBox(self)
+		self.ExamChoiceCmb.setGeometry(10, 80, 151, 22)
 
 	def tool_status_tips(self):
 		#Setup any tool and status bar tips
@@ -121,9 +126,11 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		self.StudentNameCmb.setStatusTip("Choose a name")
 		self.InputPassword.setStatusTip("Input your password")
 		self.ClassCmb.setStatusTip("Choose your class first")
+		self.ExamChoiceCmb.setStatusTip("Choose your exam")
 
 	def tab_order(self):
-		self.setTabOrder(self.ClassCmb, self.StudentNameCmb)
+		self.setTabOrder(self.ClassCmb, self.ExamChoiceCmb)
+		self.setTabOrder(self.ExamChoiceCmb, self.StudentNameCmb)
 		self.setTabOrder(self.StudentNameCmb, self.InputPassword)
 		self.setTabOrder(self.InputPassword, self.PasswordShowButton)
 
