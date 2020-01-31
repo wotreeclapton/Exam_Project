@@ -141,7 +141,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		super(Ui_ExamQuestions, self).__init__(parent)
 		self.screen_height = screen_size.height()
 		self.screen_width = round((self.screen_height - 32) * 1.3)
-		print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
+		#print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
 		self.initUI()
 
 	def initUI(self):
