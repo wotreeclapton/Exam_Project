@@ -140,11 +140,12 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 	def __init__(self, screen_size, parent=None):
 		super(Ui_ExamQuestions, self).__init__(parent)
 		self.screen_height = screen_size.height()
+		self.screen_width = round((self.screen_height - 32) * 1.3)
+		print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
 		self.initUI()
 
 	def initUI(self):
-		#self.screen_width = round(self.screen_height * 1.3)
-		self.resize(1200, self.screen_height - 32)
+		self.resize(self.screen_width, self.screen_height - 32)
 		self.setMinimumSize(800, 600) # orig size was 1200x924
 		self.setMaximumSize(1200, self.screen_height - 32)
 		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))

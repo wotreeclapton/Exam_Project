@@ -438,17 +438,20 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with cdir("{}/{}_exam_data".format(self.network_location, self.class_name[:2]), self.logger
+				with cdir("{}/{}_exam_data".format(self.network_location, self.exam_name), self.logger
 					):
+					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
+					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
+					# answer_label.setPixmap(myScaledPixmap)
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
-					answer_label.setScaledContents(True)
+					answer_label.setScaledContents(True)#check to see about scaling		
 			else:
 				answer_label.setText(self.exam_answers_list[num][quest])
 			num+=1
 
 		#Set video media
 		#fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
-		fileName = "{}/{}_exam_data/{}".format(str(self.network_location), self.class_name[:2], str(self.exam_photoquestion[quest]))
+		fileName = "{}/{}_exam_data/{}".format(self.network_location, self.exam_name, str(self.exam_photoquestion[quest]))
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
