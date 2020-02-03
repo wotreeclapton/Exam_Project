@@ -156,7 +156,6 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.add_labels()
 		self.add_checkboxes()
 		self.add_buttons()
-		self.add_scrollbars()
 		self.tool_status_tips()
 		self.tab_order()
 		self.kb_shortcuts()
@@ -167,10 +166,23 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.MainVerticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
 
 		self.TopWidget = QtWidgets.QFrame(self.centralwidget)
-		sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+		sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
 		self.TopWidget.setSizePolicy(sizePolicy)
+		self.TopWidget.setMinimumWidth(600)
 		self.TopWidget.setMinimumHeight(103)
 		self.TopWidget.setMaximumHeight(103)
+
+		self.TopWidget1 = QtWidgets.QFrame(self.centralwidget)
+		self.TopWidget1.setSizePolicy(sizePolicy)
+		self.TopWidget1.setMinimumWidth(1)
+		self.TopWidget1.setMinimumHeight(103)
+		self.TopWidget1.setMaximumHeight(103)
+
+		self.TopWidget2 = QtWidgets.QFrame(self.centralwidget)
+		self.TopWidget2.setSizePolicy(sizePolicy)
+		self.TopWidget2.setMinimumWidth(290)
+		self.TopWidget2.setMinimumHeight(103)
+		self.TopWidget2.setMaximumHeight(103)
 
 		self.videoWidget = QtMultimediaWidgets.QVideoWidget(self.centralwidget)
 
@@ -185,34 +197,55 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.AnswerATab = QtWidgets.QWidget()
 		self.TabTextLayoutA = QtWidgets.QHBoxLayout(self.AnswerATab)
 		self.TabTextLayoutA.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerATab, "A")
+		self.tabWidget.addTab(self.AnswerATab, "Answer-A")
 
 		self.AnswerBTab = QtWidgets.QWidget()
 		self.TabTextLayoutB = QtWidgets.QHBoxLayout(self.AnswerBTab)
 		self.TabTextLayoutB.setContentsMargins(330, -1, -1, -1)		
-		self.tabWidget.addTab(self.AnswerBTab, "B")
+		self.tabWidget.addTab(self.AnswerBTab, "Answer-B")
 
 		self.AnswerCTab = QtWidgets.QWidget()
 		self.TabTextLayoutC = QtWidgets.QHBoxLayout(self.AnswerCTab)
 		self.TabTextLayoutC.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerCTab, "C")
+		self.tabWidget.addTab(self.AnswerCTab, "Answer-C")
 
 		self.AnswerDTab = QtWidgets.QWidget()
 		self.TabTextLayoutD = QtWidgets.QHBoxLayout(self.AnswerDTab)
 		self.TabTextLayoutD.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerDTab, "D")
+		self.tabWidget.addTab(self.AnswerDTab, "Answer-D")
 
 		self.CheckboxFrame = QtWidgets.QFrame(self.centralwidget)
 		self.CheckboxFrame.setSizePolicy(sizePolicy)
+		self.CheckboxFrame.setMinimumWidth(600)
 		self.CheckboxFrame.setMinimumHeight(46)
 		self.CheckboxFrame.setMaximumHeight(46)
-		self.CheckboxFrame.setFrameShape(QtWidgets.QFrame.Panel)
-		self.CheckboxFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+
+		self.CheckboxFrame1 = QtWidgets.QFrame(self.centralwidget)
+		self.CheckboxFrame1.setSizePolicy(sizePolicy)
+		self.CheckboxFrame1.setMinimumWidth(1)
+		self.CheckboxFrame1.setMinimumHeight(46)
+		self.CheckboxFrame1.setMaximumHeight(46)
+
+		self.CheckboxFrame2 = QtWidgets.QFrame(self.centralwidget)
+		self.CheckboxFrame2.setSizePolicy(sizePolicy)
+		self.CheckboxFrame2.setMinimumWidth(278)
+		self.CheckboxFrame2.setMinimumHeight(46)
+		self.CheckboxFrame2.setMaximumHeight(46)
+
 
 		self.BottomFrame = QtWidgets.QFrame(self.centralwidget)
 		self.BottomFrame.setSizePolicy(sizePolicy)
+		self.BottomFrame.setMinimumWidth(390)
+		self.BottomFrame.setMaximumWidth(390)
 		self.BottomFrame.setMinimumHeight(38)
 		self.BottomFrame.setMaximumHeight(38)
+
+		self.BottomFrame2 = QtWidgets.QFrame(self.centralwidget)
+		self.BottomFrame2.setSizePolicy(sizePolicy)
+		self.BottomFrame2.setMinimumWidth(240)
+		self.BottomFrame2.setMaximumWidth(240)
+		self.BottomFrame2.setMinimumHeight(38)
+		self.BottomFrame2.setMaximumHeight(38)
 
 		self.AnswerButtonGroup = QtWidgets.QButtonGroup(self.centralwidget)
 
@@ -220,23 +253,36 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.statusbar = QtWidgets.QStatusBar(self.centralwidget)
 
 	def add_layouts(self):
-		self.MainVerticalLayout.addWidget(self.TopWidget)
+		self.TopLayout = QtWidgets.QHBoxLayout()
+		self.MainVerticalLayout.addLayout(self.TopLayout)
+		self.TopLayout.addWidget(self.TopWidget)
+		self.TopLayout.addWidget(self.TopWidget1)
+		self.TopLayout.addWidget(self.TopWidget2)
+		# self.MainVerticalLayout.addWidget(self.TopWidget)
 		self.QuestionsAndVideoLayoutLayout = QtWidgets.QHBoxLayout()
 		self.MainVerticalLayout.addLayout(self.QuestionsAndVideoLayoutLayout)
 
 		self.MainVerticalLayout.addWidget(self.tabWidget)
 
-		self.MainVerticalLayout.addWidget(self.CheckboxFrame)
-		self.MainVerticalLayout.addWidget(self.BottomFrame)
 
-		# self.verticalLayoutWidget = QtWidgets.QWidget(self)
-		# self.verticalLayoutWidget.setGeometry(630, 120, 551, 311)
-		# self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-		# self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+		#add a layout to the checkbox frame
+		self.CheckBoxLayout = QtWidgets.QHBoxLayout()
+		self.MainVerticalLayout.addLayout(self.CheckBoxLayout)
+
+		self.CheckBoxLayout.addWidget(self.CheckboxFrame)
+		self.CheckBoxLayout.addWidget(self.CheckboxFrame1)
+		self.CheckBoxLayout.addWidget(self.CheckboxFrame2)
+
+		self.BottomLayout = QtWidgets.QHBoxLayout()
+		self.MainVerticalLayout.addLayout(self.BottomLayout)
+		self.BottomLayout.addWidget(self.BottomFrame)
+		#create scroll bar and add to the bottom layout
+		self.add_scrollbars()
+		self.BottomLayout.addWidget(self.TimeLeftProgressBar)
+		self.BottomLayout.addWidget(self.BottomFrame2)
 
 		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
 		self.mediaPlayer.setVideoOutput(self.videoWidget)
-		#self.verticalLayout.addWidget(self.videoWidget)
 
 		self.setStatusBar(self.statusbar)
 
@@ -252,7 +298,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.StudentPhotoLabel.setScaledContents(True)
 
 		self.ArrowLabel = QtWidgets.QLabel(self.CheckboxFrame)
-		self.ArrowLabel.setGeometry(256, 8, 60, 30)
+		self.ArrowLabel.setGeometry(244, 8, 60, 30)
 		self.ArrowLabel.setPixmap(QtGui.QPixmap("img/Left_Arrow.png"))
 
 		font = QtGui.QFont()
@@ -300,15 +346,15 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.EndTime.setFont(font)
 		self.EndTime.setText("Time")
 
-		self.MinLeftLabel = QtWidgets.QLabel(self.BottomFrame)
-		self.MinLeftLabel.setGeometry(980, 5, 101, 30)
+		self.MinLeftLabel = QtWidgets.QLabel(self.BottomFrame2)
+		self.MinLeftLabel.setGeometry(10, 5, 101, 30)
 		self.MinLeftLabel.setFont(font)
 		self.MinLeftLabel.setText("Mins Left")
 
 		font.setPointSize(16)
 		font.setItalic(True)
 		self.MsgLabel = QtWidgets.QLabel(self.CheckboxFrame)
-		self.MsgLabel.setGeometry(340, 7, 1000, 32)
+		self.MsgLabel.setGeometry(328, 7, 1000, 32)
 		self.MsgLabel.setFont(font)
 		self.MsgLabel.setText("Please choose an answer")
 
@@ -318,18 +364,18 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.ClassLabel.setFont(font)
 		self.ClassLabel.setText("Class")
 
-		self.QuestionNumberLabel = QtWidgets.QLabel(self.TopWidget)
-		self.QuestionNumberLabel.setGeometry(870, 10, 186, 30)
+		self.QuestionNumberLabel = QtWidgets.QLabel(self.TopWidget2)
+		self.QuestionNumberLabel.setGeometry(10, 10, 186, 30)
 		self.QuestionNumberLabel.setFont(font)
 		self.QuestionNumberLabel.setText("Question Number:")
 
-		self.QuestionNumber = QtWidgets.QLabel(self.TopWidget)
-		self.QuestionNumber.setGeometry(1055, 10, 30, 30)
+		self.QuestionNumber = QtWidgets.QLabel(self.TopWidget2)
+		self.QuestionNumber.setGeometry(196, 10, 30, 30)
 		self.QuestionNumber.setFont(font)
 		self.QuestionNumber.setText("60")
 
-		self.OutOfQuestionLabel = QtWidgets.QLabel(self.TopWidget)
-		self.OutOfQuestionLabel.setGeometry(1085, 10, 42, 30)
+		self.OutOfQuestionLabel = QtWidgets.QLabel(self.TopWidget2)
+		self.OutOfQuestionLabel.setGeometry(226, 10, 42, 30)
 		self.OutOfQuestionLabel.setFont(font)
 		self.OutOfQuestionLabel.setText("/60")
 
@@ -429,31 +475,35 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		bfont.setPointSize(12)
 		bfont.setBold(True)
 		bfont.setItalic(True)
-		self.BackButton = QtWidgets.QPushButton(self.CheckboxFrame)
-		self.BackButton.setGeometry(898, 6, 130, 32)
+		self.BackButton = QtWidgets.QPushButton(self.CheckboxFrame2)
+		self.BackButton.setGeometry(10, 6, 130, 32)
 		self.BackButton.setFont(bfont)
 		self.BackButton.setText("       Back")
 		self.BackButton.setIcon(QtGui.QIcon("img/back_button.png"))
 		self.BackButton.setIconSize(QtCore.QSize(32,32))
 
-		self.ForwardButton = QtWidgets.QPushButton(self.CheckboxFrame)
-		self.ForwardButton.setGeometry(1036, 6, 130, 32)
+		self.ForwardButton = QtWidgets.QPushButton(self.CheckboxFrame2)
+		self.ForwardButton.setGeometry(142, 6, 130, 32)
 		self.ForwardButton.setFont(bfont)
 		self.ForwardButton.setLayoutDirection(QtCore.Qt.RightToLeft)
 		self.ForwardButton.setText("         Next")
 		self.ForwardButton.setIcon(QtGui.QIcon("img/forward_button.png"))
 		self.ForwardButton.setIconSize(QtCore.QSize(32,32))
 
-		self.LogoutButton = QtWidgets.QPushButton(self.BottomFrame)
-		self.LogoutButton.setGeometry(1056, 5, 110, 30)
+		self.LogoutButton = QtWidgets.QPushButton(self.BottomFrame2)
+		self.LogoutButton.setGeometry(120, 5, 110, 30)
 		self.LogoutButton.setFont(bfont)
 		self.LogoutButton.setText("Log Out")
 
 	def add_scrollbars(self):
-		self.TimeLeftProgressBar = QtWidgets.QProgressBar(self.BottomFrame)
-		self.TimeLeftProgressBar.setGeometry(390, 9, 580, 23)
+		self.TimeLeftProgressBar = QtWidgets.QProgressBar()
+		sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+		self.TimeLeftProgressBar.setSizePolicy(sizePolicy)
+		self.TimeLeftProgressBar.setMinimumWidth(100)
+		self.TimeLeftProgressBar.setMinimumHeight(23)
+		self.TimeLeftProgressBar.setMaximumHeight(23)
 		self.TimeLeftProgressBar.setTextVisible(False)
-
+		
 	def tool_status_tips(self):
 		self.LogoutButton.setStatusTip("Click to Log out user.")
 		self.TimeLeftProgressBar.setStatusTip("Your time left")
@@ -490,7 +540,8 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 
 # if __name__ == '__main__':
 # 	app = QtWidgets.QApplication(sys.argv)
-# 	main_app = Ui_ExamLogin()
+# 	#main_app = Ui_ExamLogin()
+# 	main_app = Ui_ExamQuestions(
 # 	main_app.show()
 
 # sys.exit(app.exec_())

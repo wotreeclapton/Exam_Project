@@ -214,7 +214,7 @@ class App(QtWidgets.QWidget):
 		self.answer_state = False
 
 		#hide back button in student mode
-		if not self.admin:
+		if self.admin != True:
 			self.exam_gui.BackButton.hide()
 
 		#connect butoons to methods
