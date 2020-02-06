@@ -11,9 +11,14 @@ Raise error reports
 list all student answers in excel sheet
 video/pic expand on question label
 redesign tabs to 4 labels and have expand button on each
-smallest screen is 1280x1024
 for logging use  exc_info=1 in error string to print exception info
 or use exception
+questions = 60
+quest_seq = []
+while len(quest_seq) < questions:
+	choice = randrange(questions)
+	if choice not in quest_seq:
+		quest_seq.append(choice)
 '''
 
 __author__ = 'Mr Steven J Walden'
@@ -25,6 +30,7 @@ import time
 import logging
 import datetime
 from win32com.shell import shell, shellcon
+from random import randrange
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -138,7 +144,7 @@ class App(QtWidgets.QWidget):
 		try:
 			#open main window and pass vairables
 			self.password_input = self.login_gui.InputPassword.text()
-			
+
 			if self.password_input == self.student_passwords[self.student_number] and self.student_number !=0 and self.exam_number !=0:
 				#check the right exam is chosen
 				if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number:
@@ -264,8 +270,15 @@ class App(QtWidgets.QWidget):
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
+		#Create a random list(sequence) of question numbers
+		self.quest_seq = []
+		while len(self.quest_seq) < (len(self.exam_questions) -1):
+			choice = randrange(1, len(self.exam_questions))
+			if choice not in self.quest_seq:
+				self.quest_seq.append(choice)
+
 		#Show window
-		self.populate_boxes(self.question_number)
+		self.populate_boxes(self.quest_seq[self.question_number - 1]) #pass the random question from a list
 
 		self.exam_gui.show()
 		self.login_gui.hide()
@@ -419,7 +432,7 @@ class App(QtWidgets.QWidget):
 			self.exam_gui.tabWidget.setCurrentIndex(0)
 			self.exam_gui.FalsecheckBox.setChecked(True)
 
-			self.populate_boxes(self.question_number)
+			self.populate_boxes(self.quest_seq[self.question_number - 1]) #pass the random question from a list
 
 	def back_button_clicked(self):
 		self.question_number -= 1
