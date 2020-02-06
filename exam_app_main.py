@@ -13,16 +13,10 @@ video/pic expand on question label
 redesign tabs to 4 labels and have expand button on each
 for logging use  exc_info=1 in error string to print exception info
 or use exception
-questions = 60
-quest_seq = []
-while len(quest_seq) < questions:
-	choice = randrange(questions)
-	if choice not in quest_seq:
-		quest_seq.append(choice)
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.3.3'
+__version__ = '1.3.4'
 
 import os
 import sys
@@ -475,7 +469,7 @@ class App(QtWidgets.QWidget):
 
 	def repeat_video(self, video_state):
 
-		if video_state == 0 and self.exam_photoquestion[self.question_number] != 'None':
+		if video_state == 0 and self.exam_photoquestion[self.quest_seq[self.question_number - 1]] != 'None':
 			self.exam_gui.mediaPlayer.play()
 
 	def check_answer(self, btn):
