@@ -474,7 +474,7 @@ class App(QtWidgets.QWidget):
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
-		if self.answered == self.convert(self.exam_Rightanswer[self.question_number]):
+		if self.answered == self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]):
 			self.answer_state = True
 		else:
 			self.answer_state = False
