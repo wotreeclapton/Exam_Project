@@ -503,7 +503,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.TimeLeftProgressBar.setMinimumHeight(23)
 		self.TimeLeftProgressBar.setMaximumHeight(23)
 		self.TimeLeftProgressBar.setTextVisible(False)
-		
+
 	def tool_status_tips(self):
 		self.LogoutButton.setStatusTip("Click to Log out user.")
 		self.TimeLeftProgressBar.setStatusTip("Your time left")
@@ -538,159 +538,10 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.BackButton.setShortcut("Left")
 		self.ForwardButton.setShortcut("Return")
 
-class Ui_ExamAppMaster(QtWidgets.QMainWindow):
-	"""docstrbing for MyApp"""
-	def __init__(self, screen_size, parent=None):
-		super(Ui_ExamAppMaster, self).__init__(parent)
-		self.screen_height = screen_size.height()
-		self.screen_width = round((self.screen_height - 32) * 1.3)
-		#print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
-		self.initUI()
-
-	def initUI(self):
-		self.resize(self.screen_width, self.screen_height - 32)
-		self.setMinimumSize(800, 600) # orig size was 1200x924
-		self.setMaximumSize(1200, self.screen_height - 32)
-		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
-		self.setWindowTitle("Exam Application Master")
-
-	def add_widgets(self):
-		self.centralwidget = QtWidgets.QWidget(self)
-
-		self.menubar = QtWidgets.QMenuBar(self)
-		self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-		self.menubar.setObjectName("menubar")
-		self.menuFile = QtWidgets.QMenu(self.menubar)
-		self.menuFile.setObjectName("menuFile")
-
-		self.MainVerticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
-
-		self.TopWidget = QtWidgets.QFrame(self.centralwidget)
-		sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
-		self.TopWidget.setSizePolicy(sizePolicy)
-		self.TopWidget.setMinimumWidth(600)
-		self.TopWidget.setMinimumHeight(103)
-		self.TopWidget.setMaximumHeight(103)
-
-		self.TopWidget1 = QtWidgets.QFrame(self.centralwidget)
-		self.TopWidget1.setSizePolicy(sizePolicy)
-		self.TopWidget1.setMinimumWidth(1)
-		self.TopWidget1.setMinimumHeight(103)
-		self.TopWidget1.setMaximumHeight(103)
-
-		self.TopWidget2 = QtWidgets.QFrame(self.centralwidget)
-		self.TopWidget2.setSizePolicy(sizePolicy)
-		self.TopWidget2.setMinimumWidth(290)
-		self.TopWidget2.setMinimumHeight(103)
-		self.TopWidget2.setMaximumHeight(103)
-
-		self.videoWidget = QtMultimediaWidgets.QVideoWidget(self.centralwidget)
-
-		self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-		font = QtGui.QFont()
-		font.setPointSize(15)
-		font.setBold(True)
-		font.setItalic(True)
-		font.setWeight(75)
-		self.tabWidget.setFont(font)
-
-		self.AnswerATab = QtWidgets.QWidget()
-		self.TabTextLayoutA = QtWidgets.QHBoxLayout(self.AnswerATab)
-		self.TabTextLayoutA.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerATab, "Answer-A")
-
-		self.AnswerBTab = QtWidgets.QWidget()
-		self.TabTextLayoutB = QtWidgets.QHBoxLayout(self.AnswerBTab)
-		self.TabTextLayoutB.setContentsMargins(330, -1, -1, -1)		
-		self.tabWidget.addTab(self.AnswerBTab, "Answer-B")
-
-		self.AnswerCTab = QtWidgets.QWidget()
-		self.TabTextLayoutC = QtWidgets.QHBoxLayout(self.AnswerCTab)
-		self.TabTextLayoutC.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerCTab, "Answer-C")
-
-		self.AnswerDTab = QtWidgets.QWidget()
-		self.TabTextLayoutD = QtWidgets.QHBoxLayout(self.AnswerDTab)
-		self.TabTextLayoutD.setContentsMargins(330, -1, -1, -1)
-		self.tabWidget.addTab(self.AnswerDTab, "Answer-D")
-
-		self.CheckboxFrame = QtWidgets.QFrame(self.centralwidget)
-		self.CheckboxFrame.setSizePolicy(sizePolicy)
-		self.CheckboxFrame.setMinimumWidth(600)
-		self.CheckboxFrame.setMinimumHeight(46)
-		self.CheckboxFrame.setMaximumHeight(46)
-
-		self.CheckboxFrame1 = QtWidgets.QFrame(self.centralwidget)
-		self.CheckboxFrame1.setSizePolicy(sizePolicy)
-		self.CheckboxFrame1.setMinimumWidth(1)
-		self.CheckboxFrame1.setMinimumHeight(46)
-		self.CheckboxFrame1.setMaximumHeight(46)
-
-		self.CheckboxFrame2 = QtWidgets.QFrame(self.centralwidget)
-		self.CheckboxFrame2.setSizePolicy(sizePolicy)
-		self.CheckboxFrame2.setMinimumWidth(278)
-		self.CheckboxFrame2.setMinimumHeight(46)
-		self.CheckboxFrame2.setMaximumHeight(46)
-
-
-		self.BottomFrame = QtWidgets.QFrame(self.centralwidget)
-		self.BottomFrame.setSizePolicy(sizePolicy)
-		self.BottomFrame.setMinimumWidth(390)
-		self.BottomFrame.setMaximumWidth(390)
-		self.BottomFrame.setMinimumHeight(38)
-		self.BottomFrame.setMaximumHeight(38)
-
-		self.BottomFrame2 = QtWidgets.QFrame(self.centralwidget)
-		self.BottomFrame2.setSizePolicy(sizePolicy)
-		self.BottomFrame2.setMinimumWidth(240)
-		self.BottomFrame2.setMaximumWidth(240)
-		self.BottomFrame2.setMinimumHeight(38)
-		self.BottomFrame2.setMaximumHeight(38)
-
-		self.AnswerButtonGroup = QtWidgets.QButtonGroup(self.centralwidget)
-
-		self.setCentralWidget(self.centralwidget)
-		self.statusbar = QtWidgets.QStatusBar(self.centralwidget)
-
-	def add_layouts(self):
-		self.TopLayout = QtWidgets.QHBoxLayout()
-		self.MainVerticalLayout.addLayout(self.TopLayout)
-		self.TopLayout.addWidget(self.TopWidget)
-		self.TopLayout.addWidget(self.TopWidget1)
-		self.TopLayout.addWidget(self.TopWidget2)
-		# self.MainVerticalLayout.addWidget(self.TopWidget)
-		self.QuestionsAndVideoLayoutLayout = QtWidgets.QHBoxLayout()
-		self.MainVerticalLayout.addLayout(self.QuestionsAndVideoLayoutLayout)
-
-		self.MainVerticalLayout.addWidget(self.tabWidget)
-
-
-		#add a layout to the checkbox frame
-		self.CheckBoxLayout = QtWidgets.QHBoxLayout()
-		self.MainVerticalLayout.addLayout(self.CheckBoxLayout)
-
-		self.CheckBoxLayout.addWidget(self.CheckboxFrame)
-		self.CheckBoxLayout.addWidget(self.CheckboxFrame1)
-		self.CheckBoxLayout.addWidget(self.CheckboxFrame2)
-
-		self.BottomLayout = QtWidgets.QHBoxLayout()
-		self.MainVerticalLayout.addLayout(self.BottomLayout)
-		self.BottomLayout.addWidget(self.BottomFrame)
-		#create scroll bar and add to the bottom layout
-		self.add_scrollbars()
-		self.BottomLayout.addWidget(self.TimeLeftProgressBar)
-		self.BottomLayout.addWidget(self.BottomFrame2)
-
-		self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
-		self.mediaPlayer.setVideoOutput(self.videoWidget)
-
-		self.setMenuBar(self.menubar)
-		self.setStatusBar(self.statusbar)
-
 # if __name__ == '__main__':
 # 	app = QtWidgets.QApplication(sys.argv)
-# 	#main_app = Ui_ExamLogin()
-# 	main_app = Ui_ExamQuestions(
+# 	main_app = Ui_ExamLogin()
+# 	main_app = Ui_ExamQuestions()
 # 	main_app.show()
 
 # sys.exit(app.exec_())

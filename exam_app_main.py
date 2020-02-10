@@ -28,7 +28,7 @@ from random import randrange
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget,QDesktopWidget #, QApplication, QMainWindow,
+from PyQt5.QtWidgets import QMessageBox, QWidget, QDesktopWidget #, QApplication, QMainWindow,
 #from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
