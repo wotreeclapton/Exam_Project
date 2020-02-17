@@ -16,7 +16,7 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.3.4'
+__version__ = '1.3.5'
 
 import os
 import sys
@@ -379,16 +379,6 @@ class App(QtWidgets.QWidget):
 		self.time_finished = datetime.datetime.today()
 		#Store score in a list
 		self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
-		#Check for exsisting excel file
-		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir('//COMPUTER-TEACHE/Users/Public/exam_res', self.logger): #r'\\ep02\Public\Steve' use format for network location
-			try:
-				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
-				self.write_to_result_wb()
-			except FileNotFoundError:
-				self.results_wb = Workbook() #create the workbook then write to workbook method and save
-				self.write_to_result_wb()
-				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
 
 		#Save a copy of the result to the documents folder
 		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
@@ -396,6 +386,19 @@ class App(QtWidgets.QWidget):
 		with cdir(doc_folder, self.logger):
 			with open(self.results_filename, 'w') as results_file:
 				results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+
+		#Check for exsisting excel file
+		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
+		with cdir('//COMPUTER-TEACHE/Users/Public/exam_res', self.logger): #r'\\ep02\Public\Steve' use format for network location
+			try:
+				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
+				self.write_to_result_wb()
+			except Exception as network_error:
+				self.results_wb = Workbook() #create the workbook then write to workbook method and save
+				self.write_to_result_wb()
+				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
+				self.logger.error(" Error: {}".format(network_error))
+
 		#clear list
 		self.result_list.clear()
 		self.correct_answers = 0
@@ -414,6 +417,7 @@ class App(QtWidgets.QWidget):
 			self.work_sheet.cell(row=self.student_number+1, column=col+1, value=self.result_list[col])
 
 		self.results_wb.save(filename = self.results_filename)
+		self.results_wb.close()
 
 	def forward_button_clicked(self):
 		if self.answered > 0:
@@ -474,11 +478,13 @@ class App(QtWidgets.QWidget):
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
+		print(self.answered, self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]))
 		if self.answered == self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]):
 			self.answer_state = True
 		else:
 			self.answer_state = False
 			#self.correct_answers += 1
+		print(self.answer_state)
 
 	def convert(self, val):
 		return self.string_convert[val]
