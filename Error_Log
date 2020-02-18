@@ -1,1 +1,4 @@
 
+2020-02-18 13:37:48,834:__main__: Unable to connect to network location: //COMPUTER-TEACHE/Users/Public/exam_res
+2020-02-18 13:37:48,846:__main__: Created: ENG21102 Final Exam results.xlsx in D:\Users\Teacher Steve\Documents\01Steve_School_Main\02Office & Programing\103Exam-Project\resources
+2020-02-18 13:37:48,846:__main__: Error: [Errno 2] No such file or directory: 'ENG21102 Final Exam results.xlsx'

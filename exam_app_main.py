@@ -406,7 +406,7 @@ class App(QtWidgets.QWidget):
 		self.results_filename = "{} {} Student {} temp results.bat".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
 		with cdir("resources", self.logger):
 			with open(self.results_filename, 'w') as results_file:
-				results_file.write("{}-{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+				results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
