@@ -16,7 +16,7 @@ or use exception
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.3.5'
+__version__ = '1.4.3'
 
 import os
 import sys
@@ -36,7 +36,7 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font
 
-from app_guis import Ui_ExamLogin, Ui_ExamQuestions
+from App_Guis import Ui_ExamLogin, Ui_ExamQuestions
 import methods
 from methods import change_dir as cdir
 
@@ -141,7 +141,7 @@ class App(QtWidgets.QWidget):
 
 			if self.password_input == self.student_passwords[self.student_number] and self.student_number !=0 and self.exam_number !=0:
 				#check the right exam is chosen
-				if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number:
+				if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number or (self.year_chosen + 4) == self.exam_number:
 					self.login_gui.close()
 					self.open_exam_window()
 				else:
@@ -350,6 +350,7 @@ class App(QtWidgets.QWidget):
 		self.msgbox.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
 		self.msgbox.setWindowTitle(msg)
 		self.msgbox.setDefaultButton(QMessageBox.Ok)
+		self.msgbox.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowTitleHint)
 
 		if msg_type == 2:
 			self.msgbox.setText("Please contact your teacher or system admin!")
@@ -359,7 +360,9 @@ class App(QtWidgets.QWidget):
 			self.msgbox.setText('Your score is {}/{}'.format(str(self.correct_answers), str(len(self.exam_questions)-1)))
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
-			self.save_results()
+			#clear list
+			self.result_list.clear()
+			self.correct_answers = 0
 		if msg_type == 0:
 			self.msgbox.setText('Caution! \n You will loose your score.')
 			self.msgbox.setIcon(QMessageBox.Warning)
@@ -399,9 +402,11 @@ class App(QtWidgets.QWidget):
 				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
 				self.logger.error(" Error: {}".format(network_error))
 
-		#clear list
-		self.result_list.clear()
-		self.correct_answers = 0
+	def save_running_result(self):
+		self.results_filename = "{} {} Student {} temp results.bat".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
+		with cdir("resources", self.logger):
+			with open(self.results_filename, 'w') as results_file:
+				results_file.write("{}-{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
@@ -423,9 +428,11 @@ class App(QtWidgets.QWidget):
 		if self.answered > 0:
 			if self.answer_state:
 				self.correct_answers += 1
+				self.save_running_result()
 			self.question_number += 1
 			if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
+				self.save_results()
 				self.message_boxes(msg='Exam finished!', msg_type=1)
 			self.exam_gui.tabWidget.setCurrentIndex(0)
 			self.exam_gui.FalsecheckBox.setChecked(True)
@@ -478,13 +485,11 @@ class App(QtWidgets.QWidget):
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
-		print(self.answered, self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]))
 		if self.answered == self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]):
 			self.answer_state = True
 		else:
 			self.answer_state = False
 			#self.correct_answers += 1
-		print(self.answer_state)
 
 	def convert(self, val):
 		return self.string_convert[val]
