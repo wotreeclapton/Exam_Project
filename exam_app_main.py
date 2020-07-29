@@ -13,6 +13,15 @@ video/pic expand on question label
 redesign tabs to 4 labels and have expand button on each
 for logging use  exc_info=1 in error string to print exception info
 or use exception
+
+Timer still running after last answer
+
+Uninstaller
+remove
+win32com
+lib2to3\tests
+PyQt5\Qt\pluginsa
+resources(thestuff in it)
 '''
 
 __author__ = 'Mr Steven J Walden'
@@ -24,7 +33,7 @@ import time
 import logging
 import datetime
 from win32com.shell import shell, shellcon
-from random import randrange
+from random import randrange, shuffle
 
 from win32event import CreateMutex
 from win32api import GetLastError
@@ -196,7 +205,8 @@ class App(QtWidgets.QWidget):
 				if os.path.exists(self.photo_path):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
-					self.logger.error(" {}'s photo {}.png is missing in M{}-1 folder".format(self.student_nicknames[st], str(st), str(st)))
+					os.chdir(cwd)
+					self.logger.error(" {}'s photo {}.png is missing in M{}-1 folder".format(self.student_nicknames[st], str(st), str(self.year_chosen)))
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
@@ -269,11 +279,12 @@ class App(QtWidgets.QWidget):
 		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Create a random list(sequence) of question numbers
-		self.quest_seq = []
-		while len(self.quest_seq) < (len(self.exam_questions) -1):
-			choice = randrange(1, len(self.exam_questions))
-			if choice not in self.quest_seq:
-				self.quest_seq.append(choice)
+		self.quest_seq = [q_num for q_num in range(1, len(self.exam_questions))]
+		# for q in range(1, len(self.exam_questions)):
+		# 	self.quest_seq.append(q)
+		shuffle(self.quest_seq)
+		print(len(self.exam_questions))
+		print(self.quest_seq)
 
 		#Show window
 		self.populate_boxes(self.quest_seq[self.question_number - 1]) #pass the random question from a list
