@@ -278,13 +278,9 @@ class App(QtWidgets.QWidget):
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
-		#Create a random list(sequence) of question numbers
+		#Create a list of question numbers and shuffle them
 		self.quest_seq = [q_num for q_num in range(1, len(self.exam_questions))]
-		# for q in range(1, len(self.exam_questions)):
-		# 	self.quest_seq.append(q)
 		shuffle(self.quest_seq)
-		print(len(self.exam_questions))
-		print(self.quest_seq)
 
 		#Show window
 		self.populate_boxes(self.quest_seq[self.question_number - 1]) #pass the random question from a list
@@ -335,7 +331,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.exam_name, self.exam_name)
+		self.path = '{}\\{}_Questions.csv'.format(self.exam_name, self.exam_name)
 		# self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
@@ -471,7 +467,7 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with cdir("{}/{}_exam_data".format(self.network_location, self.exam_name), self.logger
+				with cdir("{}/{}".format(self.network_location, self.exam_name), self.logger
 					):
 					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
@@ -484,7 +480,7 @@ class App(QtWidgets.QWidget):
 
 		#Set video media
 		#fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
-		fileName = "{}/{}_exam_data/{}".format(self.network_location, self.exam_name, str(self.exam_photoquestion[quest]))
+		fileName = "{}/{}/{}".format(self.network_location, self.exam_name, str(self.exam_photoquestion[quest]))
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
