@@ -32,6 +32,10 @@ import sys
 import time
 import logging
 import datetime
+import pywintypes
+import subprocess
+import win32net
+import win32file
 from win32com.shell import shell, shellcon
 from random import randrange, shuffle
 
@@ -68,6 +72,17 @@ class App(QtWidgets.QWidget):
 		self.file_handler.setFormatter(self.formatter)
 		self.logger.addHandler(self.file_handler)
 
+		#Clear any network logins and set new login
+		# subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
+		# self.network_location = '//192.168.88.250/exam_app_data'
+		# self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'}
+		#new login to exam_app account
+		# try:
+		#     win32net.NetUseAdd(None, 2, self.netlogin)   
+		# except pywintypes.error as e:
+		# 	self.logger.error(str(e))
+		# 	self.message_boxes(msg='NetworkError', msg_type=3, err=e)
+
 		self.screen_size = QDesktopWidget().availableGeometry()
 		#setup app windows and theme
 		methods.dark_theme(app)
@@ -92,7 +107,7 @@ class App(QtWidgets.QWidget):
 			except FileNotFoundError:
 				self.logger.error(" Cannot load the class list file!")
 				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
 
 		#load exams
 			try:
@@ -105,7 +120,7 @@ class App(QtWidgets.QWidget):
 			except FileNotFoundError:
 				self.logger.error(" Cannot load the exam list file!")
 				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
@@ -320,7 +335,7 @@ class App(QtWidgets.QWidget):
 			except FileNotFoundError:
 				self.logger.error(" Can not find the file {}".format(path))
 				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
 
 	def read_exam_questions_csv(self):
 		self.exam_questions.clear()
@@ -348,21 +363,25 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
 		#exits app and saves current score
 		if left_time <= 0:
-			self.message_boxes(msg='Time finished!', msg_type=1)
+			self.message_boxes(msg='Time finished!', msg_type=1, err=None)
 
 	def set_time_label(self, left_time):
 		self.exam_gui.MinLeftLabel.setText(str(left_time) + " Min Left")
 
 	def logout_button_clicked(self):
-		self.message_boxes(msg='Logout?', msg_type=0)
+		self.message_boxes(msg='Logout?', msg_type=0, err=None)
 
-	def message_boxes(self, msg, msg_type):
+	def message_boxes(self, msg, msg_type, err):
 		self.msgbox = QMessageBox()
 		self.msgbox.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
 		self.msgbox.setWindowTitle(msg)
 		self.msgbox.setDefaultButton(QMessageBox.Ok)
 		self.msgbox.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowTitleHint)
 
+		if msg_type == 3:
+			self.msgbox.setText("Please contact your teacher.\n{}".format(str(err)))
+			self.msgbox.setIcon(QMessageBox.Critical)
+			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 2:
 			self.msgbox.setText("Please contact your teacher or system admin!")
 			self.msgbox.setIcon(QMessageBox.Critical)
@@ -383,7 +402,9 @@ class App(QtWidgets.QWidget):
 		if self.msgbox.exec() == QMessageBox.Ok:
 			self.allowed_time = 20 * 600
 			self.question_number = 1
-			if msg_type != 2:
+			if msg_type == 3:
+				sys.exit()
+			if msg_type < 2:
 				self.scroll_thread.is_running = False
 				self.time_thread.is_running = False
 				self.exam_gui.close()
@@ -403,7 +424,7 @@ class App(QtWidgets.QWidget):
 
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir('//COMPUTER-TEACHE/Users/Public/exam_res', self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir(self.network_location, self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
