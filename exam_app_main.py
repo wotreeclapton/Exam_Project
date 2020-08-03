@@ -32,16 +32,16 @@ import sys
 import time
 import logging
 import datetime
-import pywintypes
-import subprocess
-import win32net
-import win32file
+# import pywintypes
+# import subprocess
+# import win32net
+# import win32file
 from win32com.shell import shell, shellcon
 from random import randrange, shuffle
 
-from win32event import CreateMutex
-from win32api import GetLastError
-from winerror import ERROR_ALREADY_EXISTS
+# from win32event import CreateMutex
+# from win32api import GetLastError
+# from winerror import ERROR_ALREADY_EXISTS
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -527,19 +527,18 @@ class App(QtWidgets.QWidget):
 		return self.string_convert[val]
 
 
-handle = CreateMutex(None, 1, 'A unique mutex name')
+# handle = CreateMutex(None, 1, 'A unique mutex name')
 print(sys.executable)
 
 if __name__ == '__main__':
-	if GetLastError(  ) == ERROR_ALREADY_EXISTS:
-		sys.exit(1) #exit if app instance already exists
-	else:
-	    print("Qt version:", QT_VERSION_STR)
-	    print("Author:", __author__)
-	    print("App version:",__version__)
+	# if GetLastError(  ) == ERROR_ALREADY_EXISTS:
+	# 	sys.exit(1) #exit if app instance already exists
+	# else:
+    print("Qt version:", QT_VERSION_STR)
+    print("Author:", __author__)
+    print("App version:",__version__)
 
-	    app = QtWidgets.QApplication(sys.argv)
-	    main_app = App()
+    app = QtWidgets.QApplication(sys.argv)
+    main_app = App()
 
-	sys.exit(app.exec_())
-
+sys.exit(app.exec_())
