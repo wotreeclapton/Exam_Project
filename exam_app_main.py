@@ -95,7 +95,7 @@ class App(QtWidgets.QWidget):
 		self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'}
 		#new login to exam_app account
 		try:
-		    win32net.NetUseAdd(None, 2, self.netlogin)   
+		    win32net.NetUseAdd(None, 2, self.netlogin)
 		except pywintypes.error as e:
 			self.logger.error(str(e))
 			self.message_boxes(msg='NetworkError', msg_type=3, err=e)
@@ -289,10 +289,13 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.OutOfQuestionLabel.setText("/" + (str(len(self.exam_questions) -1)))
 
 		with cdir(self.photo_location, self.logger):
-			if os.path.exists(self.photo_path):
-				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
-			else:
-				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
+			try:
+				if os.path.exists(self.photo_path):
+					self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
+				else:
+					self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
+			except Exception as e:
+				self.logger.error(str(e))
 
 		#self.exam_gui.tabWidget.setCurrentIndex(0)
 
@@ -452,14 +455,29 @@ class App(QtWidgets.QWidget):
 				self.logger.error(" Error: {}".format(network_error))
 
 	def save_running_result(self):
-		self.results_filename = "{} {} Student {} temp results.bat".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
+		self.results_filename = "{}_{}_Student_{}_{}_{}_running_results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number])
+		self.text_to_write = "Question number {} = {} Total score= {}".format(self.quest_seq[self.question_number - 1],self.answer_state, self.correct_answers)
 		with cdir(self.network_location, self.logger):
 			try:
-				with open(self.results_filename, 'w') as results_file:
-					results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+				self.append_new_line_to_file(self.results_filename, self.text_to_write)
+				# with open(self.results_filename, 'w') as results_file:
+				# 	results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
 			except FileNotFoundError as e:
 				self.logger.error(" Cannot load the running result file! {}".format(str(e)))
 				os.chdir(cwd)
+
+	def append_new_line_to_file(self, file_name, text_to_append):
+	    """Append given text as a new line at the end of file"""
+	    # Open the file in append & read mode ('a+')
+	    with open(file_name, "a+") as file_object:
+	        # Move read cursor to the start of file.
+	        file_object.seek(0)
+	        # If file is not empty then append '\n'
+	        data = file_object.read(100)
+	        if len(data) > 0:
+	            file_object.write("\n")
+	        # Append text at the end of file
+	        file_object.write(text_to_append)
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
@@ -481,7 +499,7 @@ class App(QtWidgets.QWidget):
 		if self.answered > 0:
 			if self.answer_state:
 				self.correct_answers += 1
-				self.save_running_result()
+			self.save_running_result()
 			self.question_number += 1
 			if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
