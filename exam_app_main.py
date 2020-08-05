@@ -32,16 +32,16 @@ import sys
 import time
 import logging
 import datetime
-# import pywintypes
-# import subprocess
-# import win32net
-# import win32file
+import pywintypes
+import subprocess
+import win32net
+import win32file
 from win32com.shell import shell, shellcon
 from random import randrange, shuffle
 
-# from win32event import CreateMutex
-# from win32api import GetLastError
-# from winerror import ERROR_ALREADY_EXISTS
+from win32event import CreateMutex
+from win32api import GetLastError
+from winerror import ERROR_ALREADY_EXISTS
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -71,29 +71,41 @@ class App(QtWidgets.QWidget):
 		#self.file_handler.setLevel(logging.ERROR)
 		self.file_handler.setFormatter(self.formatter)
 		self.logger.addHandler(self.file_handler)
+		self.logger.warning("Logger working")
 
-		#Clear any network logins and set new login
-		# subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
-		# self.network_location = '//192.168.88.250/exam_app_data'
-		# self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'}
-		#new login to exam_app account
-		# try:
-		#     win32net.NetUseAdd(None, 2, self.netlogin)   
-		# except pywintypes.error as e:
-		# 	self.logger.error(str(e))
-		# 	self.message_boxes(msg='NetworkError', msg_type=3, err=e)
+		self.network_login()
 
 		self.screen_size = QDesktopWidget().availableGeometry()
 		#setup app windows and theme
 		methods.dark_theme(app)
 		self.load_data()
+		self.logger.warning("Data loaded")
 		self.open_login_window()
+
+	def network_login(self):
+		#Clear any network logins
+		subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
+		# print("{}\\load_location.bat".format(cwd))
+		# #Load network location and set new login for classes, exam files and results
+		# self.load_location = "{}\\load_location.bat".format(cwd)
+		# with open(self.load_location) as file_setup:
+		# 	self.network_location = file_setup.read()
+		# self.logger.warning("Opened load location file")
+		self.network_location = '//192.168.88.250/exam_app_data'
+		self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'}
+		#new login to exam_app account
+		try:
+		    win32net.NetUseAdd(None, 2, self.netlogin)   
+		except pywintypes.error as e:
+			self.logger.error(str(e))
+			self.message_boxes(msg='NetworkError', msg_type=3, err=e)
 
 	def load_data(self):
 		cwd = os.getcwd()
-		#Load network location for classes, exam files and results
-		with open('resources/load_location.bat') as file_setup:
-			self.network_location = file_setup.read()
+		# #Load network location for classes, exam files and results
+		# with open('resources/load_location.bat') as file_setup:
+		# 	self.network_location = file_setup.read()
+		# self.logger.warning("Opened load location file")
 		#load classes
 		self.class_list, self.exam_list = [], []
 		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
@@ -104,10 +116,10 @@ class App(QtWidgets.QWidget):
 					for line in csv_reader:
 						self.class_list.append(line['classes'])
 
-			except FileNotFoundError:
-				self.logger.error(" Cannot load the class list file!")
+			except FileNotFoundError as e:
+				self.logger.error(" Cannot load the class list file! {}".format(str(e)) )
 				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		#load exams
 			try:
@@ -117,10 +129,10 @@ class App(QtWidgets.QWidget):
 					for line in csv_reader:
 						self.exam_list.append(line['exams'])
 
-			except FileNotFoundError:
-				self.logger.error(" Cannot load the exam list file!")
+			except FileNotFoundError as e:
+				self.logger.error(" Cannot load the exam list file! {}".format(str(e)))
 				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
+				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
@@ -383,7 +395,7 @@ class App(QtWidgets.QWidget):
 			self.msgbox.setIcon(QMessageBox.Critical)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 2:
-			self.msgbox.setText("Please contact your teacher or system admin!")
+			self.msgbox.setText("Please contact your teacher.\n{}".format(str(err)))
 			self.msgbox.setIcon(QMessageBox.Critical)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 1:
@@ -419,8 +431,13 @@ class App(QtWidgets.QWidget):
 		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
 		self.results_filename = "{} {} Student {} results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
 		with cdir(doc_folder, self.logger):
-			with open(self.results_filename, 'w') as results_file:
-				results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+			try:
+				with open(self.results_filename, 'w') as results_file:
+					results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+			except Exception as e:
+				self.logger.error(" Cannot save a copy of the results to {} because {}".format(doc_folder, str(e)))
+				os.chdir(cwd)
+
 
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
@@ -436,9 +453,13 @@ class App(QtWidgets.QWidget):
 
 	def save_running_result(self):
 		self.results_filename = "{} {} Student {} temp results.bat".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
-		with cdir("resources", self.logger):
-			with open(self.results_filename, 'w') as results_file:
-				results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+		with cdir(self.network_location, self.logger):
+			try:
+				with open(self.results_filename, 'w') as results_file:
+					results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+			except FileNotFoundError as e:
+				self.logger.error(" Cannot load the running result file! {}".format(str(e)))
+				os.chdir(cwd)
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
@@ -465,7 +486,7 @@ class App(QtWidgets.QWidget):
 			if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_questions) -1)
 				self.save_results()
-				self.message_boxes(msg='Exam finished!', msg_type=1)
+				self.message_boxes(msg='Exam finished!', msg_type=1, err=None)
 			self.exam_gui.tabWidget.setCurrentIndex(0)
 			self.exam_gui.FalsecheckBox.setChecked(True)
 
@@ -527,18 +548,19 @@ class App(QtWidgets.QWidget):
 		return self.string_convert[val]
 
 
-# handle = CreateMutex(None, 1, 'A unique mutex name')
+handle = CreateMutex(None, 1, 'A unique mutex name')
 print(sys.executable)
 
 if __name__ == '__main__':
-	# if GetLastError(  ) == ERROR_ALREADY_EXISTS:
-	# 	sys.exit(1) #exit if app instance already exists
-	# else:
-    print("Qt version:", QT_VERSION_STR)
-    print("Author:", __author__)
-    print("App version:",__version__)
+	if GetLastError(  ) == ERROR_ALREADY_EXISTS:
+		print("Already running")
+		sys.exit(1) #exit if app instance already exists
+	else:
+	    print("Qt version:", QT_VERSION_STR)
+	    print("Author:", __author__)
+	    print("App version:",__version__)
 
-    app = QtWidgets.QApplication(sys.argv)
-    main_app = App()
+	    app = QtWidgets.QApplication(sys.argv)
+	    main_app = App()
 
-sys.exit(app.exec_())
+	sys.exit(app.exec_())
