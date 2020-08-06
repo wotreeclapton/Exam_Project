@@ -181,11 +181,11 @@ class App(QtWidgets.QWidget):
 
 			if self.password_input == self.student_passwords[self.student_number] and self.student_number !=0 and self.exam_number !=0:
 				#check the right exam is chosen
-				if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number or (self.year_chosen + 4) == self.exam_number:
-					self.login_gui.close()
-					self.open_exam_window()
-				else:
-					self.login_gui.ExamChoiceCmb.clear()
+				# if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number or (self.year_chosen + 4) == self.exam_number:
+				self.login_gui.close()
+				self.open_exam_window()
+				# else:
+				# 	self.login_gui.ExamChoiceCmb.clear()
 			else:
 				self.login_gui.InputPassword.clear()
 		except (AttributeError, KeyError):
@@ -199,10 +199,12 @@ class App(QtWidgets.QWidget):
 			self.login_gui.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
 	def exam_choice_changed(self, exa):
+		#Get exam number and name from combo box
 		self.exam_number = exa
 		self.exam_name = self.login_gui.ExamChoiceCmb.itemText(exa)
 
 	def class_name_changed(self, cls):
+		#recieves an integer (cls) from the combo box when it changes
 		self.class_name = self.login_gui.ClassCmb.itemText(cls)
 		self.year_chosen = cls
 
@@ -251,8 +253,15 @@ class App(QtWidgets.QWidget):
 		#Initialise exam window
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
+		#Set any variables
 		self.question_number = 1
 		self.answer_state = False
+		#Create exam results folder in the network location
+		try:
+			with cdir(self.network_location, self.logger):
+				os.mkdir(self.exam_name + "_results")
+		except FileExistsError:
+			pass
 
 		#hide back button in student mode
 		if self.admin != True:
@@ -457,7 +466,7 @@ class App(QtWidgets.QWidget):
 	def save_running_result(self):
 		self.results_filename = "{}_{}_Student_{}_{}_{}_running_results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number])
 		self.text_to_write = "Question number {} = {} Total score= {}".format(self.quest_seq[self.question_number - 1],self.answer_state, self.correct_answers)
-		with cdir(self.network_location, self.logger):
+		with cdir("{}\\{}_results".format(self.network_location, self.exam_name), self.logger):
 			try:
 				self.append_new_line_to_file(self.results_filename, self.text_to_write)
 				# with open(self.results_filename, 'w') as results_file:
