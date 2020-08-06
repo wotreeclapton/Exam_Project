@@ -1,5 +1,5 @@
 '''Exam app Guis developed by Mr Steven J Walden
-    Dec. 2019
+    Dec. 2019-2020
     SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
 [See license at end of file]
 '''
@@ -538,16 +538,71 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.BackButton.setShortcut("Left")
 		self.ForwardButton.setShortcut("Return")
 
-# if __name__ == '__main__':
-# 	app = QtWidgets.QApplication(sys.argv)
-# 	main_app = Ui_ExamLogin()
-# 	main_app = Ui_ExamQuestions()
-# 	main_app.show()
+class Ui_StartupWindow(QtWidgets.QWidget):
+	"""docstring for Ui_AboutWindow"""
+	def __init__(self, parent=None):
+		super(Ui_StartupWindow, self).__init__(parent)
+		self.resize(320, 360)
+		self.setMinimumSize(320, 360)
+		self.setMaximumSize(320, 360)
+		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
+		self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
 
-# sys.exit(app.exec_())
+		self.add_labels()
+
+	def add_labels(self):
+		self.AppLogo = QtWidgets.QLabel(self)
+		self.AppLogo.setMinimumSize(QtCore.QSize(162, 162))
+		self.AppLogo.setGeometry(int(self.geometry().width()/2 - self.AppLogo.width() / 2), 16, 160, 160)
+		self.AppLogo.setPixmap(QtGui.QPixmap("img/Ep logo160x160.png"))
+		self.AppLogo.setAlignment(QtCore.Qt.AlignCenter)
+
+		font = QtGui.QFont()
+		font.setPointSize(16)
+		font.setBold(True)
+		self.AppName = QtWidgets.QLabel(self)
+		self.AppName.setMinimumSize(QtCore.QSize(180, 50))
+		self.AppName.setGeometry(int(self.geometry().width()/2 - self.AppName.width() / 2), 184, 160, 50)
+		self.AppName.setText("Exam Application")
+		self.AppName.setFont(font)
+		self.AppName.setAlignment(QtCore.Qt.AlignCenter)
+
+		font.setPointSize(12)
+		font.setBold(False)
+		self.VersionLabel = QtWidgets.QLabel(self)
+		self.VersionLabel.setMinimumSize(QtCore.QSize(160, 50))
+		self.VersionLabel.setGeometry(int(self.geometry().width()/2 - self.VersionLabel.width() / 2), 214, 120, 50)
+		self.VersionLabel.setText("Loading please wait!")
+		self.VersionLabel.setFont(font)
+		self.VersionLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+		font.setPointSize(11)
+		self.CopyrightLabel = QtWidgets.QLabel(self)
+		self.CopyrightLabel.setMinimumSize(QtCore.QSize(280, 50))
+		self.CopyrightLabel.setGeometry(int(self.geometry().width()/2 - self.CopyrightLabel.width() / 2), 260, 280, 50)
+		self.CopyrightLabel.setText("Copyright 2020 Mr Steven J Walden.")
+		self.CopyrightLabel.setFont(font)
+		self.CopyrightLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+		font.setPointSize(10)
+		self.RightsLabel = QtWidgets.QLabel(self)
+		self.RightsLabel.setMinimumSize(QtCore.QSize(120, 50))
+		self.RightsLabel.setGeometry(int(self.geometry().width()/2 - self.RightsLabel.width() / 2), 290, 120, 50)
+		self.RightsLabel.setText("All rights reserved.")
+		self.RightsLabel.setFont(font)
+		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
+
+if __name__ == '__main__':
+	app = QtWidgets.QApplication(sys.argv)
+	# main_app = Ui_ExamLogin()
+	# main_app = Ui_ExamQuestions()
+	main_app = Ui_StartupWindow()
+	main_app.show()
+
+sys.exit(app.exec_())
 
 
-# Copyright (c) 2019 Steven Walden
+# Copyright (c) 2019-2020 Steven Walden
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
