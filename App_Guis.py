@@ -546,7 +546,7 @@ class Ui_StartupWindow(QtWidgets.QWidget):
 		self.setMinimumSize(320, 360)
 		self.setMaximumSize(320, 360)
 		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
-		self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
+		self.setWindowFlags(QtCore.Qt.WindowTransparentForInput)
 
 		self.add_labels()
 
@@ -592,14 +592,14 @@ class Ui_StartupWindow(QtWidgets.QWidget):
 		self.RightsLabel.setFont(font)
 		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-if __name__ == '__main__':
-	app = QtWidgets.QApplication(sys.argv)
-	# main_app = Ui_ExamLogin()
-	# main_app = Ui_ExamQuestions()
-	main_app = Ui_StartupWindow()
-	main_app.show()
+# if __name__ == '__main__':
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	# main_app = Ui_ExamLogin()
+# 	# main_app = Ui_ExamQuestions()
+# 	main_app = Ui_StartupWindow()
+# 	main_app.show()
 
-sys.exit(app.exec_())
+# sys.exit(app.exec_())
 
 
 # Copyright (c) 2019-2020 Steven Walden

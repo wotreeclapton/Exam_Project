@@ -53,7 +53,7 @@ from PyQt5.QtMultimediaWidgets import QVideoWidget
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font
 
-from App_Guis import Ui_ExamLogin, Ui_ExamQuestions
+from App_Guis import Ui_ExamLogin, Ui_ExamQuestions, Ui_StartupWindow
 import methods
 from methods import change_dir as cdir
 
@@ -71,15 +71,14 @@ class App(QtWidgets.QWidget):
 		#self.file_handler.setLevel(logging.ERROR)
 		self.file_handler.setFormatter(self.formatter)
 		self.logger.addHandler(self.file_handler)
-		self.logger.warning("Logger working")
-
-		self.network_login()
-
-		self.screen_size = QDesktopWidget().availableGeometry()
-		#setup app windows and theme
+		#Load theme
 		methods.dark_theme(app)
+		self.screen_size = QDesktopWidget().availableGeometry()
+		self.open_startup_window()
+		#self.network_location = "\\\\ep02\\Public\\Steve\\exam_app_data"
+		self.network_login()
+		#setup app windows and theme
 		self.load_data()
-		self.logger.warning("Data loaded")
 		self.open_login_window()
 
 	def network_login(self):
@@ -91,8 +90,8 @@ class App(QtWidgets.QWidget):
 		# with open(self.load_location) as file_setup:
 		# 	self.network_location = file_setup.read()
 		# self.logger.warning("Opened load location file")
-		self.network_location = '//192.168.88.250/exam_app_data'
-		self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'}
+		self.network_location = '//192.168.88.250/exam_app_data' #c #//192.168.88.250/exam_app_data #//10.0.0.77/exam_app_data
+		self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'} #'username': 'exam_app', 'password': 'passyourexam' #'username': 'Teacher-Steve', 'password': 'bigair77'
 		#new login to exam_app account
 		try:
 		    win32net.NetUseAdd(None, 2, self.netlogin)
@@ -150,6 +149,12 @@ class App(QtWidgets.QWidget):
 		self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
+	def open_startup_window(self):
+		self.startup_screen = Ui_StartupWindow()
+		methods.screen_location(self.startup_screen, False, self.screen_size)
+		self.startup_screen.setWindowTitle("Exam App V {}".format(__version__))
+		self.startup_screen.show()
+
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
 		methods.screen_location(self.login_gui, False, self.screen_size)
@@ -173,6 +178,7 @@ class App(QtWidgets.QWidget):
 		self.login_gui.ClassCmb.setFocus()
 
 		self.login_gui.show()
+		self.startup_screen.close()
 
 	def login_okaybutton_clicked(self):
 		try:
@@ -453,7 +459,7 @@ class App(QtWidgets.QWidget):
 
 		#Check for exsisting excel file
 		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir(self.network_location, self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir("{}\\{}_results".format(self.network_location, self.exam_name), self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
