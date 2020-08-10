@@ -8,7 +8,6 @@ EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
 '''
 Raise error reports
 	video error
-list all student answers in excel sheet
 video/pic expand on question label
 redesign tabs to 4 labels and have expand button on each
 for logging use  exc_info=1 in error string to print exception info
@@ -19,13 +18,12 @@ Timer still running after last answer
 Uninstaller
 remove
 win32com
-lib2to3\tests
-PyQt5\Qt\pluginsa
-resources(thestuff in it)
+lib2to3\\tests
+PyQt5\\Qt\\plugins
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.4.5'
+__version__ = '1.5.0'
 
 import os
 import sys
@@ -84,14 +82,18 @@ class App(QtWidgets.QWidget):
 	def network_login(self):
 		#Clear any network logins
 		subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
-		# print("{}\\load_location.bat".format(cwd))
 		# #Load network location and set new login for classes, exam files and results
-		# self.load_location = "{}\\load_location.bat".format(cwd)
-		# with open(self.load_location) as file_setup:
-		# 	self.network_location = file_setup.read()
-		# self.logger.warning("Opened load location file")
-		self.network_location = '//192.168.88.250/exam_app_data' #c #//192.168.88.250/exam_app_data #//10.0.0.77/exam_app_data
-		self.netlogin = {'remote': self.network_location, 'local': '', 'username': 'exam_app', 'password': 'passyourexam'} #'username': 'exam_app', 'password': 'passyourexam' #'username': 'Teacher-Steve', 'password': 'bigair77'
+		try:
+			with open("LL.txt", "r") as file:
+				self.login_info = [line for line in file]
+		except FileNotFoundError as e:
+				self.logger.error(" Cannot load the login details file! {}".format(str(e)))
+				self.message_boxes(msg='FileNotFoundError', msg_type=3, err=e)
+
+		self.network_location = self.login_info[0][0:-1] #c #//192.168.88.250/exam_app_data #//10.0.0.77/exam_app_data
+		self.user_name = self.login_info[1][0:-1]
+		self.pass_word = self.login_info[2][0:-1]
+		self.netlogin = {'remote': self.network_location, 'local': '', 'username': self.user_name, 'password': self.pass_word} #'username': 'exam_app', 'password': 'passyourexam' #'username': 'Teacher-Steve', 'password': 'bigair77'
 		#new login to exam_app account
 		try:
 		    win32net.NetUseAdd(None, 2, self.netlogin)
@@ -101,10 +103,6 @@ class App(QtWidgets.QWidget):
 
 	def load_data(self):
 		cwd = os.getcwd()
-		# #Load network location for classes, exam files and results
-		# with open('resources/load_location.bat') as file_setup:
-		# 	self.network_location = file_setup.read()
-		# self.logger.warning("Opened load location file")
 		#load classes
 		self.class_list, self.exam_list = [], []
 		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
@@ -119,7 +117,6 @@ class App(QtWidgets.QWidget):
 				self.logger.error(" Cannot load the class list file! {}".format(str(e)) )
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
-
 		#load exams
 			try:
 				with open('exam_list.csv','r') as csv_file:
@@ -146,7 +143,7 @@ class App(QtWidgets.QWidget):
 		self.student_names.clear()
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
-		self.path = 'Student_Details_CSV_M{}-1.csv'.format(str(clas))
+		self.path = 'Student_Details_CSV_M{}-{}.csv'.format(clas[1],clas[3])
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_startup_window(self):
@@ -212,10 +209,10 @@ class App(QtWidgets.QWidget):
 	def class_name_changed(self, cls):
 		#recieves an integer (cls) from the combo box when it changes
 		self.class_name = self.login_gui.ClassCmb.itemText(cls)
-		self.year_chosen = cls
+		self.year_chosen = self.class_list[cls]
 
 		if cls > 0:
-			self.read_login_csv(cls)
+			self.read_login_csv(self.class_list[cls])
 			self.class_name = self.class_list[cls]
 			self.login_gui.ClassLabel.setText(self.class_list[cls])
 			self.login_gui.ExamChoiceCmb.clear()
@@ -233,7 +230,7 @@ class App(QtWidgets.QWidget):
 		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-		self.photo_location = (self.network_location + '/M{}-1'.format(str(self.year_chosen)))
+		self.photo_location = (self.network_location + '/M{}-{}'.format(self.year_chosen[1], self.year_chosen[3]))
 		with cdir(self.photo_location, self.logger):
 			if st > 0:
 				self.photo_path = str(st) + '.png'
@@ -241,7 +238,7 @@ class App(QtWidgets.QWidget):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					os.chdir(cwd)
-					self.logger.error(" {}'s photo {}.png is missing in M{}-1 folder".format(self.student_nicknames[st], str(st), str(self.year_chosen)))
+					self.logger.error(" {}'s photo {}.png is missing in M{}-{} folder".format(self.student_nicknames[st], str(st), self.year_chosen[1], self.year_chosen[3]))
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
@@ -466,8 +463,8 @@ class App(QtWidgets.QWidget):
 			except Exception as network_error:
 				self.results_wb = Workbook() #create the workbook then write to workbook method and save
 				self.write_to_result_wb()
-				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
 				self.logger.error(" Error: {}".format(network_error))
+				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
 
 	def save_running_result(self):
 		self.results_filename = "{}_{}_Student_{}_{}_{}_running_results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number])
@@ -507,7 +504,12 @@ class App(QtWidgets.QWidget):
 
 			self.work_sheet.cell(row=self.student_number+1, column=col+1, value=self.result_list[col])
 
-		self.results_wb.save(filename = self.results_filename)
+		try:
+			self.results_wb.save(filename = self.results_filename)
+		except PermissionError as e:
+			self.logger.error(" File was still open: {}".format(str(e)))
+			self.message_boxes(msg='PermissionError', msg_type=2, err='File is still open {}'.format(e))
+		
 		self.results_wb.close()
 
 	def forward_button_clicked(self):
