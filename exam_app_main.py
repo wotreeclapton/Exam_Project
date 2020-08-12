@@ -143,19 +143,19 @@ class App(QtWidgets.QWidget):
 		self.student_names.clear()
 		self.student_nicknames.clear()
 		self.student_passwords.clear()
-		self.path = 'Student_Details_CSV_M{}-{}.csv'.format(clas[1],clas[3])
+		self.path = f'Student_Details_CSV_M{clas[1]}-{clas[3]}.csv'
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_startup_window(self):
 		self.startup_screen = Ui_StartupWindow()
 		methods.screen_location(self.startup_screen, False, self.screen_size)
-		self.startup_screen.setWindowTitle("Exam App V {}".format(__version__))
+		self.startup_screen.setWindowTitle(f"Exam App V {__version__}")
 		self.startup_screen.show()
 
 	def open_login_window(self):
 		self.login_gui = Ui_ExamLogin()
 		methods.screen_location(self.login_gui, False, self.screen_size)
-		self.login_gui.setWindowTitle("V {} App login".format(__version__))
+		self.login_gui.setWindowTitle(f"V {__version__} App login")
 
 		#Connect the methods
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
@@ -230,7 +230,7 @@ class App(QtWidgets.QWidget):
 		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-		self.photo_location = (self.network_location + '/M{}-{}'.format(self.year_chosen[1], self.year_chosen[3]))
+		self.photo_location = (self.network_location + f'/M{self.year_chosen[1]}-{self.year_chosen[3]}')
 		with cdir(self.photo_location, self.logger):
 			if st > 0:
 				self.photo_path = str(st) + '.png'
@@ -238,7 +238,7 @@ class App(QtWidgets.QWidget):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					os.chdir(cwd)
-					self.logger.error(" {}'s photo {}.png is missing in M{}-{} folder".format(self.student_nicknames[st], str(st), self.year_chosen[1], self.year_chosen[3]))
+					self.logger.error(f" {self.student_nicknames[st]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
@@ -290,15 +290,15 @@ class App(QtWidgets.QWidget):
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
 		#set the text etc
-		self.exam_gui.setWindowTitle("{} {} Questions".format(self.exam_questions[0], self.exam_AnswerA[0]))
-		self.exam_gui.ExamTitle.setText(self.exam_questions[0]+ "\n" + self.exam_AnswerA[0])
+		self.exam_gui.setWindowTitle(f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Questions")
+		self.exam_gui.ExamTitle.setText(f"{self.exam_questions[0]}\n{self.exam_AnswerA[0]}")
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
 		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
-		self.exam_gui.OutOfQuestionLabel.setText("/" + (str(len(self.exam_questions) -1)))
+		self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_questions) -1}")
 
 		with cdir(self.photo_location, self.logger):
 			try:
@@ -314,7 +314,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
 		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
 		self.exam_gui.TimeLeftProgressBar.setValue(self.allowed_time)
-		self.exam_gui.MinLeftLabel.setText(str(int(self.allowed_time / 600)) + " Min Left")
+		self.exam_gui.MinLeftLabel.setText(f"{int(self.allowed_time / 600)} Min Left")
 
 		#Create list of answerlabels and answer texts
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
@@ -351,7 +351,7 @@ class App(QtWidgets.QWidget):
 							self.student_names.append(line['Name'])
 							self.student_nicknames.append(line['Nicknames'])
 							self.student_passwords.append(line['Passwords'])
-						else: #reads exam questions csv 
+						else: #reads exam questions csv
 							self.exam_questions.append(line['Questions'])
 							self.exam_AnswerA.append(line['AnswerA'])
 							self.exam_AnswerB.append(line['AnswerB'])
@@ -360,7 +360,7 @@ class App(QtWidgets.QWidget):
 							self.exam_Rightanswer.append(line['Rightanswer'])
 							self.exam_photoquestion.append(line['Photoquestion'])
 			except FileNotFoundError:
-				self.logger.error(" Can not find the file {}".format(path))
+				self.logger.error(f" Can not find the file {path}")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
 
@@ -373,7 +373,7 @@ class App(QtWidgets.QWidget):
 		self.exam_Rightanswer.clear()
 		self.exam_photoquestion.clear()
 
-		self.path = '{}\\{}_Questions.csv'.format(self.exam_name, self.exam_name)
+		self.path = f'{self.exam_name}\\{self.exam_name}_Questions.csv'
 		# self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
@@ -393,7 +393,7 @@ class App(QtWidgets.QWidget):
 			self.message_boxes(msg='Time finished!', msg_type=1, err=None)
 
 	def set_time_label(self, left_time):
-		self.exam_gui.MinLeftLabel.setText(str(left_time) + " Min Left")
+		self.exam_gui.MinLeftLabel.setText(f"{left_time} Min Left")
 
 	def logout_button_clicked(self):
 		self.message_boxes(msg='Logout?', msg_type=0, err=None)
@@ -406,15 +406,15 @@ class App(QtWidgets.QWidget):
 		self.msgbox.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowTitleHint)
 
 		if msg_type == 3:
-			self.msgbox.setText("Please contact your teacher.\n{}".format(str(err)))
+			self.msgbox.setText(f"Please contact your teacher.\n{err}")
 			self.msgbox.setIcon(QMessageBox.Critical)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 2:
-			self.msgbox.setText("Please contact your teacher.\n{}".format(str(err)))
+			self.msgbox.setText(f"Please contact your teacher.\n{err}")
 			self.msgbox.setIcon(QMessageBox.Critical)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 1:
-			self.msgbox.setText('Your score is {}/{}'.format(str(self.correct_answers), str(len(self.exam_questions)-1)))
+			self.msgbox.setText(f'Your score is {self.correct_answers}/{len(self.exam_questions)-1}')
 			self.msgbox.setIcon(QMessageBox.Information)
 			self.msgbox.setStandardButtons(QMessageBox.Ok)
 			#clear list
@@ -444,38 +444,38 @@ class App(QtWidgets.QWidget):
 
 		#Save a copy of the result to the documents folder
 		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
-		self.results_filename = "{} {} Student {} results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number)
+		self.results_filename = f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Student {self.student_number} results.txt"
 		with cdir(doc_folder, self.logger):
 			try:
 				with open(self.results_filename, 'w') as results_file:
-					results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
+					results_file.write(f"{self.student_number}-{self.student_names[self.student_number]}-{self.student_nicknames[self.student_number]} Score= {self.correct_answers}")
 			except Exception as e:
-				self.logger.error(" Cannot save a copy of the results to {} because {}".format(doc_folder, str(e)))
+				self.logger.error(f" Cannot save a copy of the results to {doc_folder} because {e}")
 				os.chdir(cwd)
 
 
 		#Check for exsisting excel file
-		self.results_filename = "{} {} results.xlsx".format(self.exam_questions[0], self.exam_AnswerA[0])
-		with cdir("{}\\{}_results".format(self.network_location, self.exam_name), self.logger): #r'\\ep02\Public\Steve' use format for network location
+		self.results_filename = f"{self.exam_questions[0]} {self.exam_AnswerA[0]} results.xlsx"
+		with cdir(f"{self.network_location}\\{self.exam_name}_results", self.logger): #r'\\ep02\Public\Steve' use format for network location
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
 			except Exception as network_error:
 				self.results_wb = Workbook() #create the workbook then write to workbook method and save
 				self.write_to_result_wb()
-				self.logger.error(" Error: {}".format(network_error))
-				self.logger.error(" Created: {} in {}".format(self.results_filename, os.getcwd()))
+				self.logger.error(f" Error: {network_error}")
+				self.logger.error(f" Created: {self.results_filename} in {os.getcwd()}")
 
 	def save_running_result(self):
-		self.results_filename = "{}_{}_Student_{}_{}_{}_running_results.txt".format(self.exam_questions[0], self.exam_AnswerA[0], self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number])
-		self.text_to_write = "Question number {} = {} Total score= {}".format(self.quest_seq[self.question_number - 1],self.answer_state, self.correct_answers)
-		with cdir("{}\\{}_results".format(self.network_location, self.exam_name), self.logger):
+		self.results_filename = f"{self.exam_questions[0]}_{self.exam_AnswerA[0]}_Student_{self.student_number}_{self.student_names[self.student_number]}_{self.student_nicknames[self.student_number]}_running_results.txt"
+		self.text_to_write = f"Question number {self.quest_seq[self.question_number - 1]} = {self.answer_state} Total score= {self.correct_answers}"
+		with cdir(f"{self.network_location}\\{self.exam_name}_results", self.logger):
 			try:
 				self.append_new_line_to_file(self.results_filename, self.text_to_write)
 				# with open(self.results_filename, 'w') as results_file:
 				# 	results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
 			except FileNotFoundError as e:
-				self.logger.error(" Cannot load the running result file! {}".format(str(e)))
+				self.logger.error(f" Cannot load the running result file! {e}")
 				os.chdir(cwd)
 
 	def append_new_line_to_file(self, file_name, text_to_append):
@@ -507,9 +507,9 @@ class App(QtWidgets.QWidget):
 		try:
 			self.results_wb.save(filename = self.results_filename)
 		except PermissionError as e:
-			self.logger.error(" File was still open: {}".format(str(e)))
-			self.message_boxes(msg='PermissionError', msg_type=2, err='File is still open {}'.format(e))
-		
+			self.logger.error(f" File was still open: {e}")
+			self.message_boxes(msg='PermissionError', msg_type=2, err=f'File is still open {e}')
+
 		self.results_wb.close()
 
 	def forward_button_clicked(self):
@@ -550,7 +550,7 @@ class App(QtWidgets.QWidget):
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
 					# answer_label.setPixmap(myScaledPixmap)
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
-					answer_label.setScaledContents(True)#check to see about scaling		
+					answer_label.setScaledContents(True)#check to see about scaling
 			else:
 				answer_label.setText(self.exam_answers_list[num][quest])
 			num+=1

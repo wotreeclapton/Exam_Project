@@ -33,7 +33,7 @@ def change_dir(destination, logger): #change directory function
 			os.chdir(destination)
 			yield
 		except FileNotFoundError: #On location not exsisting save to App folder resources
-			logger.error(" Unable to connect to network location: {}".format(destination))
+			logger.error(f" Unable to connect to network location: {destination}")
 			cwd = os.getcwd()
 			os.chdir(cwd)
 			yield
