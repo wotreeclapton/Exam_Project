@@ -87,7 +87,7 @@ class App(QtWidgets.QWidget):
 			with open("LL.txt", "r") as file:
 				self.login_info = [line for line in file]
 		except FileNotFoundError as e:
-				self.logger.error(" Cannot load the login details file! {}".format(str(e)))
+				self.logger.error(f" Cannot load the login details file! {e}")
 				self.message_boxes(msg='FileNotFoundError', msg_type=3, err=e)
 
 		self.network_location = self.login_info[0][0:-1] #c #//192.168.88.250/exam_app_data #//10.0.0.77/exam_app_data
@@ -114,7 +114,7 @@ class App(QtWidgets.QWidget):
 						self.class_list.append(line['classes'])
 
 			except FileNotFoundError as e:
-				self.logger.error(" Cannot load the class list file! {}".format(str(e)) )
+				self.logger.error(f" Cannot load the class list file! {e}")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 		#load exams
@@ -126,7 +126,7 @@ class App(QtWidgets.QWidget):
 						self.exam_list.append(line['exams'])
 
 			except FileNotFoundError as e:
-				self.logger.error(" Cannot load the exam list file! {}".format(str(e)))
+				self.logger.error(f" Cannot load the exam list file! {e}")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
@@ -230,10 +230,10 @@ class App(QtWidgets.QWidget):
 		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-		self.photo_location = (self.network_location + f'/M{self.year_chosen[1]}-{self.year_chosen[3]}')
+		self.photo_location = (f'{self.network_location}/M{self.year_chosen[1]}-{self.year_chosen[3]}')
 		with cdir(self.photo_location, self.logger):
 			if st > 0:
-				self.photo_path = str(st) + '.png'
+				self.photo_path = f'{st}.png'
 				if os.path.exists(self.photo_path):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
@@ -262,7 +262,7 @@ class App(QtWidgets.QWidget):
 		#Create exam results folder in the network location
 		try:
 			with cdir(self.network_location, self.logger):
-				os.mkdir(self.exam_name + "_results")
+				os.mkdir(f"{self.exam_name}_results")
 		except FileExistsError:
 			pass
 
@@ -544,8 +544,7 @@ class App(QtWidgets.QWidget):
 		num = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-				with cdir("{}/{}".format(self.network_location, self.exam_name), self.logger
-					):
+				with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
 					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
 					# answer_label.setPixmap(myScaledPixmap)
@@ -557,7 +556,7 @@ class App(QtWidgets.QWidget):
 
 		#Set video media
 		#fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
-		fileName = "{}/{}/{}".format(self.network_location, self.exam_name, str(self.exam_photoquestion[quest]))
+		fileName = f"{self.network_location}/{self.exam_name}/{self.exam_photoquestion[quest]}"
 		try:
 			if self.exam_photoquestion[quest] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
@@ -573,22 +572,20 @@ class App(QtWidgets.QWidget):
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
-		if self.answered == self.convert(self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]):
+		if self.answered == self.string_convert[self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]]:
 			self.answer_state = True
 		else:
 			self.answer_state = False
-			#self.correct_answers += 1
 
-	def convert(self, val):
-		return self.string_convert[val]
-
+	# def convert(self, val):
+	# 	return self.string_convert[val]
 
 handle = CreateMutex(None, 1, 'A unique mutex name')
 print(sys.executable)
 
 if __name__ == '__main__':
-	if GetLastError(  ) == ERROR_ALREADY_EXISTS:
-		print("Already running")
+	if GetLastError() == ERROR_ALREADY_EXISTS:
+		# print("Already running")
 		sys.exit(1) #exit if app instance already exists
 	else:
 	    print("Qt version:", QT_VERSION_STR)
