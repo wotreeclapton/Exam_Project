@@ -128,7 +128,8 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
-		self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
+		# self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
+		self.student_info = {}
 		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
 
 		self.correct_answers = 0
@@ -137,9 +138,10 @@ class App(QtWidgets.QWidget):
 		self.admin = False
 
 	def read_login_csv(self, clas):
-		self.student_names.clear()
-		self.student_nicknames.clear()
-		self.student_passwords.clear()
+		# self.student_names.clear()
+		# self.student_nicknames.clear()
+		# self.student_passwords.clear()
+		self.student_info.clear()
 		self.path = f'Student_Details_CSV_M{clas[1]}-{clas[3]}.csv'
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
@@ -215,7 +217,8 @@ class App(QtWidgets.QWidget):
 			self.login_gui.ExamChoiceCmb.clear()
 			self.login_gui.ExamChoiceCmb.addItems(self.exam_list)
 			self.login_gui.StudentNameCmb.clear()
-			self.login_gui.StudentNameCmb.addItems(self.student_names)
+			# self.login_gui.StudentNameCmb.addItems(self.student_names)
+			self.login_gui.StudentNameCmb.addItems(self.student_names = [self.student_info[name][0] for name in range(1, len(self.student_info))])
 		else:
 			self.login_gui.ClassLabel.setText('Class')
 			self.login_gui.ExamChoiceCmb.clear()
@@ -343,19 +346,20 @@ class App(QtWidgets.QWidget):
 				with open(path,'r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
 
-					for line in csv_reader:
-						if csv_type == 0: #reads student details csv
-							self.student_names.append(line['Name'])
-							self.student_nicknames.append(line['Nicknames'])
-							self.student_passwords.append(line['Passwords'])
-						else: #reads exam questions csv
-							self.exam_questions.append(line['Questions'])
-							self.exam_AnswerA.append(line['AnswerA'])
-							self.exam_AnswerB.append(line['AnswerB'])
-							self.exam_AnswerC.append(line['AnswerC'])
-							self.exam_AnswerD.append(line['AnswerD'])
-							self.exam_Rightanswer.append(line['Rightanswer'])
-							self.exam_photoquestion.append(line['Photoquestion'])
+					# for line in csv_reader:
+					if csv_type == 0: #reads student details csv
+						self.student_info = {int(line['Student number']): [line['Name'], line['Nickname'], line['Password']] for line in csv_reader}
+						# self.student_names.append(line['Name'])
+						# self.student_nicknames.append(line['Nicknames'])
+						# self.student_passwords.append(line['Passwords'])
+					else: #reads exam questions csv
+						self.exam_questions.append(line['Questions'])
+						self.exam_AnswerA.append(line['AnswerA'])
+						self.exam_AnswerB.append(line['AnswerB'])
+						self.exam_AnswerC.append(line['AnswerC'])
+						self.exam_AnswerD.append(line['AnswerD'])
+						self.exam_Rightanswer.append(line['Rightanswer'])
+						self.exam_photoquestion.append(line['Photoquestion'])
 
 			except FileNotFoundError:
 				self.logger.error(f" Can not find the file {path}")
