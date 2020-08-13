@@ -103,27 +103,24 @@ class App(QtWidgets.QWidget):
 
 	def load_data(self):
 		cwd = os.getcwd()
-		#load classes
-		self.class_list, self.exam_list = [], []
+		#load class list from csv file
 		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
 			try:
 				with open('class_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
 
-					for line in csv_reader:
-						self.class_list.append(line['classes'])
+					self.class_list = [line['classes'] for line in csv_reader]
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the class list file! {e}")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
-		#load exams
+		#load exam list from csv file
 			try:
 				with open('exam_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
 
-					for line in csv_reader:
-						self.exam_list.append(line['exams'])
+					self.exam_list = [line['exams'] for line in csv_reader]
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the exam list file! {e}")
@@ -334,7 +331,7 @@ class App(QtWidgets.QWidget):
 	def csv_reader_func(self, path, csv_type):
 		'''
 		Function to get student details information from a .CSV file
-		Reads a .CSV file from the resourses directory and appends the infomation to 3 lists.
+		Reads a .CSV file from the network directory and appends the infomation to 3 lists.
 		Arguments:
 			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
 		'''
@@ -359,6 +356,7 @@ class App(QtWidgets.QWidget):
 							self.exam_AnswerD.append(line['AnswerD'])
 							self.exam_Rightanswer.append(line['Rightanswer'])
 							self.exam_photoquestion.append(line['Photoquestion'])
+
 			except FileNotFoundError:
 				self.logger.error(f" Can not find the file {path}")
 				os.chdir(cwd)
@@ -390,6 +388,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.TimeLeftProgressBar.setValue(left_time)
 		#exits app and saves current score
 		if left_time <= 0:
+			self.save_results()
 			self.message_boxes(msg='Time finished!', msg_type=1, err=None)
 
 	def set_time_label(self, left_time):
