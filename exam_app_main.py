@@ -14,12 +14,6 @@ for logging use  exc_info=1 in error string to print exception info
 or use exception
 
 Timer still running after last answer
-
-Uninstaller
-remove
-win32com
-lib2to3\\tests
-PyQt5\\Qt\\plugins
 '''
 
 __author__ = 'Mr Steven J Walden'
@@ -128,9 +122,9 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
-		# self.student_names, self.student_nicknames, self.student_passwords, = [], [], []
-		self.student_info = {}
-		self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
+		self.student_names =  [] #, self.student_nicknames, self.student_passwords, = [], [], []
+		self.student_info, self.exam_info = {}, {}
+		# self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
 
 		self.correct_answers = 0
 		self.answer = 0
@@ -138,7 +132,7 @@ class App(QtWidgets.QWidget):
 		self.admin = False
 
 	def read_login_csv(self, clas):
-		# self.student_names.clear()
+		self.student_names.clear()
 		# self.student_nicknames.clear()
 		# self.student_passwords.clear()
 		self.student_info.clear()
@@ -218,7 +212,8 @@ class App(QtWidgets.QWidget):
 			self.login_gui.ExamChoiceCmb.addItems(self.exam_list)
 			self.login_gui.StudentNameCmb.clear()
 			# self.login_gui.StudentNameCmb.addItems(self.student_names)
-			self.login_gui.StudentNameCmb.addItems(self.student_names = [self.student_info[name][0] for name in range(1, len(self.student_info))])
+			self.student_names = [self.student_info[name][0] for name in range(len(self.student_info))]
+			self.login_gui.StudentNameCmb.addItems(self.student_names)
 		else:
 			self.login_gui.ClassLabel.setText('Class')
 			self.login_gui.ExamChoiceCmb.clear()
@@ -238,11 +233,13 @@ class App(QtWidgets.QWidget):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					os.chdir(cwd)
-					self.logger.error(f" {self.student_nicknames[st]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
+					# self.logger.error(f" {self.student_nicknames[st]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
+					self.logger.error(f" {self.student_info[st][1]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
-				self.login_gui.StudentNickname.setText(self.student_nicknames[st])
+				# self.login_gui.StudentNickname.setText(self.student_nicknames[st])
+				self.login_gui.StudentNickname.setText(self.student_info[st][1])
 			else:
 				os.chdir(cwd)
 				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
@@ -284,21 +281,27 @@ class App(QtWidgets.QWidget):
 
 		self.read_exam_questions_csv()
 		#set allowed time from exam questions CSV
-		self.allowed_time = (int(self.exam_AnswerB[0]) * 600)
+		# self.allowed_time = (int(self.exam_AnswerB[0]) * 600)
+		self.allowed_time = (int(self.exam_info[0][2]) * 600)
 		#Set the times for the exam
 		self.start_time = datetime.datetime.today()
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
 		#set the text etc
-		self.exam_gui.setWindowTitle(f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Questions")
-		self.exam_gui.ExamTitle.setText(f"{self.exam_questions[0]}\n{self.exam_AnswerA[0]}")
+		# self.exam_gui.setWindowTitle(f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Questions")
+		self.exam_gui.setWindowTitle(f"{self.exam_info[0][0]} {self.exam_info[0][1]} Questions")
+		# self.exam_gui.ExamTitle.setText(f"{self.exam_questions[0]}\n{self.exam_AnswerA[0]}")
+		self.exam_gui.ExamTitle.setText(f"{self.exam_info[0][0]}\n{self.exam_info[0][1]}")
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
-		self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
-		self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
-		self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_questions) -1}")
+		# self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
+		self.exam_gui.StudentNicknameLabel.setText(self.student_info[self.student_number][1])
+		# self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
+		self.exam_gui.StudentNameLabel.setText(self.student_info[self.student_number][0])
+		# self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_questions) -1}")
+		self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_info) -1}")
 
 		with cdir(self.photo_location, self.logger):
 			try:
@@ -317,11 +320,14 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.MinLeftLabel.setText(f"{int(self.allowed_time / 600)} Min Left")
 
 		#Create list of answerlabels and answer texts
+		# self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
-		self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
+		# self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
+		# self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Create a list of question numbers and shuffle them
-		self.quest_seq = [q_num for q_num in range(1, len(self.exam_questions))]
+		self.quest_seq = [q_num for q_num in range(1, len(self.exam_info))]
+		# self.quest_seq = [q_num for q_num in range(1, len(self.exam_questions))]
 		shuffle(self.quest_seq)
 
 		#Show window
@@ -353,13 +359,15 @@ class App(QtWidgets.QWidget):
 						# self.student_nicknames.append(line['Nicknames'])
 						# self.student_passwords.append(line['Passwords'])
 					else: #reads exam questions csv
-						self.exam_questions.append(line['Questions'])
-						self.exam_AnswerA.append(line['AnswerA'])
-						self.exam_AnswerB.append(line['AnswerB'])
-						self.exam_AnswerC.append(line['AnswerC'])
-						self.exam_AnswerD.append(line['AnswerD'])
-						self.exam_Rightanswer.append(line['Rightanswer'])
-						self.exam_photoquestion.append(line['Photoquestion'])
+						self.exam_info = {int(line['QuestionNumber']): [line['Questions'], line['AnswerA'], line['AnswerB'], line['AnswerC'], line['AnswerD'], line['Rightanswer'], line['Photoquestion']] for line in csv_reader}
+						print(self.exam_info)
+						# self.exam_questions.append(line['Questions'])
+						# self.exam_AnswerA.append(line['AnswerA'])
+						# self.exam_AnswerB.append(line['AnswerB'])
+						# self.exam_AnswerC.append(line['AnswerC'])
+						# self.exam_AnswerD.append(line['AnswerD'])
+						# self.exam_Rightanswer.append(line['Rightanswer'])
+						# self.exam_photoquestion.append(line['Photoquestion'])
 
 			except FileNotFoundError:
 				self.logger.error(f" Can not find the file {path}")
@@ -367,16 +375,16 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=None)
 
 	def read_exam_questions_csv(self):
-		self.exam_questions.clear()
-		self.exam_AnswerA.clear()
-		self.exam_AnswerB.clear()
-		self.exam_AnswerC.clear()
-		self.exam_AnswerD.clear()
-		self.exam_Rightanswer.clear()
-		self.exam_photoquestion.clear()
+		self.exam_info.clear()
+		# self.exam_questions.clear()
+		# self.exam_AnswerA.clear()
+		# self.exam_AnswerB.clear()
+		# self.exam_AnswerC.clear()
+		# self.exam_AnswerD.clear()
+		# self.exam_Rightanswer.clear()
+		# self.exam_photoquestion.clear()
 
 		self.path = f'{self.exam_name}\\{self.exam_name}_Questions.csv'
-		# self.path = '{}_exam_data\\{}_Exam_Questions.csv'.format(self.class_name[:2], self.class_name[:2])
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
@@ -542,26 +550,41 @@ class App(QtWidgets.QWidget):
 		#Set text on exam questions and answers from list/csv
 		self.answered = 0
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
-		self.exam_gui.Questions.setText(self.exam_questions[quest])
+		self.exam_gui.Questions.setText(self.exam_info[quest][0])
+		# self.exam_gui.Questions.setText(self.exam_questions[quest])
 		#Loop through label & answer lists and populate the labels with the answers
-		num = 0
+
+		answernum = 1
 		for answer_label in self.answer_label_list:
-			if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
+			if len(self.exam_info[quest][answernum]) > 4 and self.exam_info[quest][answernum][-4:] == '.jpg':
 				with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
 					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
 					# answer_label.setPixmap(myScaledPixmap)
-					answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
+					answer_label.setPixmap(QtGui.QPixmap(self.exam_info[quest][answernum]))
 					answer_label.setScaledContents(True)#check to see about scaling
 			else:
-				answer_label.setText(self.exam_answers_list[num][quest])
-			num+=1
+				answer_label.setText(self.exam_info[quest][answernum])
+			answernum += 1
+
+		# num = 0
+		# for answer_label in self.answer_label_list:
+		# 	if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
+		# 		with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
+		# 			# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
+		# 			# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
+		# 			# answer_label.setPixmap(myScaledPixmap)
+		# 			answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
+		# 			answer_label.setScaledContents(True)#check to see about scaling
+		# 	else:
+		# 		answer_label.setText(self.exam_answers_list[num][quest])
+		# 	num+=1
 
 		#Set video media
-		#fileName = str(self.network_location) + '/' + str(self.exam_photoquestion[quest])
-		fileName = f"{self.network_location}/{self.exam_name}/{self.exam_photoquestion[quest]}"
+		fileName = f"{self.network_location}/{self.exam_name}/{self.exam_info[quest][6]}"
+		# fileName = f"{self.network_location}/{self.exam_name}/{self.exam_photoquestion[quest]}"
 		try:
-			if self.exam_photoquestion[quest] != 'None':
+			if self.exam_info[quest][6] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
 				self.exam_gui.mediaPlayer.play()
 
