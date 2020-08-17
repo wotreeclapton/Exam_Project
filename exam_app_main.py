@@ -562,11 +562,11 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
 		self.exam_gui.Questions.setText(self.exam_info[quest]["question"])
 		# self.exam_gui.Questions.setText(self.exam_questions[quest])
-		#Loop through label & answer lists and populate the labels with the answers
-
-		answernum = 1
+		#Loop through label & answer dict and populate the labels with the answers
+		self.exam_info_key_list = ["answer_a", "answer_b", "answer_c", "answer_d"]
+		answernum = 0
 		for answer_label in self.answer_label_list:
-			if len(self.exam_info[quest][answernum]) > 4 and self.exam_info[quest][answernum][-4:] == '.jpg':
+			if len(self.exam_info[quest][self.exam_info_key_list[answernum]]) > 4 and self.exam_info[quest][self.exam_info_key_list[answernum]][-4:] == '.jpg':
 				with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
 					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
