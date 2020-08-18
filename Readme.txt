@@ -1,4 +1,4 @@
-Samroiyod Exam Application Version 1.2.0
+Samroiyod Exam Application Version 1.6.0
 
 Copyright (C) 2020 Steven J Walden.
 All rights reserved.

@@ -538,7 +538,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.BackButton.setShortcut("Left")
 		self.ForwardButton.setShortcut("Return")
 
-class Ui_StartupWindow(QtWidgets.QWidget):
+class Ui_StartupWindow(QtWidgets.QMainWindow):
 	"""docstring for Ui_AboutWindow"""
 	def __init__(self, parent=None):
 		super(Ui_StartupWindow, self).__init__(parent)
