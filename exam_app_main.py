@@ -1,7 +1,7 @@
 #! python 3
 '''
 EXAM APPLICATION LAUNCHER developed by Mr Steven J walden
-    Nov. 2019
+    Nov. 2019-2020
     SAMROIYOD, PRACHUAP KIRI KHAN, THAILAND
 [See License.txt file]
 '''
@@ -17,7 +17,7 @@ Timer still running after last answer
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.5.0'
+__version__ = '1.6.0'
 
 import os
 import sys
@@ -67,7 +67,6 @@ class App(QtWidgets.QWidget):
 		methods.dark_theme(app)
 		self.screen_size = QDesktopWidget().availableGeometry()
 		# self.open_startup_window()
-		#self.network_location = "\\\\ep02\\Public\\Steve\\exam_app_data"
 		self.network_login()
 		#setup app windows and theme
 		self.load_data()
@@ -84,10 +83,10 @@ class App(QtWidgets.QWidget):
 				self.logger.error(f" Cannot load the login details file! {e}")
 				self.message_boxes(msg='FileNotFoundError', msg_type=3, err=e)
 
-		self.network_location = self.login_info[0][0:-1] #c #//192.168.88.250/exam_app_data #//10.0.0.77/exam_app_data
+		self.network_location = self.login_info[0][0:-1]
 		self.user_name = self.login_info[1][0:-1]
 		self.pass_word = self.login_info[2][0:-1]
-		self.netlogin = {'remote': self.network_location, 'local': '', 'username': self.user_name, 'password': self.pass_word} #'username': 'exam_app', 'password': 'passyourexam' #'username': 'Teacher-Steve', 'password': 'bigair77'
+		self.netlogin = {'remote': self.network_location, 'local': '', 'username': self.user_name, 'password': self.pass_word}
 		#new login to exam_app account
 		try:
 		    win32net.NetUseAdd(None, 2, self.netlogin)
@@ -98,7 +97,7 @@ class App(QtWidgets.QWidget):
 	def load_data(self):
 		cwd = os.getcwd()
 		#load class list from csv file
-		with cdir(self.network_location, self.logger):#r'//ep02/Public/Steve'
+		with cdir(self.network_location, self.logger):
 			try:
 				with open('class_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
@@ -122,9 +121,8 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
-		self.student_names =  [] #, self.student_nicknames, self.student_passwords, = [], [], []
+		self.student_names =  []
 		self.student_info, self.exam_info = {}, {}
-		# self.exam_questions, self.exam_AnswerA, self.exam_AnswerB, self.exam_AnswerC, self.exam_AnswerD, self.exam_Rightanswer, self.exam_photoquestion = [],[],[],[],[],[],[]
 
 		self.correct_answers = 0
 		self.answer = 0
@@ -133,8 +131,6 @@ class App(QtWidgets.QWidget):
 
 	def read_login_csv(self, clas):
 		self.student_names.clear()
-		# self.student_nicknames.clear()
-		# self.student_passwords.clear()
 		self.student_info.clear()
 		self.path = f'Student_Details_CSV_M{clas[1]}-{clas[3]}.csv'
 		self.csv_reader_func(path=self.path ,csv_type=0)
@@ -176,18 +172,12 @@ class App(QtWidgets.QWidget):
 			self.password_input = self.login_gui.InputPassword.text()
 
 			if self.password_input == self.student_info[self.student_number]["student_password"] and self.student_number !=0 and self.exam_number !=0:
-			# if self.password_input == self.student_passwords[self.student_number] and self.student_number !=0 and self.exam_number !=0:
-				#check the right exam is chosen
-				# if self.year_chosen == self.exam_number or (self.year_chosen + 3) == self.exam_number or (self.year_chosen + 4) == self.exam_number:
 				self.login_gui.close()
 				self.open_exam_window()
-				# else:
-				# 	self.login_gui.ExamChoiceCmb.clear()
 			else:
 				self.login_gui.InputPassword.clear()
 		except (AttributeError, KeyError):
 			pass
-			#print('Choose a class',sys.exc_info()[0])
 
 	def password_show_button_clicked(self):
 		if self.login_gui.PasswordShowButton.isDown():
@@ -212,7 +202,6 @@ class App(QtWidgets.QWidget):
 			self.login_gui.ExamChoiceCmb.clear()
 			self.login_gui.ExamChoiceCmb.addItems(self.exam_list)
 			self.login_gui.StudentNameCmb.clear()
-			# self.login_gui.StudentNameCmb.addItems(self.student_names)
 			self.student_names = [self.student_info[name]["student_name"] for name in range(len(self.student_info))]
 			self.login_gui.StudentNameCmb.addItems(self.student_names)
 		else:
@@ -234,13 +223,10 @@ class App(QtWidgets.QWidget):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					os.chdir(cwd)
-					# self.logger.error(f" {self.student_nicknames[st]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
-					print()
 					self.logger.error(f"{self.student_info[st][student_nickname]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
-				# self.login_gui.StudentNickname.setText(self.student_nicknames[st])
 				self.login_gui.StudentNickname.setText(self.student_info[st]["student_nickname"])
 			else:
 				os.chdir(cwd)
@@ -262,7 +248,6 @@ class App(QtWidgets.QWidget):
 		try:
 			with cdir(self.network_location, self.logger):
 				os.mkdir(f"M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results")
-				# os.mkdir(f"{self.exam_name}_results")
 		except FileExistsError:
 			pass
 
@@ -284,26 +269,20 @@ class App(QtWidgets.QWidget):
 
 		self.read_exam_questions_csv()
 		#set allowed time from exam questions CSV
-		# self.allowed_time = (int(self.exam_AnswerB[0]) * 600)
 		self.allowed_time = (int(self.exam_info[0]["answer_b"]) * 600)
 		#Set the times for the exam
 		self.start_time = datetime.datetime.today()
 		self.end_time = self.start_time + datetime.timedelta(hours=0, minutes=int(self.allowed_time / 600))
 
 		#set the text etc
-		# self.exam_gui.setWindowTitle(f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Questions")
 		self.exam_gui.setWindowTitle(f'{self.exam_info[0]["question"]} {self.exam_info[0]["answer_a"]} Questions')
-		# self.exam_gui.ExamTitle.setText(f"{self.exam_questions[0]}\n{self.exam_AnswerA[0]}")
 		self.exam_gui.ExamTitle.setText(f'{self.exam_info[0]["question"]}\n{self.exam_info[0]["answer_a"]}')
 		self.exam_gui.StartTime.setText(self.start_time.strftime("%H:%M:%S"))
 		self.exam_gui.EndTime.setText(self.end_time.strftime("%H:%M:%S"))
 		self.exam_gui.ClassLabel.setText(self.class_name)
 		self.exam_gui.StudentNumberLabel.setText(str(self.student_number))
-		# self.exam_gui.StudentNicknameLabel.setText(self.student_nicknames[self.student_number])
 		self.exam_gui.StudentNicknameLabel.setText(self.student_info[self.student_number]["student_nickname"])
-		# self.exam_gui.StudentNameLabel.setText(self.student_names[self.student_number])
 		self.exam_gui.StudentNameLabel.setText(self.student_info[self.student_number]["student_name"])
-		# self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_questions) -1}")
 		self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_info) -1}")
 
 		with cdir(self.photo_location, self.logger):
@@ -323,14 +302,10 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.MinLeftLabel.setText(f"{int(self.allowed_time / 600)} Min Left")
 
 		#Create list of answerlabels and answer texts
-		# self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
 		self.answer_label_list = [self.exam_gui.AnswerTextA,self.exam_gui.AnswerTextB,self.exam_gui.AnswerTextC,self.exam_gui.AnswerTextD]
-		# self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
-		# self.exam_answers_list = [self.exam_AnswerA,self.exam_AnswerB,self.exam_AnswerC,self.exam_AnswerD]
 
 		#Create a list of question numbers and shuffle them
 		self.quest_seq = [q_num for q_num in range(1, len(self.exam_info))]
-		# self.quest_seq = [q_num for q_num in range(1, len(self.exam_questions))]
 		shuffle(self.quest_seq)
 
 		#Show window
@@ -358,18 +333,8 @@ class App(QtWidgets.QWidget):
 					# for line in csv_reader:
 					if csv_type == 0: #reads student details csv
 						self.student_info = {int(line['Student number']): {"student_name": line['Name'], "student_nickname": line['Nickname'], "student_password": line['Password']} for line in csv_reader}
-						# self.student_names.append(line['Name'])
-						# self.student_nicknames.append(line['Nicknames'])
-						# self.student_passwords.append(line['Passwords'])
 					else: #reads exam questions csv
 						self.exam_info = {int(line['QuestionNumber']): {"question": line['Questions'], "answer_a": line['AnswerA'], "answer_b": line['AnswerB'], "answer_c": line['AnswerC'], "answer_d": line['AnswerD'], "correct_answer": line['Rightanswer'], "photo_question": line['Photoquestion']} for line in csv_reader}
-						# self.exam_questions.append(line['Questions'])
-						# self.exam_AnswerA.append(line['AnswerA'])
-						# self.exam_AnswerB.append(line['AnswerB'])
-						# self.exam_AnswerC.append(line['AnswerC'])
-						# self.exam_AnswerD.append(line['AnswerD'])
-						# self.exam_Rightanswer.append(line['Rightanswer'])
-						# self.exam_photoquestion.append(line['Photoquestion'])
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Can not find the file {path}")
@@ -378,13 +343,6 @@ class App(QtWidgets.QWidget):
 
 	def read_exam_questions_csv(self):
 		self.exam_info.clear()
-		# self.exam_questions.clear()
-		# self.exam_AnswerA.clear()
-		# self.exam_AnswerB.clear()
-		# self.exam_AnswerC.clear()
-		# self.exam_AnswerD.clear()
-		# self.exam_Rightanswer.clear()
-		# self.exam_photoquestion.clear()
 
 		self.path = f'{self.exam_name}\\{self.exam_name}_Questions.csv'
 		self.csv_reader_func(path=self.path ,csv_type=1)
@@ -454,17 +412,14 @@ class App(QtWidgets.QWidget):
 		self.time_finished = datetime.datetime.today()
 		#Store score in a list
 		self.result_list = [self.student_number, self.student_info[self.student_number]["student_name"], self.student_info[self.student_number]["student_nickname"], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
-		# self.result_list = [self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
 
 		#Save a copy of the result to the documents folder
 		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
 		self.results_backup_filename = f'{self.exam_info[0]["question"]} {self.exam_info[0]["answer_a"]} Student {self.student_number} results.txt'
-		# self.results_filename = f"{self.exam_questions[0]} {self.exam_AnswerA[0]} Student {self.student_number} results.txt"
 		with cdir(doc_folder, self.logger):
 			try:
 				with open(self.results_backup_filename, 'w') as results_file:
 					results_file.write(f'{self.student_number}-{self.student_info[self.student_number]["student_name"]}-{self.student_info[self.student_number]["student_nickname"]} Score= {self.correct_answers}')
-					# results_file.write(f"{self.student_number}-{self.student_names[self.student_number]}-{self.student_nicknames[self.student_number]} Score= {self.correct_answers}")
 			except Exception as e:
 				self.logger.error(f" Cannot save a copy of the results to {doc_folder} because {e}")
 				os.chdir(cwd)
@@ -472,9 +427,7 @@ class App(QtWidgets.QWidget):
 
 		#Check for exsisting excel file
 		self.results_filename = f'{self.exam_info[0]["question"]} {self.exam_info[0]["answer_a"]} results.xlsx'
-		# self.results_filename = f"{self.exam_questions[0]} {self.exam_AnswerA[0]} results.xlsx"
-		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger): #r'\\ep02\Public\Steve' use format for network location
-		# with cdir(f"{self.network_location}\\{self.exam_name}_results", self.logger): #r'\\ep02\Public\Steve' use format for network location
+		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger): #
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
@@ -486,14 +439,10 @@ class App(QtWidgets.QWidget):
 
 	def save_running_result(self):
 		self.running_results_filename = f'{self.exam_info[0]["question"]}_{self.exam_info[0]["answer_a"]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_name"]}_{self.student_info[self.student_number]["student_nickname"]}_running_results.txt'
-		# self.results_filename = f"{self.exam_questions[0]}_{self.exam_AnswerA[0]}_Student_{self.student_number}_{self.student_names[self.student_number]}_{self.student_nicknames[self.student_number]}_running_results.txt"
 		self.text_to_write = f"Question number {self.quest_seq[self.question_number - 1]} = {self.answer_state} Total score= {self.correct_answers}"
 		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
-		# with cdir(f"{self.network_location}\\{self.exam_name}_results", self.logger):
 			try:
 				self.append_new_line_to_file(self.running_results_filename, self.text_to_write)
-				# with open(self.results_filename, 'w') as results_file:
-				# 	results_file.write("{}-{}-{} Score= {}".format(self.student_number, self.student_names[self.student_number], self.student_nicknames[self.student_number], self.correct_answers))
 			except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the running result file! {e}")
 				os.chdir(cwd)
@@ -546,9 +495,7 @@ class App(QtWidgets.QWidget):
 			self.save_running_result()
 			self.question_number += 1
 			if self.question_number > (len(self.exam_info) -1):
-			# if self.question_number > (len(self.exam_questions) -1):
 				self.question_number = (len(self.exam_info) -1)
-				# self.question_number = (len(self.exam_questions) -1)
 				self.save_results()
 				self.message_boxes(msg='Exam finished!', msg_type=1, err=None)
 			self.exam_gui.tabWidget.setCurrentIndex(0)
@@ -569,7 +516,6 @@ class App(QtWidgets.QWidget):
 		self.answered = 0
 		self.exam_gui.QuestionNumber.setText(str(self.question_number))
 		self.exam_gui.Questions.setText(self.exam_info[quest]["question"])
-		# self.exam_gui.Questions.setText(self.exam_questions[quest])
 		#Loop through label & answer dict and populate the labels with the answers
 		self.exam_info_key_list = ["answer_a", "answer_b", "answer_c", "answer_d"]
 		answernum = 0
@@ -580,32 +526,15 @@ class App(QtWidgets.QWidget):
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
 					# answer_label.setPixmap(myScaledPixmap)
 					answer_label.setPixmap(QtGui.QPixmap(self.exam_info[quest][self.exam_info_key_list[answernum]]))
-					# answer_label.setPixmap(QtGui.QPixmap(self.exam_info[quest][answernum]))
 					answer_label.setScaledContents(True)#check to see about scaling
 			else:
 				answer_label.setText(self.exam_info[quest][self.exam_info_key_list[answernum]])
-				# answer_label.setText(self.exam_info[quest][answernum])
 			answernum += 1
-
-		# num = 0
-		# for answer_label in self.answer_label_list:
-		# 	if len(self.exam_answers_list[num][quest]) > 4 and self.exam_answers_list[num][quest][-4:] == '.jpg':
-		# 		with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
-		# 			# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
-		# 			# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
-		# 			# answer_label.setPixmap(myScaledPixmap)
-		# 			answer_label.setPixmap(QtGui.QPixmap(self.exam_answers_list[num][quest]))
-		# 			answer_label.setScaledContents(True)#check to see about scaling
-		# 	else:
-		# 		answer_label.setText(self.exam_answers_list[num][quest])
-		# 	num+=1
 
 		#Set video media
 		fileName = f'{self.network_location}/{self.exam_name}/{self.exam_info[quest]["photo_question"]}'
-		# fileName = f"{self.network_location}/{self.exam_name}/{self.exam_photoquestion[quest]}"
 		try:
 			if self.exam_info[quest]["photo_question"] != 'None':
-			# if self.exam_info[quest][6] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
 				self.exam_gui.mediaPlayer.play()
 
@@ -615,26 +544,20 @@ class App(QtWidgets.QWidget):
 	def repeat_video(self, video_state):
 
 		if video_state == 0 and self.exam_info[self.quest_seq[self.question_number - 1]]["photo_question"] != 'None':
-		# if video_state == 0 and self.exam_photoquestion[self.quest_seq[self.question_number - 1]] != 'None':
 			self.exam_gui.mediaPlayer.play()
 
 	def check_answer(self, btn):
 		self.answered = self.exam_gui.AnswerButtonGroup.checkedId()
 		if self.answered == self.string_convert[self.exam_info[self.quest_seq[self.question_number - 1]]["correct_answer"]]:
-		# if self.answered == self.string_convert[self.exam_Rightanswer[self.quest_seq[self.question_number - 1]]]:
 			self.answer_state = True
 		else:
 			self.answer_state = False
-
-	# def convert(self, val):
-	# 	return self.string_convert[val]
 
 handle = CreateMutex(None, 1, 'A unique mutex name')
 print(sys.executable)
 
 if __name__ == '__main__':
 	if GetLastError() == ERROR_ALREADY_EXISTS:
-		# print("Already running")
 		sys.exit(1) #exit if app instance already exists
 	else:
 	    print("Qt version:", QT_VERSION_STR)
