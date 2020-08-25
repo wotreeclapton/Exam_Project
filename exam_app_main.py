@@ -97,7 +97,7 @@ class App(QtWidgets.QWidget):
 	def load_data(self):
 		cwd = os.getcwd()
 		#load class list from csv file
-		with cdir(self.network_location, self.logger):
+		with cdir(self.network_location, self.logger):	
 			try:
 				with open('class_list.csv','r') as csv_file:
 					csv_reader = csv.DictReader(csv_file)
