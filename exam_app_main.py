@@ -170,10 +170,12 @@ class App(QtWidgets.QWidget):
 		try:
 			#open main window and pass vairables
 			self.password_input = self.login_gui.InputPassword.text()
-
-			if self.password_input == self.student_info[self.student_number]["student_password"] and self.student_number !=0 and self.exam_number !=0:
-				self.login_gui.close()
-				self.open_exam_window()
+			if self.student_number !=0 and self.exam_number !=0:
+				if self.password_input == self.student_info[self.student_number]["student_password"] or self.password_input == self.student_info[0]["student_password"]:
+					self.login_gui.close()
+					self.open_exam_window()
+				else:
+					self.login_gui.InputPassword.clear()
 			else:
 				self.login_gui.InputPassword.clear()
 		except (AttributeError, KeyError):
