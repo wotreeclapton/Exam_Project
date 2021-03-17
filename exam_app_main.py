@@ -172,8 +172,27 @@ class App(QtWidgets.QWidget):
 			self.password_input = self.login_gui.InputPassword.text()
 			if self.student_number !=0 and self.exam_number !=0:
 				if self.password_input == self.student_info[self.student_number]["student_password"] or self.password_input == self.student_info[0]["student_password"]:
-					self.login_gui.close()
-					self.open_exam_window()
+					#Create exam results folder in the network location
+					try:
+						with cdir(self.network_location, self.logger):
+							os.mkdir(f"M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results")
+					except FileExistsError:
+						pass
+	
+					#try and except check if used before
+					with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
+						try:
+							#check to see if file has been created already
+							with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "r") as file_object:
+								print("already tried exam already")
+								#Popup mesg box to save already taken exam before
+
+						except FileNotFoundError as e:
+							print("First try okay")
+
+							#open the main window
+							self.login_gui.close()
+							self.open_exam_window()
 				else:
 					self.login_gui.InputPassword.clear()
 			else:
@@ -246,13 +265,6 @@ class App(QtWidgets.QWidget):
 		#Set any variables
 		self.question_number = 1
 		self.answer_state = False
-		#Create exam results folder in the network location
-		try:
-			with cdir(self.network_location, self.logger):
-				os.mkdir(f"M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results")
-		except FileExistsError:
-			pass
-
 		#hide back button in student mode
 		if self.admin != True:
 			self.exam_gui.BackButton.hide()
@@ -439,6 +451,15 @@ class App(QtWidgets.QWidget):
 				self.logger.error(f" Error: {network_error}")
 				self.logger.error(f" Created: {self.results_filename} in {os.getcwd()}")
 
+		#Save exam completed check file
+		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
+			try:
+				with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "w") as check_file:
+					check_file.write("Exam completed")
+			except Exception as e:
+				self.logger.error(f" Cannot save the check file to {doc_folder} because {e}")
+				os.chdir(cwd)
+
 	def save_running_result(self):
 		self.running_results_filename = f'{self.exam_info[0]["question"]}_{self.exam_info[0]["answer_a"]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_name"]}_{self.student_info[self.student_number]["student_nickname"]}_running_results.txt'
 		self.text_to_write = f"Question number {self.quest_seq[self.question_number - 1]} = {self.answer_state} Total score= {self.correct_answers}"
@@ -570,3 +591,5 @@ if __name__ == '__main__':
 	    main_app = App()
 
 	sys.exit(app.exec_())
+
+input()

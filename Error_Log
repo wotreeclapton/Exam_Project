@@ -1,4 +1,3 @@
 
-2020-08-26 09:00:14,458:__main__: Can not find the file M3_C23203_Midtern_Exam\M3_C23203_Midtern_Exam_Questions.csv
-2020-08-26 09:13:53,854:__main__: Error: [Errno 2] No such file or directory: 'C23203 Midterm Exam results.xlsx'
-2020-08-26 09:13:53,854:__main__: Created: C23203 Midterm Exam results.xlsx in \\10.0.13.255\exam_app_data\M3-1_M3_C23203_Midterm_Exam_results
+2021-03-17 16:09:02,059:__main__: Error: [Errno 2] No such file or directory: 'C23202 Final Exam results.xlsx'
+2021-03-17 16:09:02,059:__main__: Created: C23202 Final Exam results.xlsx in \\10.0.9.195\exam_app_data\M3-1_M3_C23202_Final_Exam_results
