@@ -40,8 +40,31 @@ def change_dir(destination, logger): #change directory function
 	finally:
 		os.chdir(cwd)
 
+def theme_choice(app):
+	app.setStyle("Fusion")
+
+	light_palette = QPalette()
+
+	light_palette.setColor(QPalette.Window,QColor(225,225,225))
+	light_palette.setColor(QPalette.WindowText, QtCore.Qt.black)
+	light_palette.setColor(QPalette.Base, QColor(240, 240, 240))
+	light_palette.setColor(QPalette.AlternateBase, QColor(225, 225, 225))
+	light_palette.setColor(QPalette.ToolTipBase, QtCore.Qt.black)
+	light_palette.setColor(QPalette.ToolTipText, QtCore.Qt.black)
+	light_palette.setColor(QPalette.Text, QtCore.Qt.black)
+	light_palette.setColor(QPalette.Button, QColor(225, 225, 225))
+	light_palette.setColor(QPalette.ButtonText, QtCore.Qt.black)
+	light_palette.setColor(QPalette.BrightText, QtCore.Qt.red)
+	light_palette.setColor(QPalette.Link, QColor(251, 255, 255))
+	light_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+	light_palette.setColor(QPalette.HighlightedText, QtCore.Qt.white)
+
+	app.setPalette(light_palette)
+
+	app.setStyleSheet("QToolTip { color: #706b67; background-color: #fffefa; border: 1px solid grey; }")	
+
 def dark_theme(app):
-	#Darl theme option for QMainwindow
+	#Dark theme option for QMainwindow
 	app.setStyle("Fusion")
 
 	dark_palette = QPalette()

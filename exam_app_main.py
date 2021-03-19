@@ -17,7 +17,7 @@ Timer still running after last answer
 '''
 
 __author__ = 'Mr Steven J Walden'
-__version__ = '1.6.0'
+__version__ = '1.7.0'
 
 import os
 import sys
@@ -64,7 +64,8 @@ class App(QtWidgets.QWidget):
 		self.file_handler.setFormatter(self.formatter)
 		self.logger.addHandler(self.file_handler)
 		#Load theme
-		methods.dark_theme(app)
+		# methods.dark_theme(app)
+		methods.theme_choice(app)
 		self.screen_size = QDesktopWidget().availableGeometry()
 		# self.open_startup_window()
 		self.network_login()
@@ -179,17 +180,16 @@ class App(QtWidgets.QWidget):
 					except FileExistsError:
 						pass
 	
-					#try and except check if used before
+					#try and except check if exam taken already
 					with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
 						try:
-							#check to see if file has been created already
+							#check to see if file has been created already if so op msgbox and deniy access
 							with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "r") as file_object:
-								print("already tried exam already")
+								self.message_boxes(msg='Exam completed already.', msg_type=4, err=None)
 								#Popup mesg box to save already taken exam before
 
 						except FileNotFoundError as e:
-							print("First try okay")
-
+							#If exam not taken then allow acces to main window
 							#open the main window
 							self.login_gui.close()
 							self.open_exam_window()
@@ -260,6 +260,7 @@ class App(QtWidgets.QWidget):
 
 	def open_exam_window(self):
 		#Initialise exam window
+		methods.dark_theme(app)
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
 		#Set any variables
@@ -390,6 +391,10 @@ class App(QtWidgets.QWidget):
 		self.msgbox.setDefaultButton(QMessageBox.Ok)
 		self.msgbox.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowTitleHint)
 
+		if msg_type == 4:
+			self.msgbox.setText("Only one attempt allowed!.")
+			self.msgbox.setIcon(QMessageBox.Warning)
+			self.msgbox.setStandardButtons(QMessageBox.Ok)
 		if msg_type == 3:
 			self.msgbox.setText(f"Please contact your teacher.\n{err}")
 			self.msgbox.setIcon(QMessageBox.Critical)
