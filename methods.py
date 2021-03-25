@@ -40,7 +40,7 @@ def change_dir(destination, logger): #change directory function
 	finally:
 		os.chdir(cwd)
 
-def theme_choice(app):
+def light_theme(app):
 	app.setStyle("Fusion")
 
 	light_palette = QPalette()

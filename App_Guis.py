@@ -8,6 +8,7 @@ import sys
 from PyQt5 import QtWidgets, QtGui, QtCore, QtMultimediaWidgets
 from PyQt5.QtMultimedia import QMediaPlayer
 
+
 class Ui_ExamLogin(QtWidgets.QMainWindow):
 	"""docstrbing for MyApp"""
 	def __init__(self, parent=None):
@@ -16,10 +17,10 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 
 	def initUI(self):
 		#Set up GUI
-		self.resize(588, 270)
-		self.setMinimumSize(588, 270)
-		self.setMaximumSize(588, 270)
-		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
+		self.resize(588, 280)
+		self.setMinimumSize(588, 280)
+		self.setMaximumSize(588, 280)
+		self.setWindowIcon(QtGui.QIcon("img/Ep_window_icon.ico"))
 		self.setWindowTitle("Login")
 
 		self.statusbar = QtWidgets.QStatusBar(self)
@@ -56,7 +57,7 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		#Display school logo
 		self.Logolabel = QtWidgets.QLabel(self)
 		self.Logolabel.setGeometry(320, 20, 75, 97)
-		self.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+		self.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 		#Label for student number box
 		font = QtGui.QFont()
 		font.setItalic(True)
@@ -80,7 +81,7 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		self.StudentNickname.setFont(font)
 		#Student photo image display
 		self.StudentPhoto = QtWidgets.QLabel(self)
-		self.StudentPhoto.setGeometry(414, 10, 160, 192)
+		self.StudentPhoto.setGeometry(414, 30, 160, 192)
 		self.StudentPhoto.setFrameShape(QtWidgets.QFrame.Panel)
 		self.StudentPhoto.setFrameShadow(QtWidgets.QFrame.Sunken)
 		self.StudentPhoto.setPixmap(QtGui.QPixmap("img/blank_girl.png"))
@@ -92,19 +93,30 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		self.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
 	def add_buttons(self):
+		bfont = QtGui.QFont()
+		bfont.setPointSize(8)
+		# bfont.setBold(True)
+		bfont.setItalic(True)
 		#Button box setup for OKay and cancel buttons
 		self.buttonBox = QtWidgets.QDialogButtonBox(self)
-		self.buttonBox.setGeometry(418, 216, 156, 23)
+		self.buttonBox.setGeometry(418, 236, 156, 23)
 		self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
 		#Button for showing the password temporarily
 		self.PasswordShowButton = QtWidgets.QPushButton(self)
-		self.PasswordShowButton.setGeometry(210, 201, 20, 18)
+		self.PasswordShowButton.setGeometry(211, 201, 20, 18)
 		self.PasswordShowButton.setFocusPolicy(QtCore.Qt.NoFocus)
-		self.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20.png"))
+		self.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20_light.png"))
 		self.PasswordShowButton.setIconSize(QtCore.QSize(20, 18))
 		self.PasswordShowButton.setCheckable(False)
 		self.PasswordShowButton.setAutoRepeat(True)
 		self.PasswordShowButton.setAutoRepeatDelay(200)
+		#Button for switchiong to darkmode
+		self.DarkModeButton = QtWidgets.QPushButton(self)
+		self.DarkModeButton.setGeometry(534, 5, 40, 20)
+		self.DarkModeButton.setFocusPolicy(QtCore.Qt.NoFocus)		
+		self.DarkModeButton.setCheckable(True)
+		self.DarkModeButton.setFont(bfont)
+		self.DarkModeButton.setText("Dark")
 
 	def add_comboboxes(self):
 		#Combobox setup to choose the class
@@ -133,6 +145,7 @@ class Ui_ExamLogin(QtWidgets.QMainWindow):
 		self.setTabOrder(self.ExamChoiceCmb, self.StudentNameCmb)
 		self.setTabOrder(self.StudentNameCmb, self.InputPassword)
 		self.setTabOrder(self.InputPassword, self.PasswordShowButton)
+		self.setTabOrder(self.PasswordShowButton, self.DarkModeButton)
 
 
 class Ui_ExamQuestions(QtWidgets.QMainWindow):
@@ -141,6 +154,8 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		super(Ui_ExamQuestions, self).__init__(parent)
 		self.screen_height = screen_size.height()
 		self.screen_width = round((self.screen_height - 32) * 1.3)
+		# self.screen_height = 1080
+		# self.screen_width = 1920
 		#print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
 		self.initUI()
 
@@ -148,7 +163,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.resize(self.screen_width, self.screen_height - 32)
 		self.setMinimumSize(800, 600) # orig size was 1200x924
 		self.setMaximumSize(1200, self.screen_height - 32)
-		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
+		self.setWindowIcon(QtGui.QIcon("img/Ep_window_icon.ico"))
 		self.setWindowTitle("Exam Questions")
 
 		self.add_widgets()
@@ -290,7 +305,7 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.SchoolLabel = QtWidgets.QLabel(self.TopWidget)
 		self.SchoolLabel.setMinimumSize(QtCore.QSize(75, 97))
 		self.SchoolLabel.setGeometry(4, 4, 75, 97)
-		self.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+		self.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 
 		self.StudentPhotoLabel = QtWidgets.QLabel(self.TopWidget)
 		self.StudentPhotoLabel.setGeometry(285, 4, 75, 90)
@@ -365,17 +380,17 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.ClassLabel.setText("Class")
 
 		self.QuestionNumberLabel = QtWidgets.QLabel(self.TopWidget2)
-		self.QuestionNumberLabel.setGeometry(10, 10, 186, 30)
+		self.QuestionNumberLabel.setGeometry(10, 30, 186, 30)
 		self.QuestionNumberLabel.setFont(font)
 		self.QuestionNumberLabel.setText("Question Number:")
 
 		self.QuestionNumber = QtWidgets.QLabel(self.TopWidget2)
-		self.QuestionNumber.setGeometry(196, 10, 30, 30)
+		self.QuestionNumber.setGeometry(196, 30, 30, 30)
 		self.QuestionNumber.setFont(font)
 		self.QuestionNumber.setText("60")
 
 		self.OutOfQuestionLabel = QtWidgets.QLabel(self.TopWidget2)
-		self.OutOfQuestionLabel.setGeometry(226, 10, 42, 30)
+		self.OutOfQuestionLabel.setGeometry(226, 30, 42, 30)
 		self.OutOfQuestionLabel.setFont(font)
 		self.OutOfQuestionLabel.setText("/60")
 
@@ -495,6 +510,17 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.LogoutButton.setFont(bfont)
 		self.LogoutButton.setText("Log Out")
 
+		bfont = QtGui.QFont()
+		bfont.setPointSize(8)
+		bfont.setItalic(True)
+		#Button for switchiong to darkmode
+		self.DarkModeButton = QtWidgets.QPushButton(self.TopWidget2)
+		self.DarkModeButton.setGeometry(226, 5, 40, 20)
+		self.DarkModeButton.setFocusPolicy(QtCore.Qt.NoFocus)		
+		self.DarkModeButton.setCheckable(True)
+		self.DarkModeButton.setFont(bfont)
+		self.DarkModeButton.setText("Dark")
+
 	def add_scrollbars(self):
 		self.TimeLeftProgressBar = QtWidgets.QProgressBar()
 		sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
@@ -545,7 +571,7 @@ class Ui_StartupWindow(QtWidgets.QMainWindow):
 		self.resize(320, 360)
 		self.setMinimumSize(320, 360)
 		self.setMaximumSize(320, 360)
-		self.setWindowIcon(QtGui.QIcon("img/ep_program_logo_user_acc_zrP_icon.ico"))
+		self.setWindowIcon(QtGui.QIcon("img/Ep_window_icon.ico"))
 		self.setWindowFlags(QtCore.Qt.WindowTransparentForInput)
 
 		self.add_labels()
@@ -592,14 +618,14 @@ class Ui_StartupWindow(QtWidgets.QMainWindow):
 		self.RightsLabel.setFont(font)
 		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-# if __name__ == '__main__':
-# 	app = QtWidgets.QApplication(sys.argv)
-# 	# main_app = Ui_ExamLogin()
-# 	# main_app = Ui_ExamQuestions()
-# 	main_app = Ui_StartupWindow()
-# 	main_app.show()
+if __name__ == '__main__':
+	app = QtWidgets.QApplication(sys.argv)
+	# main_app = Ui_ExamLogin()
+	# main_app = Ui_ExamQuestions()
+	main_app = Ui_StartupWindow()
+	main_app.show()
 
-# sys.exit(app.exec_())
+sys.exit(app.exec_())
 
 
 # Copyright (c) 2019-2020 Steven Walden

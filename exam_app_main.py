@@ -65,7 +65,7 @@ class App(QtWidgets.QWidget):
 		self.logger.addHandler(self.file_handler)
 		#Load theme
 		# methods.dark_theme(app)
-		methods.theme_choice(app)
+		# methods.theme_choice(app)
 		self.screen_size = QDesktopWidget().availableGeometry()
 		# self.open_startup_window()
 		self.network_login()
@@ -151,6 +151,7 @@ class App(QtWidgets.QWidget):
 		self.login_gui.buttonBox.accepted.connect(self.login_okaybutton_clicked)
 		self.login_gui.buttonBox.rejected.connect(self.login_cancelbutton_clicked)
 		self.login_gui.PasswordShowButton.clicked.connect(self.password_show_button_clicked)
+		self.login_gui.DarkModeButton.clicked.connect(self.login_theme_choice)
 		self.login_gui.InputPassword.returnPressed.connect(self.login_okaybutton_clicked)
 		self.login_gui.ClassCmb.currentIndexChanged['int'].connect(self.class_name_changed)
 		self.login_gui.ExamChoiceCmb.currentIndexChanged['int'].connect(self.exam_choice_changed)
@@ -166,6 +167,18 @@ class App(QtWidgets.QWidget):
 
 		self.login_gui.show()
 		# self.startup_screen.close()
+
+	def login_theme_choice(self):
+		if self.login_gui.DarkModeButton.isChecked():
+			methods.dark_theme(app)
+			self.login_gui.DarkModeButton.setText("Light")
+			self.login_gui.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+			self.login_gui.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20.png"))
+		else:
+			methods.light_theme(app)
+			self.login_gui.DarkModeButton.setText("Dark")
+			self.login_gui.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
+			self.login_gui.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20_light.png"))
 
 	def login_okaybutton_clicked(self):
 		try:
@@ -260,7 +273,6 @@ class App(QtWidgets.QWidget):
 
 	def open_exam_window(self):
 		#Initialise exam window
-		methods.dark_theme(app)
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
 		#Set any variables
@@ -274,6 +286,7 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.LogoutButton.clicked.connect(self.logout_button_clicked)
 		self.exam_gui.BackButton.clicked.connect(self.back_button_clicked)
 		self.exam_gui.ForwardButton.clicked.connect(self.forward_button_clicked)
+		self.exam_gui.DarkModeButton.clicked.connect(self.exam_window_theme_choice)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerACheckBox,1)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerBCheckBox,2)
 		self.exam_gui.AnswerButtonGroup.setId(self.exam_gui.AnswerCCheckBox,3)
@@ -329,6 +342,16 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.show()
 		self.login_gui.hide()
 		self.counters()
+
+	def exam_window_theme_choice(self):
+		if self.exam_gui.DarkModeButton.isChecked():
+			methods.dark_theme(app)
+			self.exam_gui.DarkModeButton.setText("Light")
+			self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+		else:
+			methods.light_theme(app)
+			self.exam_gui.DarkModeButton.setText("Dark")
+			self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 
 	def csv_reader_func(self, path, csv_type):
 		'''
