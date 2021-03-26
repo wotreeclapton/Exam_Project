@@ -129,6 +129,7 @@ class App(QtWidgets.QWidget):
 		self.answer = 0
 
 		self.admin = False
+		self.dark_mode = False
 
 	def read_login_csv(self, clas):
 		self.student_names.clear()
@@ -174,11 +175,13 @@ class App(QtWidgets.QWidget):
 			self.login_gui.DarkModeButton.setText("Light")
 			self.login_gui.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
 			self.login_gui.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20.png"))
+			self.dark_mode = True
 		else:
 			methods.light_theme(app)
 			self.login_gui.DarkModeButton.setText("Dark")
 			self.login_gui.Logolabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 			self.login_gui.PasswordShowButton.setIcon(QtGui.QIcon("img/Password_Icon_20x20_light.png"))
+			self.dark_mode = False
 
 	def login_okaybutton_clicked(self):
 		try:
@@ -275,12 +278,24 @@ class App(QtWidgets.QWidget):
 		#Initialise exam window
 		self.exam_gui = Ui_ExamQuestions(self.screen_size)
 		methods.screen_location(self.exam_gui, True, self.screen_size)
+
 		#Set any variables
 		self.question_number = 1
 		self.answer_state = False
 		#hide back button in student mode
 		if self.admin != True:
 			self.exam_gui.BackButton.hide()
+
+		#Set the theme
+		if self.dark_mode:
+			methods.dark_theme(app)
+			self.exam_gui.DarkModeButton.setText("Light")
+			self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
+			self.exam_gui.DarkModeButton.setChecked(True)
+		# else:
+			# methods.light_theme(app)
+			# self.exam_gui.DarkModeButton.setText("Dark")
+			# self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 
 		#connect butoons to methods
 		self.exam_gui.LogoutButton.clicked.connect(self.logout_button_clicked)
@@ -339,8 +354,8 @@ class App(QtWidgets.QWidget):
 		#Show window
 		self.populate_boxes(self.quest_seq[self.question_number - 1]) #pass the random question from a list
 
+		# self.login_gui.hide()
 		self.exam_gui.show()
-		self.login_gui.hide()
 		self.counters()
 
 	def exam_window_theme_choice(self):
@@ -620,4 +635,3 @@ if __name__ == '__main__':
 
 	sys.exit(app.exec_())
 
-input()

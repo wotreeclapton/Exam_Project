@@ -154,8 +154,8 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		super(Ui_ExamQuestions, self).__init__(parent)
 		self.screen_height = screen_size.height()
 		self.screen_width = round((self.screen_height - 32) * 1.3)
-		# self.screen_height = 1080
-		# self.screen_width = 1920
+		# self.screen_height = screen_size[1]
+		# self.screen_width = round((self.screen_height - 32) * 1.3)
 		#print("Ori W=1200 New W={} Ori H=924 New W={}".format(self.screen_width,self.screen_height))
 		self.initUI()
 
@@ -618,14 +618,14 @@ class Ui_StartupWindow(QtWidgets.QMainWindow):
 		self.RightsLabel.setFont(font)
 		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-if __name__ == '__main__':
-	app = QtWidgets.QApplication(sys.argv)
-	# main_app = Ui_ExamLogin()
-	# main_app = Ui_ExamQuestions()
-	main_app = Ui_StartupWindow()
-	main_app.show()
+# if __name__ == '__main__':
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	# main_app = Ui_ExamLogin()
+# 	main_app = Ui_ExamQuestions(screen_size=(1920,1080))
+# 	# main_app = Ui_StartupWindow()
+# 	main_app.show()
 
-sys.exit(app.exec_())
+# sys.exit(app.exec_())
 
 
 # Copyright (c) 2019-2020 Steven Walden
