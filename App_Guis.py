@@ -618,14 +618,14 @@ class Ui_StartupWindow(QtWidgets.QMainWindow):
 		self.RightsLabel.setFont(font)
 		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-# if __name__ == '__main__':
-# 	app = QtWidgets.QApplication(sys.argv)
-# 	# main_app = Ui_ExamLogin()
-# 	main_app = Ui_ExamQuestions(screen_size=(1920,1080))
-# 	# main_app = Ui_StartupWindow()
-# 	main_app.show()
+if __name__ == '__main__':
+	app = QtWidgets.QApplication(sys.argv)
+	main_app = Ui_ExamLogin()
+	# main_app = Ui_ExamQuestions(screen_size=(1920,1080))
+	# main_app = Ui_StartupWindow()
+	main_app.show()
 
-# sys.exit(app.exec_())
+sys.exit(app.exec_())
 
 
 # Copyright (c) 2019-2020 Steven Walden
