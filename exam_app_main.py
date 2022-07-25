@@ -90,10 +90,10 @@ class App(QtWidgets.QWidget):
 		self.netlogin = {'remote': self.network_location, 'local': '', 'username': self.user_name, 'password': self.pass_word}
 		#new login to exam_app account
 		try:
-		    win32net.NetUseAdd(None, 2, self.netlogin)
+				win32net.NetUseAdd(None, 2, self.netlogin)
 		except pywintypes.error as e:
-			self.logger.error(str(e))
-			self.message_boxes(msg='NetworkError', msg_type=3, err=e)
+				self.logger.error(str(e))
+				self.message_boxes(msg='NetworkError', msg_type=3, err=e)
 
 	def load_data(self):
 		cwd = os.getcwd()
@@ -185,7 +185,7 @@ class App(QtWidgets.QWidget):
 
 	def login_okaybutton_clicked(self):
 		try:
-			#open main window and pass vairables
+			#open main window and pass variables
 			self.password_input = self.login_gui.InputPassword.text()
 			if self.student_number !=0 and self.exam_number !=0:
 				if self.password_input == self.student_info[self.student_number]["student_password"] or self.password_input == self.student_info[0]["student_password"]:
@@ -199,13 +199,13 @@ class App(QtWidgets.QWidget):
 					#try and except check if exam taken already
 					with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
 						try:
-							#check to see if file has been created already if so op msgbox and deniy access
+							#check to see if file has been created already if so op msg-box and deny access
 							with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "r") as file_object:
 								self.message_boxes(msg='Exam completed already.', msg_type=4, err=None)
-								#Popup mesg box to save already taken exam before
+								#Popup msg box to save already taken exam before
 
 						except FileNotFoundError as e:
-							#If exam not taken then allow acces to main window
+							#If exam not taken then allow access to main window
 							#open the main window
 							self.login_gui.close()
 							self.open_exam_window()
@@ -218,7 +218,7 @@ class App(QtWidgets.QWidget):
 
 	def password_show_button_clicked(self):
 		if self.login_gui.PasswordShowButton.isDown():
-		 	self.login_gui.InputPassword.setEchoMode(QtWidgets.QLineEdit.Normal)
+			self.login_gui.InputPassword.setEchoMode(QtWidgets.QLineEdit.Normal)
 		else:
 			self.login_gui.InputPassword.setEchoMode(QtWidgets.QLineEdit.Password)
 
@@ -228,7 +228,7 @@ class App(QtWidgets.QWidget):
 		self.exam_name = self.login_gui.ExamChoiceCmb.itemText(exa)
 
 	def class_name_changed(self, cls):
-		#recieves an integer (cls) from the combo box when it changes
+		#receives an integer (cls) from the combo box when it changes
 		self.class_name = self.login_gui.ClassCmb.itemText(cls)
 		self.year_chosen = self.class_list[cls]
 
@@ -547,7 +547,7 @@ class App(QtWidgets.QWidget):
 			try:
 				self.text_to_write = f'{self.student_number}-{self.student_info[self.student_number]["student_name"]}-{self.student_info[self.student_number]["student_nickname"]} Score= {self.correct_answers}'
 				self.append_new_line_to_file(self.running_results_filename, self.text_to_write)
-			except error as e:
+			except Exception as e:
 				pass
 			self.message_boxes(msg='PermissionError', msg_type=2, err=f'File is still open {e}')
 
