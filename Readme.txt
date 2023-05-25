@@ -25,7 +25,7 @@ Exam App can display and manage examinations on a multiple choice basis utilizin
 1.2 What Does Exam App Do?
 -------------------------
 
-Exam App will display inputed questions and answers. managing a score under a time constraint defined by the administrator.
+Exam App will display imputed questions and answers. managing a score under a time constraint defined by the administrator.
 It features the ability to be able to display both video and photo images for any question related to the exam.
 Both the amount of questions and well as the duration of the exam are selectable from the exam set up GUI. 
 
