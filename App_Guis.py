@@ -464,26 +464,26 @@ class Ui_ExamQuestions(QtWidgets.QMainWindow):
 		self.TabTextLayoutD.addWidget(self.AnswerTextD)
 
 	def add_checkboxes(self):
- 		self.AnswerACheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
- 		self.AnswerACheckBox.setGeometry(30, 14, 20, 20)
- 		self.AnswerButtonGroup.addButton(self.AnswerACheckBox)
+		self.AnswerACheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
+		self.AnswerACheckBox.setGeometry(30, 14, 20, 20)
+		self.AnswerButtonGroup.addButton(self.AnswerACheckBox)
 
- 		self.AnswerBCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
- 		self.AnswerBCheckBox.setGeometry(80, 14, 20, 20)
- 		self.AnswerButtonGroup.addButton(self.AnswerBCheckBox)
+		self.AnswerBCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
+		self.AnswerBCheckBox.setGeometry(80, 14, 20, 20)
+		self.AnswerButtonGroup.addButton(self.AnswerBCheckBox)
 
- 		self.AnswerCCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
- 		self.AnswerCCheckBox.setGeometry(130, 14, 20, 20)
- 		self.AnswerButtonGroup.addButton(self.AnswerCCheckBox)
+		self.AnswerCCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
+		self.AnswerCCheckBox.setGeometry(130, 14, 20, 20)
+		self.AnswerButtonGroup.addButton(self.AnswerCCheckBox)
 
- 		self.AnswerDCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
- 		self.AnswerDCheckBox.setGeometry(180, 14, 20, 20)
- 		self.AnswerButtonGroup.addButton(self.AnswerDCheckBox)
+		self.AnswerDCheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
+		self.AnswerDCheckBox.setGeometry(180, 14, 20, 20)
+		self.AnswerButtonGroup.addButton(self.AnswerDCheckBox)
 
- 		self.FalsecheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
- 		self.FalsecheckBox.setGeometry(210, 10, 70, 17)
- 		self.FalsecheckBox.setFocusPolicy(QtCore.Qt.NoFocus)
- 		self.AnswerButtonGroup.addButton(self.FalsecheckBox)
+		self.FalsecheckBox = QtWidgets.QCheckBox(self.CheckboxFrame)
+		self.FalsecheckBox.setGeometry(210, 10, 70, 17)
+		self.FalsecheckBox.setFocusPolicy(QtCore.Qt.NoFocus)
+		self.AnswerButtonGroup.addButton(self.FalsecheckBox)
 
 	def add_buttons(self):
 		bfont = QtGui.QFont()
@@ -618,14 +618,14 @@ class Ui_StartupWindow(QtWidgets.QMainWindow):
 		self.RightsLabel.setFont(font)
 		self.RightsLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-if __name__ == '__main__':
-	app = QtWidgets.QApplication(sys.argv)
-	main_app = Ui_ExamLogin()
-	# main_app = Ui_ExamQuestions(screen_size=(1920,1080))
-	# main_app = Ui_StartupWindow()
-	main_app.show()
+# if __name__ == '__main__':
+# 	app = QtWidgets.QApplication(sys.argv)
+# 	main_app = Ui_ExamLogin()
+# 	# main_app = Ui_ExamQuestions(screen_size=(1920,1080))
+# 	# main_app = Ui_StartupWindow()
+# 	main_app.show()
 
-sys.exit(app.exec_())
+# sys.exit(app.exec_())
 
 
 # Copyright (c) 2019-2020 Steven Walden

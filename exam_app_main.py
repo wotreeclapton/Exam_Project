@@ -78,7 +78,7 @@ class App(QtWidgets.QWidget):
 		subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
 		# #Load network location and set new login for classes, exam files and results
 		try:
-			with open("LL.txt", "r") as file:
+			with open("D:\\New Sync\\02Office & Programing\\103Exam_Project\\LL.txt", "r", encoding="utf8") as file:
 				self.login_info = [line for line in file]
 		except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the login details file! {e}")
@@ -514,17 +514,17 @@ class App(QtWidgets.QWidget):
 				os.chdir(cwd)
 
 	def append_new_line_to_file(self, file_name, text_to_append):
-	    """Append given text as a new line at the end of file"""
-	    # Open the file in append & read mode ('a+')
-	    with open(file_name, "a+") as file_object:
-	        # Move read cursor to the start of file.
-	        file_object.seek(0)
+		"""Append given text as a new line at the end of file"""
+		# Open the file in append & read mode ('a+')
+		with open(file_name, "a+") as file_object:
+		# Move read cursor to the start of file.
+			file_object.seek(0)
 	        # If file is not empty then append '\n'
-	        data = file_object.read(100)
-	        if len(data) > 0:
-	            file_object.write("\n")
+			data = file_object.read(100)
+			if len(data) > 0:
+				file_object.write("\n")
 	        # Append text at the end of file
-	        file_object.write(text_to_append)
+			file_object.write(text_to_append)
 
 	def write_to_result_wb(self):
 		self.header_list = ['Number','Name','Nickname','Score','Day Taken','Time Started','Time Finished']
@@ -626,12 +626,12 @@ if __name__ == '__main__':
 	if GetLastError() == ERROR_ALREADY_EXISTS:
 		sys.exit(1) #exit if app instance already exists
 	else:
-	    print("Qt version:", QT_VERSION_STR)
-	    print("Author:", __author__)
-	    print("App version:",__version__)
-
-	    app = QtWidgets.QApplication(sys.argv)
-	    main_app = App()
+		print("Qt version:", QT_VERSION_STR)
+		print("Author:", __author__)
+		print("App version:",__version__)
+		
+		app = QtWidgets.QApplication(sys.argv)
+		main_app = App()
 
 	sys.exit(app.exec_())
 

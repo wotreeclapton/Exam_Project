@@ -93,8 +93,8 @@ def screen_location(wn, win_type, avail_geom):
 	#sg = QDesktopWidget().screenGeometry()
 
 	widget = wn.geometry()
-	x = avail_geom.width() / 2 - widget.width() / 2
-	y = avail_geom.height() / 2 - widget.height() / 2
+	x = int(avail_geom.width() / 2 - widget.width() / 2)
+	y = int(avail_geom.height() / 2 - widget.height() / 2)
 	if win_type: #Check if the gui in the main one
 		wn.move(x,0)
 	else:
