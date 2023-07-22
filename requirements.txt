@@ -5,7 +5,7 @@ bottle-websocket==0.2.9
 cffi==1.14.1
 Eel==0.12.4
 et-xmlfile==1.0.1
-future==0.18.2
+future==0.18.3
 gevent==20.6.2
 gevent-websocket==0.10.1
 greenlet==0.4.16
