@@ -6,7 +6,7 @@ cffi==1.14.1
 Eel==0.12.4
 et-xmlfile==1.0.1
 future==0.18.2
-gevent==20.6.2
+gevent==23.9.1
 gevent-websocket==0.10.1
 greenlet==0.4.16
 jdcal==1.4.1
