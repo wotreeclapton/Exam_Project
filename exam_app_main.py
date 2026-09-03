@@ -75,10 +75,10 @@ class App(QtWidgets.QWidget):
 
 	def network_login(self):
 		#Clear any network logins
-		subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
+		# subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
 		# #Load network location and set new login for classes, exam files and results
 		try:
-			with open("D:\\New Sync\\02Office & Programing\\103Exam_Project\\LL.txt", "r", encoding="utf8") as file:
+			with open("LL.txt", "r", encoding="utf8") as file:
 				self.login_info = [line for line in file]
 		except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the login details file! {e}")
