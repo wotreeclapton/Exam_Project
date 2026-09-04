@@ -32,7 +32,7 @@ from win32event import CreateMutex
 from win32api import GetLastError
 from winerror import ERROR_ALREADY_EXISTS
 
-import csv
+import csv_loader
 import paths
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
@@ -94,10 +94,7 @@ class App(QtWidgets.QWidget):
 		#load class list from csv file
 		with cdir(self.network_location, self.logger):	
 			try:
-				with open('class_list.csv','r') as csv_file:
-					csv_reader = csv.DictReader(csv_file)
-
-					self.class_list = [line['classes'] for line in csv_reader]
+				self.class_list = csv_loader.load_class_list('class_list.csv')
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the class list file! {e}")
@@ -105,10 +102,7 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 		#load exam list from csv file
 			try:
-				with open('exam_list.csv','r') as csv_file:
-					csv_reader = csv.DictReader(csv_file)
-
-					self.exam_list = [line['exams'] for line in csv_reader]
+				self.exam_list = csv_loader.load_exam_list('exam_list.csv')
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the exam list file! {e}")
@@ -129,7 +123,7 @@ class App(QtWidgets.QWidget):
 		self.student_names.clear()
 		self.student_info.clear()
 		self.path = paths.student_details_csv_filename(clas)
-		self.csv_reader_func(path=self.path ,csv_type=0)
+		self.student_info = self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_startup_window(self):
 		self.startup_screen = Ui_StartupWindow()
@@ -370,25 +364,22 @@ class App(QtWidgets.QWidget):
 			#open the correct csv file for each login/class name
 			#Test to see if the file exsists if not raise error and close program
 			try:
-				with open(path,'r') as csv_file:
-					csv_reader = csv.DictReader(csv_file)
-
-					# for line in csv_reader:
-					if csv_type == 0: #reads student details csv
-						self.student_info = {int(line['Student number']): {"student_name": line['Name'], "student_nickname": line['Nickname'], "student_password": line['Password']} for line in csv_reader}
-					else: #reads exam questions csv
-						self.exam_info = {int(line['QuestionNumber']): {"question": line['Questions'], "answer_a": line['AnswerA'], "answer_b": line['AnswerB'], "answer_c": line['AnswerC'], "answer_d": line['AnswerD'], "correct_answer": line['Rightanswer'], "photo_question": line['Photoquestion']} for line in csv_reader}
+				if csv_type == 0: #reads student details csv
+					return csv_loader.load_student_info(path)
+				else: #reads exam questions csv
+					return csv_loader.load_exam_info(path)
 
 			except FileNotFoundError as e:
 				self.logger.error(f" Can not find the file {path}")
 				os.chdir(cwd)
 				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
+				return {}
 
 	def read_exam_questions_csv(self):
 		self.exam_info.clear()
 
 		self.path = paths.exam_questions_csv_path(self.exam_name)
-		self.csv_reader_func(path=self.path ,csv_type=1)
+		self.exam_info = self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
 		self.scroll_thread = methods.ScrollThread(parent=None, alloted_time=self.allowed_time)
