@@ -9,8 +9,24 @@ def student_details_csv_filename(class_name: str) -> str:
 	return f"Student_Details_CSV_{_class_directory_name(class_name)}.csv"
 
 
+def class_list_csv_path(network_location: str) -> str:
+	return f"{network_location}\\class_list.csv"
+
+
+def exam_list_csv_path(network_location: str) -> str:
+	return f"{network_location}\\exam_list.csv"
+
+
+def student_details_csv_path(network_location: str, class_name: str) -> str:
+	return f"{network_location}\\{student_details_csv_filename(class_name)}"
+
+
 def exam_questions_csv_path(exam_name: str) -> str:
 	return f"{exam_name}\\{exam_name}_Questions.csv"
+
+
+def network_exam_questions_csv_path(network_location: str, exam_name: str) -> str:
+	return f"{network_location}\\{exam_questions_csv_path(exam_name)}"
 
 
 def student_photo_directory(network_location: str, class_name: str) -> str:
@@ -19,6 +35,14 @@ def student_photo_directory(network_location: str, class_name: str) -> str:
 
 def student_photo_filename(student_number: int) -> str:
 	return f"{student_number}.png"
+
+
+def student_photo_path(network_location: str, class_name: str, student_number: int) -> str:
+	return f"{student_photo_directory(network_location, class_name)}/{student_photo_filename(student_number)}"
+
+
+def blank_student_photo_path(application_directory: str) -> str:
+	return f"{application_directory}\\img\\blank_girl.png"
 
 
 def exam_content_directory(network_location: str, exam_name: str) -> str:

@@ -7,7 +7,7 @@ Network_files/
 LL.txt/
 LL_DEV.txt
 
-*.docx
+*.docxpip install PyQt5 pywin32 openpyxl
 
 # Python
 __pycache__/

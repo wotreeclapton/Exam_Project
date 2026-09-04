@@ -46,6 +46,7 @@ import methods
 from methods import change_dir as cdir
 
 PY_VER = sys.version[:3]
+APPLICATION_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
 class App(QtWidgets.QWidget):
 	"""docstring for App"""
@@ -90,24 +91,20 @@ class App(QtWidgets.QWidget):
 				self.message_boxes(msg='NetworkError', msg_type=3, err=e)
 
 	def load_data(self):
-		cwd = os.getcwd()
 		#load class list from csv file
-		with cdir(self.network_location, self.logger):	
-			try:
-				self.class_list = csv_loader.load_class_list('class_list.csv')
+		try:
+			self.class_list = csv_loader.load_class_list(paths.class_list_csv_path(self.network_location))
 
-			except FileNotFoundError as e:
-				self.logger.error(f" Cannot load the class list file! {e}")
-				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
+		except FileNotFoundError as e:
+			self.logger.error(f" Cannot load the class list file! {e}")
+			self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 		#load exam list from csv file
-			try:
-				self.exam_list = csv_loader.load_exam_list('exam_list.csv')
+		try:
+			self.exam_list = csv_loader.load_exam_list(paths.exam_list_csv_path(self.network_location))
 
-			except FileNotFoundError as e:
-				self.logger.error(f" Cannot load the exam list file! {e}")
-				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
+		except FileNotFoundError as e:
+			self.logger.error(f" Cannot load the exam list file! {e}")
+			self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
 
 		self.string_convert = {'A':1,'B':2,'C':3,'D':4}
 		self.student_names =  []
@@ -122,7 +119,7 @@ class App(QtWidgets.QWidget):
 	def read_login_csv(self, clas):
 		self.student_names.clear()
 		self.student_info.clear()
-		self.path = paths.student_details_csv_filename(clas)
+		self.path = paths.student_details_csv_path(self.network_location, clas)
 		self.student_info = self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_startup_window(self):
@@ -237,28 +234,23 @@ class App(QtWidgets.QWidget):
 			self.login_gui.StudentNickname.setText('')
 
 	def student_name_change(self, st):
-		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-		self.photo_location = paths.student_photo_directory(self.network_location, self.year_chosen)
-		with cdir(self.photo_location, self.logger):
-			if st > 0:
-				self.photo_path = paths.student_photo_filename(st)
-				if os.path.exists(self.photo_path):
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
-				else:
-					os.chdir(cwd)
-					student_nickname = self.student_info[st]["student_nickname"]
-					self.logger.error(f"{student_nickname}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
-					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
-
-				self.login_gui.StudentNumber.setText(str(st))
-				self.login_gui.StudentNickname.setText(self.student_info[st]["student_nickname"])
+		if st > 0:
+			self.photo_path = paths.student_photo_path(self.network_location, self.year_chosen, st)
+			if os.path.exists(self.photo_path):
+				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 			else:
-				os.chdir(cwd)
-				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
-				self.login_gui.StudentNumber.setText('')
-				self.login_gui.StudentNickname.setText('')
+				student_nickname = self.student_info[st]["student_nickname"]
+				self.logger.error(f"{student_nickname}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
+				self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(paths.blank_student_photo_path(APPLICATION_DIRECTORY)))
+
+			self.login_gui.StudentNumber.setText(str(st))
+			self.login_gui.StudentNickname.setText(self.student_info[st]["student_nickname"])
+		else:
+			self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(paths.blank_student_photo_path(APPLICATION_DIRECTORY)))
+			self.login_gui.StudentNumber.setText('')
+			self.login_gui.StudentNickname.setText('')
 
 	def login_cancelbutton_clicked(self):
 		app.exit()
@@ -313,14 +305,13 @@ class App(QtWidgets.QWidget):
 		self.exam_gui.StudentNameLabel.setText(self.student_info[self.student_number]["student_name"])
 		self.exam_gui.OutOfQuestionLabel.setText(f"/{len(self.exam_info) -1}")
 
-		with cdir(self.photo_location, self.logger):
-			try:
-				if os.path.exists(self.photo_path):
-					self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
-				else:
-					self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
-			except Exception as e:
-				self.logger.error(str(e))
+		try:
+			if os.path.exists(self.photo_path):
+				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(self.photo_path))
+			else:
+				self.exam_gui.StudentPhotoLabel.setPixmap(QtGui.QPixmap(paths.blank_student_photo_path(APPLICATION_DIRECTORY)))
+		except Exception as e:
+			self.logger.error(str(e))
 
 
 		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
@@ -359,26 +350,23 @@ class App(QtWidgets.QWidget):
 		Arguments:
 			clas {[integer]} -- [This is the selected school year number to be used as the first part of the .CSV filename i.i M1
 		'''
-		cwd = os.getcwd()
-		with cdir(self.network_location, self.logger):
-			#open the correct csv file for each login/class name
-			#Test to see if the file exsists if not raise error and close program
-			try:
-				if csv_type == 0: #reads student details csv
-					return csv_loader.load_student_info(path)
-				else: #reads exam questions csv
-					return csv_loader.load_exam_info(path)
+		#open the correct csv file for each login/class name
+		#Test to see if the file exsists if not raise error and close program
+		try:
+			if csv_type == 0: #reads student details csv
+				return csv_loader.load_student_info(path)
+			else: #reads exam questions csv
+				return csv_loader.load_exam_info(path)
 
-			except FileNotFoundError as e:
-				self.logger.error(f" Can not find the file {path}")
-				os.chdir(cwd)
-				self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
-				return {}
+		except FileNotFoundError as e:
+			self.logger.error(f" Can not find the file {path}")
+			self.message_boxes(msg='FileNotFoundError', msg_type=2, err=e)
+			return {}
 
 	def read_exam_questions_csv(self):
 		self.exam_info.clear()
 
-		self.path = paths.exam_questions_csv_path(self.exam_name)
+		self.path = paths.network_exam_questions_csv_path(self.network_location, self.exam_name)
 		self.exam_info = self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):

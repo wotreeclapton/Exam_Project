@@ -18,9 +18,25 @@ class PathBuilderTests(unittest.TestCase):
 		expected = f"Student_Details_CSV_M{self.class_name[1]}-{self.class_name[3]}.csv"
 		self.assertEqual(paths.student_details_csv_filename(self.class_name), expected)
 
+	def test_class_list_csv_path_matches_legacy_location(self):
+		expected = f"{self.network_location}\\class_list.csv"
+		self.assertEqual(paths.class_list_csv_path(self.network_location), expected)
+
+	def test_exam_list_csv_path_matches_legacy_location(self):
+		expected = f"{self.network_location}\\exam_list.csv"
+		self.assertEqual(paths.exam_list_csv_path(self.network_location), expected)
+
+	def test_student_details_csv_path_matches_legacy_location(self):
+		expected = f"{self.network_location}\\Student_Details_CSV_M{self.class_name[1]}-{self.class_name[3]}.csv"
+		self.assertEqual(paths.student_details_csv_path(self.network_location, self.class_name), expected)
+
 	def test_exam_questions_csv_path_matches_legacy_expression(self):
 		expected = f"{self.exam_name}\\{self.exam_name}_Questions.csv"
 		self.assertEqual(paths.exam_questions_csv_path(self.exam_name), expected)
+
+	def test_network_exam_questions_csv_path_matches_legacy_location(self):
+		expected = f"{self.network_location}\\{self.exam_name}\\{self.exam_name}_Questions.csv"
+		self.assertEqual(paths.network_exam_questions_csv_path(self.network_location, self.exam_name), expected)
 
 	def test_student_photo_directory_matches_legacy_expression(self):
 		expected = f"{self.network_location}/M{self.class_name[1]}-{self.class_name[3]}"
@@ -29,6 +45,15 @@ class PathBuilderTests(unittest.TestCase):
 	def test_student_photo_filename_matches_legacy_expression(self):
 		expected = f"{self.student_number}.png"
 		self.assertEqual(paths.student_photo_filename(self.student_number), expected)
+
+	def test_student_photo_path_matches_legacy_expression(self):
+		expected = f"{self.network_location}/M{self.class_name[1]}-{self.class_name[3]}/{self.student_number}.png"
+		self.assertEqual(paths.student_photo_path(self.network_location, self.class_name, self.student_number), expected)
+
+	def test_blank_student_photo_path_matches_legacy_resource_location(self):
+		application_directory = r"C:\ExamApp"
+		expected = f"{application_directory}\\img\\blank_girl.png"
+		self.assertEqual(paths.blank_student_photo_path(application_directory), expected)
 
 	def test_exam_content_directory_matches_legacy_expression(self):
 		expected = f"{self.network_location}/{self.exam_name}"
