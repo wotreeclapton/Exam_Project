@@ -475,6 +475,7 @@ class App(QtWidgets.QWidget):
 
 		#Check for exsisting excel file
 		self.results_filename = paths.excel_result_filename(self.exam_info[0]["question"], self.exam_info[0]["answer_a"])
+		self.running_results_filename = paths.running_result_filename(self.exam_info[0]["question"], self.exam_info[0]["answer_a"], self.student_number, self.student_info[self.student_number]["student_name"], self.student_info[self.student_number]["student_nickname"])
 		with cdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name), self.logger): #
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
@@ -539,7 +540,7 @@ class App(QtWidgets.QWidget):
 			try:
 				self.text_to_write = f'{self.student_number}-{self.student_info[self.student_number]["student_name"]}-{self.student_info[self.student_number]["student_nickname"]} Score= {self.correct_answers}'
 				self.append_new_line_to_file(self.running_results_filename, self.text_to_write)
-			except Exception as e:
+			except Exception:
 				pass
 			self.message_boxes(msg='PermissionError', msg_type=2, err=f'File is still open {e}')
 
