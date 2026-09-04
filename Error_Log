@@ -1,1 +1,14 @@
 
+2026-09-04 11:05:25,374:__main__: Unable to connect to network location: \\Teacher-Steve\exam_app_test/M1-1
+2026-09-04 11:05:30,634:__main__: Unable to connect to network location: \\Teacher-Steve\exam_app_test/M1-1
+2026-09-04 11:07:50,792:__main__: Can not find the file M4_C31207_Final_Exam\M4_C31207_Final_Exam_Questions.csv
+2026-09-04 11:10:22,742:__main__: Error: [Errno 2] No such file or directory: 'C21202 Final Exam results.xlsx'
+2026-09-04 11:10:22,743:__main__: Created: C21202 Final Exam results.xlsx in \\Teacher-Steve\exam_app_test\M1-1_M1_C21202_Final_Exam_results
+2026-09-04 11:13:09,077:__main__: Error: [Errno 2] No such file or directory: 'C21202 Final Exam results.xlsx'
+2026-09-04 11:13:09,080:__main__: Created: C21202 Final Exam results.xlsx in \\Teacher-Steve\exam_app_test\M1-1_M1_C21202_Final_Exam_results
+2026-09-04 11:20:15,623:__main__: Error: [Errno 2] No such file or directory: 'C21202 Final Exam results.xlsx'
+2026-09-04 11:20:15,625:__main__: Created: C21202 Final Exam results.xlsx in \\Teacher-Steve\exam_app_test\M1-1_M1_C21202_Final_Exam_results
+2026-09-04 11:24:31,731:__main__: Error: [Errno 2] No such file or directory: 'C21202 Final Exam results.xlsx'
+2026-09-04 11:24:31,733:__main__: Created: C21202 Final Exam results.xlsx in \\Teacher-Steve\exam_app_test\M1-1_M1_C21202_Final_Exam_results
+2026-09-04 11:39:56,887:__main__: Error: [Errno 2] No such file or directory: 'C21202 Final Exam results.xlsx'
+2026-09-04 11:39:56,890:__main__: Created: C21202 Final Exam results.xlsx in \\Teacher-Steve\exam_app_test\M1-1_M1_C21202_Final_Exam_results

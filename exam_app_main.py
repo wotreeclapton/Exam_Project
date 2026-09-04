@@ -21,15 +21,12 @@ __version__ = '1.7.0'
 
 import os
 import sys
-import time
 import logging
 import datetime
 import pywintypes
-import subprocess
 import win32net
-import win32file
 from win32com.shell import shell, shellcon
-from random import randrange, shuffle
+from random import shuffle
 
 from win32event import CreateMutex
 from win32api import GetLastError
@@ -37,11 +34,9 @@ from winerror import ERROR_ALREADY_EXISTS
 
 import csv
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QWidget, QDesktopWidget #, QApplication, QMainWindow,
-#from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import QT_VERSION_STR, Qt, QUrl
-from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
+from PyQt5.QtCore import QT_VERSION_STR, QUrl
+from PyQt5.QtMultimedia import QMediaContent
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Font
 
@@ -65,9 +60,7 @@ class App(QtWidgets.QWidget):
 		self.logger.addHandler(self.file_handler)
 		#Load theme
 		# methods.dark_theme(app)
-		# methods.theme_choice(app)
 		self.screen_size = QDesktopWidget().availableGeometry()
-		# self.open_startup_window()
 		self.network_login()
 		#setup app windows and theme
 		self.load_data()
@@ -78,7 +71,7 @@ class App(QtWidgets.QWidget):
 		# subprocess.call("net use * /d /y", shell=True) #calls net use delete in command shell
 		# #Load network location and set new login for classes, exam files and results
 		try:
-			with open("LL.txt", "r", encoding="utf8") as file:
+			with open("LL_DEV.txt", "r", encoding="utf8") as file:
 				self.login_info = [line for line in file]
 		except FileNotFoundError as e:
 				self.logger.error(f" Cannot load the login details file! {e}")
@@ -260,7 +253,8 @@ class App(QtWidgets.QWidget):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
 					os.chdir(cwd)
-					self.logger.error(f"{self.student_info[st][student_nickname]}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
+					student_nickname = self.student_info[st]["student_nickname"]
+					self.logger.error(f"{student_nickname}'s photo {str(st)}.png is missing in M{self.year_chosen[1]}-{self.year_chosen[3]} folder")
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap('img/blank_girl.png'))
 
 				self.login_gui.StudentNumber.setText(str(st))
@@ -292,12 +286,8 @@ class App(QtWidgets.QWidget):
 			self.exam_gui.DarkModeButton.setText("Light")
 			self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_grad.png"))
 			self.exam_gui.DarkModeButton.setChecked(True)
-		# else:
-			# methods.light_theme(app)
-			# self.exam_gui.DarkModeButton.setText("Dark")
-			# self.exam_gui.SchoolLabel.setPixmap(QtGui.QPixmap("img/School logo75x97_light.png"))
 
-		#connect butoons to methods
+		#connect buttons to methods
 		self.exam_gui.LogoutButton.clicked.connect(self.logout_button_clicked)
 		self.exam_gui.BackButton.clicked.connect(self.back_button_clicked)
 		self.exam_gui.ForwardButton.clicked.connect(self.forward_button_clicked)
@@ -337,7 +327,6 @@ class App(QtWidgets.QWidget):
 			except Exception as e:
 				self.logger.error(str(e))
 
-		#self.exam_gui.tabWidget.setCurrentIndex(0)
 
 		self.exam_gui.TimeLeftProgressBar.setMaximum(self.allowed_time)
 		self.exam_gui.TimeLeftProgressBar.setMinimum(0)
@@ -466,6 +455,7 @@ class App(QtWidgets.QWidget):
 				self.open_login_window()
 
 	def save_results(self):
+		cwd = os.getcwd()
 		self.time_finished = datetime.datetime.today()
 		#Store score in a list
 		self.result_list = [self.student_number, self.student_info[self.student_number]["student_name"], self.student_info[self.student_number]["student_nickname"], self.correct_answers, self.start_time.strftime("%d/%m/%Y"), self.start_time.strftime("%H:%M:%S"), self.time_finished.strftime("%H:%M:%S")]
@@ -504,6 +494,7 @@ class App(QtWidgets.QWidget):
 				os.chdir(cwd)
 
 	def save_running_result(self):
+		cwd = os.getcwd()
 		self.running_results_filename = f'{self.exam_info[0]["question"]}_{self.exam_info[0]["answer_a"]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_name"]}_{self.student_info[self.student_number]["student_nickname"]}_running_results.txt'
 		self.text_to_write = f"Question number {self.quest_seq[self.question_number - 1]} = {self.answer_state} Total score= {self.correct_answers}"
 		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
