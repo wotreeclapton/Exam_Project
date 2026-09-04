@@ -33,6 +33,7 @@ from win32api import GetLastError
 from winerror import ERROR_ALREADY_EXISTS
 
 import csv
+import paths
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 from PyQt5.QtCore import QT_VERSION_STR, QUrl
@@ -127,7 +128,7 @@ class App(QtWidgets.QWidget):
 	def read_login_csv(self, clas):
 		self.student_names.clear()
 		self.student_info.clear()
-		self.path = f'Student_Details_CSV_M{clas[1]}-{clas[3]}.csv'
+		self.path = paths.student_details_csv_filename(clas)
 		self.csv_reader_func(path=self.path ,csv_type=0)
 
 	def open_startup_window(self):
@@ -185,15 +186,15 @@ class App(QtWidgets.QWidget):
 					#Create exam results folder in the network location
 					try:
 						with cdir(self.network_location, self.logger):
-							os.mkdir(f"M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results")
+							os.mkdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name))
 					except FileExistsError:
 						pass
 	
 					#try and except check if exam taken already
-					with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
+					with cdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name), self.logger):
 						try:
 							#check to see if file has been created already if so op msg-box and deny access
-							with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "r") as file_object:
+							with open(paths.completion_marker_filename(self.year_chosen, self.student_number, self.student_info[self.student_number]["student_nickname"]), "r") as file_object:
 								self.message_boxes(msg='Exam completed already.', msg_type=4, err=None)
 								#Popup msg box to save already taken exam before
 
@@ -245,10 +246,10 @@ class App(QtWidgets.QWidget):
 		cwd = os.getcwd()
 		#links student cmb box with the photo display
 		self.student_number = st
-		self.photo_location = (f'{self.network_location}/M{self.year_chosen[1]}-{self.year_chosen[3]}')
+		self.photo_location = paths.student_photo_directory(self.network_location, self.year_chosen)
 		with cdir(self.photo_location, self.logger):
 			if st > 0:
-				self.photo_path = f'{st}.png'
+				self.photo_path = paths.student_photo_filename(st)
 				if os.path.exists(self.photo_path):
 					self.login_gui.StudentPhoto.setPixmap(QtGui.QPixmap(self.photo_path))
 				else:
@@ -386,7 +387,7 @@ class App(QtWidgets.QWidget):
 	def read_exam_questions_csv(self):
 		self.exam_info.clear()
 
-		self.path = f'{self.exam_name}\\{self.exam_name}_Questions.csv'
+		self.path = paths.exam_questions_csv_path(self.exam_name)
 		self.csv_reader_func(path=self.path ,csv_type=1)
 
 	def counters(self):
@@ -462,7 +463,7 @@ class App(QtWidgets.QWidget):
 
 		#Save a copy of the result to the documents folder
 		doc_folder = shell.SHGetFolderPath(0, shellcon.CSIDL_PERSONAL, None, 0)
-		self.results_backup_filename = f'{self.exam_info[0]["question"]} {self.exam_info[0]["answer_a"]} Student {self.student_number} results.txt'
+		self.results_backup_filename = paths.local_backup_filename(self.exam_info[0]["question"], self.exam_info[0]["answer_a"], self.student_number)
 		with cdir(doc_folder, self.logger):
 			try:
 				with open(self.results_backup_filename, 'w') as results_file:
@@ -473,8 +474,8 @@ class App(QtWidgets.QWidget):
 
 
 		#Check for exsisting excel file
-		self.results_filename = f'{self.exam_info[0]["question"]} {self.exam_info[0]["answer_a"]} results.xlsx'
-		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger): #
+		self.results_filename = paths.excel_result_filename(self.exam_info[0]["question"], self.exam_info[0]["answer_a"])
+		with cdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name), self.logger): #
 			try:
 				self.results_wb = load_workbook(filename = self.results_filename) #opening the file
 				self.write_to_result_wb()
@@ -485,9 +486,9 @@ class App(QtWidgets.QWidget):
 				self.logger.error(f" Created: {self.results_filename} in {os.getcwd()}")
 
 		#Save exam completed check file
-		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
+		with cdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name), self.logger):
 			try:
-				with open(f'M{self.year_chosen[1]}-{self.year_chosen[3]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_nickname"]}.txt', "w") as check_file:
+				with open(paths.completion_marker_filename(self.year_chosen, self.student_number, self.student_info[self.student_number]["student_nickname"]), "w") as check_file:
 					check_file.write("Exam completed")
 			except Exception as e:
 				self.logger.error(f" Cannot save the check file to {doc_folder} because {e}")
@@ -495,9 +496,9 @@ class App(QtWidgets.QWidget):
 
 	def save_running_result(self):
 		cwd = os.getcwd()
-		self.running_results_filename = f'{self.exam_info[0]["question"]}_{self.exam_info[0]["answer_a"]}_Student_{self.student_number}_{self.student_info[self.student_number]["student_name"]}_{self.student_info[self.student_number]["student_nickname"]}_running_results.txt'
+		self.running_results_filename = paths.running_result_filename(self.exam_info[0]["question"], self.exam_info[0]["answer_a"], self.student_number, self.student_info[self.student_number]["student_name"], self.student_info[self.student_number]["student_nickname"])
 		self.text_to_write = f"Question number {self.quest_seq[self.question_number - 1]} = {self.answer_state} Total score= {self.correct_answers}"
-		with cdir(f"{self.network_location}\\M{self.year_chosen[1]}-{self.year_chosen[3]}_{self.exam_name}_results", self.logger):
+		with cdir(paths.results_directory(self.network_location, self.year_chosen, self.exam_name), self.logger):
 			try:
 				self.append_new_line_to_file(self.running_results_filename, self.text_to_write)
 			except FileNotFoundError as e:
@@ -578,7 +579,7 @@ class App(QtWidgets.QWidget):
 		answernum = 0
 		for answer_label in self.answer_label_list:
 			if len(self.exam_info[quest][self.exam_info_key_list[answernum]]) > 4 and self.exam_info[quest][self.exam_info_key_list[answernum]][-4:] == '.jpg':
-				with cdir(f"{self.network_location}/{self.exam_name}", self.logger):
+				with cdir(paths.exam_content_directory(self.network_location, self.exam_name), self.logger):
 					# myPixmap = QtGui.QPixmap(self.exam_answers_list[num][quest])
 					# myScaledPixmap = myPixmap.scaled(answer_label.size(), Qt.KeepAspectRatio)
 					# answer_label.setPixmap(myScaledPixmap)
@@ -589,7 +590,7 @@ class App(QtWidgets.QWidget):
 			answernum += 1
 
 		#Set video media
-		fileName = f'{self.network_location}/{self.exam_name}/{self.exam_info[quest]["photo_question"]}'
+		fileName = paths.exam_media_path(self.network_location, self.exam_name, self.exam_info[quest]["photo_question"])
 		try:
 			if self.exam_info[quest]["photo_question"] != 'None':
 				self.exam_gui.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
