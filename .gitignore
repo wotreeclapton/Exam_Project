@@ -2,10 +2,9 @@
 img/
 orig_ui_files/
 resources/
-old/
 snd/
 Network_files/
-LL.txt
+LL.txt/
 LL_DEV.txt
 
 *.docx
